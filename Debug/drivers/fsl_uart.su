@@ -1,4 +1,4 @@
-D:\Skola\DP\workspace\DP\CMSIS/core_cm0plus.h:741:22:__NVIC_EnableIRQ	16	static
+D:\Skola\DP\workspace\DP_git\CMSIS/core_cm0plus.h:741:22:__NVIC_EnableIRQ	16	static
 ../drivers/fsl_clock.h:424:20:CLOCK_EnableClock	24	static
 ../drivers/fsl_clock.h:435:20:CLOCK_DisableClock	24	static
 ../drivers/fsl_common.h:747:28:EnableIRQ	24	static
