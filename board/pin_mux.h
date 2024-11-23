@@ -36,6 +36,7 @@ extern "C" {
 
 
 #define SOPT4_TPM2CH0SRC_TPM2_CH0 0x00u
+#define SOPT4_TPM1CH0SRC_TPM1_CH0 0x00u
 #define SOPT5_LPUART0RXSRC_LPUART_RX 0x00u /*!<@brief LPUART0 Receive Data Source Select: LPUART_RX pin */
 #define SOPT5_LPUART0TXSRC_LPUART_TX 0x00u /*!<@brief LPUART0 Transmit Data Source Select: LPUART0_TX pin */
 

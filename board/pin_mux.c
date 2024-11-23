@@ -64,12 +64,22 @@ void BOARD_InitPins(void)
     /* PORTB19 (pin 42) is configured as TPM2_CH1 */
     PORT_SetPinMux(PORTB, 19U, kPORT_MuxAlt3);
 
+    PORT_SetPinMux(PORTB, 12U, kPORT_MuxAlt3);
+
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */
                    (~(SIM_SOPT4_TPM2CH0SRC_MASK)))
 
                   /* TPM2 Channel 0 Input Capture Source Select: TPM2_CH0 signal. */
                   | SIM_SOPT4_TPM2CH0SRC(SOPT4_TPM2CH0SRC_TPM2_CH0));
+
+    SIM->SOPT4 = ((SIM->SOPT4 &
+                   /* Mask bits to zero which are setting */
+                   (~(SIM_SOPT4_TPM1CH0SRC_MASK)))
+
+                  /* TPM2 Channel 0 Input Capture Source Select: TPM2_CH0 signal. */
+                  | SIM_SOPT4_TPM1CH0SRC(SOPT4_TPM1CH0SRC_TPM1_CH0));
+
 
     SIM->SOPT5 = ((SIM->SOPT5 &
                    /* Mask bits to zero which are setting */

@@ -4,20 +4,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../source/delay.c \
 ../source/dp_main.c \
-../source/motory.c \
+../source/drive_control.c \
 ../source/mtb.c \
 ../source/semihost_hardfault.c 
 
 C_DEPS += \
+./source/delay.d \
 ./source/dp_main.d \
-./source/motory.d \
+./source/drive_control.d \
 ./source/mtb.d \
 ./source/semihost_hardfault.d 
 
 OBJS += \
+./source/delay.o \
 ./source/dp_main.o \
-./source/motory.o \
+./source/drive_control.o \
 ./source/mtb.o \
 ./source/semihost_hardfault.o 
 
@@ -34,7 +37,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/dp_main.d ./source/dp_main.o ./source/motory.d ./source/motory.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
+	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
 
 .PHONY: clean-source
 
