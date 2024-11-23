@@ -80,6 +80,8 @@ void BOARD_InitPins(void)
 
                   /* LPUART0 Receive Data Source Select: LPUART_RX pin. */
                   | SIM_SOPT5_LPUART0RXSRC(SOPT5_LPUART0RXSRC_LPUART_RX));
+
+
 }
 /***********************************************************************************************************************
  * EOF

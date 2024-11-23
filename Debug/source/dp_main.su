@@ -2,6 +2,6 @@ D:\Skola\DP\workspace\DP_git\CMSIS/core_cm0plus.h:850:22:__NVIC_SetPriority	24	s
 D:\Skola\DP\workspace\DP_git\CMSIS/core_cm0plus.h:1056:26:SysTick_Config	16	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
-../source/dp_main.c:35:6:SysTick_Handler	8	static
-../source/dp_main.c:43:6:SysTick_DelayTicks	16	static
-../source/dp_main.c:50:5:main	32	static
+../source/dp_main.c:39:6:SysTick_Handler	8	static
+../source/dp_main.c:47:6:SysTick_DelayTicks	16	static
+../source/dp_main.c:54:5:main	56	static

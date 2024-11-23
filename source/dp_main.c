@@ -8,6 +8,7 @@
  * Definitions
  ******************************************************************************/
 #define BOARD_TPM_BASEADDR TPM2
+#define BOARD_TPM_BASEADDR_SERVO TPM1
 #define BOARD_TPM_CHANNEL  0U
 
 /* Interrupt to enable and flag to read; depends on the TPM channel used */
@@ -17,6 +18,9 @@
 /* Interrupt number and interrupt handler for the TPM instance used */
 #define TPM_INTERRUPT_NUMBER TPM2_IRQn
 #define TPM_SERVO_HANDLER    TPM2_IRQHandler
+
+#define TPM_INTERRUPT_NUMBER_SERVO TPM1_IRQn
+#define TPM_SERVO_HANDLER_SERVO    TPM1_IRQHandler
 
 /* Get source clock for TPM driver */
 #define TPM_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
@@ -52,10 +56,17 @@ int main(void)
     tpm_config_t tpmInfo;
     tpm_chnl_pwm_signal_param_t tpmParam;
 
+    tpm_config_t tpmInfo_servo;
+    tpm_chnl_pwm_signal_param_t tpmParam_servo;
+
 #ifndef TPM_SERVO_ON_LEVEL
 #define TPM_SERVO_ON_LEVEL kTPM_HighTrue
 #endif
 
+
+    tpmParam_servo.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL;
+    tpmParam_servo.level            = TPM_SERVO_ON_LEVEL;
+    tpmParam_servo.dutyCyclePercent = 7.5;
 
     /* Configure tpm params with frequency 50Hz for servo control */
     tpmParam.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL;
@@ -78,10 +89,17 @@ int main(void)
     TPM_GetDefaultConfig(&tpmInfo);
     tpmInfo.prescale = kTPM_Prescale_Divide_32;
     TPM_Init(BOARD_TPM_BASEADDR, &tpmInfo);
-
-    /* Set up PWM with 50Hz frequency */
     TPM_SetupPwm(BOARD_TPM_BASEADDR, &tpmParam, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR, kTPM_SystemClock);
+
+    TPM_GetDefaultConfig(&tpmInfo_servo);
+    tpmInfo_servo.prescale = kTPM_Prescale_Divide_32;
+    TPM_Init(BOARD_TPM_BASEADDR_SERVO, &tpmInfo_servo);
+    TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
+    TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
+
+    /* Set up PWM with 50Hz frequency */
+
     angle = 0;
     PRINTF("APP START\r\n");
     /* Set systick reload value to generate 1ms interrupt */
@@ -93,6 +111,7 @@ int main(void)
 	}
 
 	// INICIALIZACE MOTORU
+	/*
 	PRINTF("SET MAX\r\n");
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, 13.0);
 	SysTick_DelayTicks(2000U);
@@ -102,7 +121,13 @@ int main(void)
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, 7.5);
 	SysTick_DelayTicks(2000U);
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, 6.5);
-	//asdasdsd
+	*/
+
+	PRINTF("SERVO TEST r\n");
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, 3.5);
+	SysTick_DelayTicks(2000U);
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, 11.5);
+
 
 	while (1)
     {
@@ -133,8 +158,8 @@ int main(void)
         PRINTF("Servo angle set to %d degrees!\r\n", angle);
         */
 
-
-    	/*
+		/*
+    	// LEVY TADBU 6.5 a 12.9 max
     	//MOTORY
     	dutyCycle = 13.0;
     	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, dutyCycle);
@@ -145,14 +170,14 @@ int main(void)
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
-    		if (getCharValue == 0) dutyCycle = 6.5;
+    		if (getCharValue == 0) dutyCycle = 5.9;
     		if (getCharValue == 9) dutyCycle = 12.9;
     		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
     		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR, (tpm_chnl_t)BOARD_TPM_CHANNEL, kTPM_EdgeAlignedPwm, dutyCycle);
     	}
-    	*/
 
+	*/
 
     }
 }
