@@ -1,3 +1,1 @@
-D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
-D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
-../source/dp_main.c:56:5:main	56	static
+../source/dp_main.c:22:5:main	16	static

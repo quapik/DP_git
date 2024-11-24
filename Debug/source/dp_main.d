@@ -16,7 +16,8 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace\DP_git\board/clock_config.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_gpio.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h \
- D:\Skola\DP\workspace\DP_git\board/clock_config.h ../source/delay.h
+ D:\Skola\DP\workspace\DP_git\board/clock_config.h ../source/delay.h \
+ ../source/drive_control.h
 D:\Skola\DP\workspace\DP_git\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\device/fsl_device_registers.h:
@@ -36,3 +37,4 @@ D:\Skola\DP\workspace\DP_git\drivers/fsl_gpio.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:
 D:\Skola\DP\workspace\DP_git\board/clock_config.h:
 ../source/delay.h:
+../source/drive_control.h:
