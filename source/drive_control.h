@@ -11,9 +11,10 @@
 
 
 #define BOARD_TPM_BASEADDR_MOTOR TPM2
-#define BOARD_TPM_BASEADDR_SERVO TPM2
+#define BOARD_TPM_BASEADDR_SERVO TPM1
 #define BOARD_TPM_CHANNEL_MOTOR 0U
-#define BOARD_TPM_CHANNEL_SERVO 1U
+#define BOARD_TPM_CHANNEL_SERVO 0U
+
 
 #define TPM_CHANNEL_INTERRUPT_ENABLE kTPM_Chnl0InterruptEnable
 #define TPM_CHANNEL_FLAG             kTPM_Chnl0Flag
@@ -48,9 +49,9 @@ void steer_right(int range);
 void steer_left(int range);
 void steer_straight(void);
 
-#define SERVO_R1 5.0
+#define SERVO_R3 5.0
 #define SERVO_R2 6.0
-#define SERVO_R3 7.0
+#define SERVO_R1 7.0
 #define SERVO_MIDDLE 8.0
 #define SERVO_L1 9.0
 #define SERVO_L2 10.0

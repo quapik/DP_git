@@ -1,9 +1,9 @@
 #include "drive_control.h"
 
 #define BOARD_TPM_BASEADDR_MOTOR TPM2
-#define BOARD_TPM_BASEADDR_SERVO TPM2
+#define BOARD_TPM_BASEADDR_SERVO TPM1
 #define BOARD_TPM_CHANNEL_MOTOR 0U
-#define BOARD_TPM_CHANNEL_SERVO 1U
+#define BOARD_TPM_CHANNEL_SERVO 0U
 
 
 /* Interrupt to enable and flag to read; depends on the TPM channel used */
@@ -76,7 +76,7 @@ void motors_init(void)
     TPM_StartTimer(BOARD_TPM_BASEADDR_MOTOR, kTPM_SystemClock);
 
     TPM_GetDefaultConfig(&tpmInfo_servo);
-    tpmInfo_servo.prescale = kTPM_Prescale_Divide_32;
+    tpmInfo_servo.prescale = kTPM_Prescale_Divide_128;
     TPM_Init(BOARD_TPM_BASEADDR_SERVO, &tpmInfo_servo);
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);

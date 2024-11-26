@@ -1,3 +1,4 @@
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:424:20:CLOCK_EnableClock	24	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_port.h:346:20:PORT_SetPinMux	24	static
-../board/pin_mux.c:64:6:BOARD_InitPins	8	static
+../board/pin_mux.c:30:6:BOARD_InitBootPins	8	static
+../board/pin_mux.c:56:6:BOARD_InitPins	8	static

@@ -1,0 +1,4 @@
+../board/peripherals.c:124:13:TPM2_init	8	static
+../board/peripherals.c:172:13:TPM1_init	8	static
+../board/peripherals.c:179:6:BOARD_InitPeripherals	8	static
+../board/peripherals.c:189:6:BOARD_InitBootPeripherals	8	static

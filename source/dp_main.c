@@ -24,7 +24,7 @@ int main(void)
 
 
     /* Board pin, clock, debug console init */
-    BOARD_InitPins();
+	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
@@ -39,11 +39,23 @@ int main(void)
     //Inicializace pro DELAY!!!
     SysTick_Init();
     motors_init();
+    SysTick_DelayTicks(1000U);
+
 
 
     dutyCycle = 0.0;
-	while (1)
-    {
+	while (1){
+		/*
+			for(int i = 0; i < 10; i++)
+			{
+				motor_set_speed(1);
+						SysTick_DelayTicks(250U);
+						motor_set_speed(0);
+						SysTick_DelayTicks(250U);
+			}
+
+			SysTick_DelayTicks(1550U);
+		*/
     	/*
         do
         {
@@ -56,8 +68,9 @@ int main(void)
         } while (angle > 180U);
 		*/
 
-		/*
+
     	//SERVO MOTOR RIZENI!!
+		/*
     	getCharValue = GETCHAR();
     	angle = angle + 1;
 
@@ -69,16 +82,18 @@ int main(void)
         TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
 
         PRINTF("Servo angle set to %d degrees!\r\n", angle);
-        getCharValue = GETCHAR();
         */
 
-		/*
+        getCharValue = GETCHAR();
+
+
+
 		getCharValue = GETCHAR()  - 0x30U;
 		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
 		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
 		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-		if (dutyCycle > 13.0) dutyCycle  = 0.0;
-		*/
+		if (dutyCycle > 50.0) dutyCycle  = 0.0;
+
 		/*
 		dutyCycle  = 8.0;
 		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);

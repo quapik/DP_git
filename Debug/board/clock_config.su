@@ -1,6 +1,6 @@
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:616:20:CLOCK_SetSimSafeDivs	8	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_smc.h:256:20:SMC_SetPowerModeProtection	16	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_smc.h:275:33:SMC_GetPowerModeState	16	static
-../board/clock_config.c:54:6:BOARD_InitBootClocks	8	static
-../board/clock_config.c:124:6:BOARD_BootClockRUN	8	static
-../board/clock_config.c:194:6:BOARD_BootClockVLPR	8	static
+../board/clock_config.c:45:6:BOARD_InitBootClocks	8	static
+../board/clock_config.c:119:6:BOARD_BootClockRUN	8	static
+../board/clock_config.c:193:6:BOARD_BootClockVLPR	8	static
