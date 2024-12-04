@@ -34,6 +34,7 @@ board: FRDM-KL27Z
  * Definitions
  ******************************************************************************/
 #define SIM_OSC32KSEL_OSC32KCLK_CLK                       0U  /*!< OSC32KSEL select: OSC32KCLK clock */
+#define SIM_TPM_CLK_SEL_IRC48M_CLK                        1U  /*!< TPM clock select: IRC48M clock */
 
 /*******************************************************************************
  * Variables
@@ -63,6 +64,7 @@ outputs:
 - {id: MCGIRCLK.outFreq, value: 8 MHz}
 - {id: MCGPCLK.outFreq, value: 48 MHz}
 - {id: System_clock.outFreq, value: 48 MHz}
+- {id: TPMCLK.outFreq, value: 48 MHz}
 settings:
 - {id: MCGMode, value: HIRC}
 - {id: MCG.CLKS.sel, value: MCG.HIRC}
@@ -79,6 +81,7 @@ settings:
 - {id: SIM.RTCCLKOUTSEL.sel, value: OSC.OSCERCLK}
 - {id: SIM.TPMSRCSEL.sel, value: MCG.MCGPCLK}
 - {id: SIM.USBSRCSEL.sel, value: MCG.MCGPCLK}
+- {id: TPMClkConfig, value: 'yes'}
 sources:
 - {id: MCG.HIRC.outFreq, value: 48 MHz}
 - {id: OSC.OSC.outFreq, value: 32.768 kHz}
@@ -126,6 +129,8 @@ void BOARD_BootClockRUN(void)
     CLOCK_SetSimConfig(&simConfig_BOARD_BootClockRUN);
     /* Set SystemCoreClock variable. */
     SystemCoreClock = BOARD_BOOTCLOCKRUN_CORE_CLOCK;
+    /* Set TPM clock source. */
+    CLOCK_SetTpmClock(SIM_TPM_CLK_SEL_IRC48M_CLK);
 }
 
 /*******************************************************************************

@@ -18,7 +18,7 @@
 /*******************************************************************************
  * Code
  ******************************************************************************/
-
+uint16_t dc = 0;
 int main(void)
 {
 
@@ -37,10 +37,9 @@ int main(void)
     int angle = 0;
     PRINTF("APP START\r\n");
     //Inicializace pro DELAY!!!
+
     SysTick_Init();
     motors_init();
-    SysTick_DelayTicks(1000U);
-
 
 
     dutyCycle = 0.0;
@@ -84,57 +83,27 @@ int main(void)
         PRINTF("Servo angle set to %d degrees!\r\n", angle);
         */
 
-        getCharValue = GETCHAR();
-
-
-
+		/*
 		getCharValue = GETCHAR()  - 0x30U;
+
 		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
 		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
 		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
 		if (dutyCycle > 50.0) dutyCycle  = 0.0;
-
-		/*
-		dutyCycle  = 8.0;
-		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-		SysTick_DelayTicks(1000U);
-		for(int i = 5; i < 12; i++)
-		{
-			dutyCycle = 0.0 + i;
-			TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-			SysTick_DelayTicks(1000U);
-		}
-
-		for(int i = 11; i > 4; i--)
-				{
-					dutyCycle = 0.0 + i;
-					TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-					SysTick_DelayTicks(1000U);
-				}
-		dutyCycle  = 8.0;
-				TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
 		*/
 
 
-	/*
     	// LEVY TADBU 6.5 a 12.9 max
-    	//MOTORY
-    	dutyCycle = 13.0;
-    	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, dutyCycle);
-    	PRINTF("Nastavena max hodnota\r\n");
-    	getCharValue = GETCHAR();
-    	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, dutyCycle);
-    	PRINTF("Nastavena min hodnota\r\n");
+
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
     		if (getCharValue == 0) dutyCycle = 5.9;
     		if (getCharValue == 9) dutyCycle = 12.9;
-    		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
-    		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
-    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, dutyCycle);
+    		if (getCharValue == 1) dutyCycle = dutyCycle - 0.02;
+    		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
+    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_CenterAlignedPwm, dutyCycle);
     	}
-	*/
 
 
     }

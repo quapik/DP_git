@@ -120,9 +120,23 @@ instance:
     - tpm_edge_aligned_channels_config: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
+const tpm_config_t TPM2_config = {
+  .prescale = kTPM_Prescale_Divide_1,
+  .useGlobalTimeBase = false,
+  .triggerSelect = kTPM_Trigger_Select_0,
+  .triggerSource = kTPM_TriggerSource_External,
+  .enableDoze = false,
+  .enableDebugMode = false,
+  .enableReloadOnTrigger = false,
+  .enableStopOnOverflow = false,
+  .enableStartOnTrigger = false,
+  .enablePauseOnTrigger = false
+};
 
 static void TPM2_init(void) {
-  /* Configuration of the component TPM2 of functional group BOARD_InitPeripherals is not valid. */
+  TPM_Init(TPM2_PERIPHERAL, &TPM2_config);
+  TPM_SetTimerPeriod(TPM2_PERIPHERAL, ((TPM2_CLOCK_SOURCE/ (1U << (TPM2_PERIPHERAL->SC & TPM_SC_PS_MASK))) / 10000) + 1);
+  TPM_StartTimer(TPM2_PERIPHERAL, kTPM_SystemClock);
 }
 
 /***********************************************************************************************************************
@@ -168,9 +182,23 @@ instance:
     - tpm_edge_aligned_channels_config: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
+const tpm_config_t TPM1_config = {
+  .prescale = kTPM_Prescale_Divide_1,
+  .useGlobalTimeBase = false,
+  .triggerSelect = kTPM_Trigger_Select_0,
+  .triggerSource = kTPM_TriggerSource_External,
+  .enableDoze = false,
+  .enableDebugMode = false,
+  .enableReloadOnTrigger = false,
+  .enableStopOnOverflow = false,
+  .enableStartOnTrigger = false,
+  .enablePauseOnTrigger = false
+};
 
 static void TPM1_init(void) {
-  /* Configuration of the component TPM1 of functional group BOARD_InitPeripherals is not valid. */
+  TPM_Init(TPM1_PERIPHERAL, &TPM1_config);
+  TPM_SetTimerPeriod(TPM1_PERIPHERAL, ((TPM1_CLOCK_SOURCE/ (1U << (TPM1_PERIPHERAL->SC & TPM_SC_PS_MASK))) / 10000) + 1);
+  TPM_StartTimer(TPM1_PERIPHERAL, kTPM_SystemClock);
 }
 
 /***********************************************************************************************************************

@@ -24,6 +24,7 @@
 
 #define TPM_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
 
+
 #ifndef TPM_MOTOR_ON_LEVEL
 #define TPM_MOTOR_ON_LEVEL kTPM_HighTrue
 #endif
@@ -43,19 +44,26 @@ extern tpm_config_t tpmInfo_servo;
 extern tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 void motors_init(void);
+void motor_set_check(void);
+void servo_check(void);
 void motor_set_speed(int8_t speed_level);
 
-void steer_right(int range);
-void steer_left(int range);
+void steer_right(uint8_t pct);
+void steer_left(uint8_t pct);
 void steer_straight(void);
 
+#define SERVO_R_MAX 4.5
 #define SERVO_R3 5.0
 #define SERVO_R2 6.0
 #define SERVO_R1 7.0
-#define SERVO_MIDDLE 8.0
+#define SERVO_MIDDLE 8.1
 #define SERVO_L1 9.0
 #define SERVO_L2 10.0
 #define SERVO_L3 11.0
+#define SERVO_L_MAX 11.7
+
+#define MOTOR_MAX 13.0
+#define MOTOR_MIN 3.9
 
 #define MAX_INIT 20
 #define MIN_INIT -1

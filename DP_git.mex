@@ -106,6 +106,7 @@
                   <clock_output id="MCGIRCLK.outFreq" value="8 MHz" locked="false" accuracy=""/>
                   <clock_output id="MCGPCLK.outFreq" value="48 MHz" locked="false" accuracy=""/>
                   <clock_output id="System_clock.outFreq" value="48 MHz" locked="false" accuracy=""/>
+                  <clock_output id="TPMCLK.outFreq" value="48 MHz" locked="false" accuracy=""/>
                </clock_outputs>
                <clock_settings>
                   <setting id="MCGMode" value="HIRC" locked="false"/>
@@ -123,6 +124,7 @@
                   <setting id="SIM.RTCCLKOUTSEL.sel" value="OSC.OSCERCLK" locked="false"/>
                   <setting id="SIM.TPMSRCSEL.sel" value="MCG.MCGPCLK" locked="false"/>
                   <setting id="SIM.USBSRCSEL.sel" value="MCG.MCGPCLK" locked="false"/>
+                  <setting id="TPMClkConfig" value="yes" locked="false"/>
                </clock_settings>
                <called_from_default_init>true</called_from_default_init>
             </clock_configuration>

@@ -430,7 +430,7 @@ status_t TPM_SetupPwm(TPM_Type *base,
 void TPM_UpdatePwmDutycycle(TPM_Type *base,
                             tpm_chnl_t chnlNumber,
                             tpm_pwm_mode_t currentPwmMode,
-                            uint8_t dutyCyclePercent)
+							float dutyCyclePercent)
 {
     assert((int8_t)chnlNumber < FSL_FEATURE_TPM_CHANNEL_COUNTn(base));
     assert((uint8_t)chnlNumber < sizeof(base->CONTROLS) / sizeof(base->CONTROLS[0]));

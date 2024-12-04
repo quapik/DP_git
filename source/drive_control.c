@@ -18,6 +18,8 @@
 /* Get source clock for TPM driver */
 #define TPM_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
 
+
+
 volatile uint8_t getCharValue = 0U;
 volatile uint8_t angle = 0U; //Uhel natoceni serva - rozsah 0 - 180 stupnu
 float dutyCycle = 0.0;
@@ -37,13 +39,6 @@ tpm_chnl_pwm_signal_param_t tpmParam_servo;
 #define TPM_SERVO_ON_LEVEL kTPM_HighTrue
 #endif
 
-#ifndef TPM_MOTOR_ON_LEVEL
-#define TPM_MOTOR_ON_LEVEL kTPM_HighTrue
-#endif
-
-#ifndef TPM_SERVO_ON_LEVEL
-#define TPM_SERVO_ON_LEVEL kTPM_HighTrue
-#endif
 
 tpm_config_t tpmInfo;
 tpm_chnl_pwm_signal_param_t tpmParam;
@@ -54,6 +49,7 @@ tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 void motors_init(void)
 {
+	//PRINTF("CLK %d\r\n",TPM_SOURCE_CLOCK);
 
 	//SERVO  - defaultne nastaveno na middle hodnotu
 	tpmParam_servo.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO;
@@ -63,24 +59,34 @@ void motors_init(void)
 	//MOTOR - defaultne se nastavi max (pak se to predela pro jistotu)
 	tpmParam.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR;
 	tpmParam.level            = TPM_MOTOR_ON_LEVEL;
-	tpmParam.dutyCyclePercent = MAX_INIT;
+	tpmParam_servo.dutyCyclePercent = SERVO_MIDDLE;
+
 
 
     CLOCK_SetTpmClock(1U);
 
-    /* Initialize TPM module */
+    //Nastaveni PWM pro motory
     TPM_GetDefaultConfig(&tpmInfo);
-    tpmInfo.prescale = kTPM_Prescale_Divide_32;
+    tpmInfo.prescale = kTPM_Prescale_Divide_16;
     TPM_Init(BOARD_TPM_BASEADDR_MOTOR, &tpmInfo);
     TPM_SetupPwm(BOARD_TPM_BASEADDR_MOTOR, &tpmParam, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_MOTOR, kTPM_SystemClock);
 
+    //Nastaveni PWM pro srvo
     TPM_GetDefaultConfig(&tpmInfo_servo);
-    tpmInfo_servo.prescale = kTPM_Prescale_Divide_128;
+    tpmInfo_servo.prescale = kTPM_Prescale_Divide_32;
     TPM_Init(BOARD_TPM_BASEADDR_SERVO, &tpmInfo_servo);
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
+    motor_set_check();
+    servo_check();
+
+}
+
+
+void motor_set_check(void)
+{
     // INICIALIZACE MOTORU
    	PRINTF("SET MAX\r\n");
    	motor_set_speed(MAX_INIT);
@@ -89,35 +95,54 @@ void motors_init(void)
    	motor_set_speed(MIN_INIT);
    	SysTick_DelayTicks(1000U);
 
-   	//NASTAVENI RIDICIHO SERVA DO MIDLE POLOHY
-   	steer_straight();
-
 }
 
+//Funkce co projde rozsah serva - stred, max vpravo, stred, max v vlevo, stred
+//Óbcas se krajni hodnoty zasekly, proto potreba vyzkouset pred spustenim na drahu
+void servo_check(void)
+{
+	steer_straight();
+	SysTick_DelayTicks(200U);
+	for(uint8_t i = 1; i < 11; i++)
+	{
+		steer_right(i*10);
+		SysTick_DelayTicks(100U);
+	}
+	SysTick_DelayTicks(500U);
+	steer_straight();
+	SysTick_DelayTicks(500U);
+	for(uint8_t i = 1; i < 11; i++)
+	{
+		steer_left(i*10);
+		SysTick_DelayTicks(100U);
+	}
+	SysTick_DelayTicks(500U);
+	steer_straight();
+	SysTick_DelayTicks(200U);
+}
+
+//Funkce pro nastaveni stredni hodnoty serva pro jizdvu vpred
 void steer_straight(void)
 {
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, SERVO_MIDDLE);
 }
 
-void steer_left(int range)
+//Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vlevo)
+void steer_left(uint8_t pct)
 {
 	float set_steer;
-	if(range < 1) set_steer = SERVO_MIDDLE;
-	if(range == 1) set_steer = SERVO_L1;
-	if(range == 2) set_steer = SERVO_L2;
-	if(range == 3) set_steer = SERVO_L3;
-	if(range > 3) set_steer = SERVO_L3;
+	if(pct < 1) set_steer = SERVO_MIDDLE;
+	else if(pct > 100) set_steer = SERVO_L_MAX;
+			else set_steer = SERVO_MIDDLE + pct*0.036;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
-
-void steer_right(int range)
+//Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
+void steer_right(uint8_t pct)
 {
 	float set_steer;
-	if(range < 1) set_steer = SERVO_MIDDLE;
-	if(range == 1) set_steer = SERVO_R1;
-	if(range == 2) set_steer = SERVO_R2;
-	if(range == 3) set_steer = SERVO_R3;
-	if(range > 3) set_steer = SERVO_R3;
+	if(pct < 1) set_steer = SERVO_MIDDLE;
+	else if(pct > 100) set_steer = SERVO_R_MAX;
+			else set_steer = SERVO_MIDDLE - pct*0.036;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 
@@ -127,8 +152,8 @@ void motor_set_speed(int8_t speed_level)
 	else speed = 6.0 + speed_level;
 
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
-	if(speed_level == MIN_INIT) speed = 5.9;
-	if(speed_level == MAX_INIT) speed = 13.0;
+	if(speed_level == MIN_INIT) speed = MOTOR_MIN;
+	if(speed_level == MAX_INIT) speed = MOTOR_MAX;
 
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, speed);
 

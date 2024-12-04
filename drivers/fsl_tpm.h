@@ -65,7 +65,7 @@ typedef struct _tpm_chnl_pwm_signal_param
                                        In combined mode (available in some SoC's, this represents the
                                        channel pair number */
     tpm_pwm_level_select_t level; /*!< PWM output active level select */
-    uint8_t dutyCyclePercent;     /*!< PWM pulse width, value should be between 0 to 100
+    float dutyCyclePercent;     /*!< PWM pulse width, value should be between 0 to 100
                                        0=inactive signal(0% duty cycle)...
                                        100=always active signal (100% duty cycle)*/
 #if defined(FSL_FEATURE_TPM_HAS_COMBINE) && FSL_FEATURE_TPM_HAS_COMBINE
@@ -365,7 +365,7 @@ status_t TPM_SetupPwm(TPM_Type *base,
 void TPM_UpdatePwmDutycycle(TPM_Type *base,
                             tpm_chnl_t chnlNumber,
                             tpm_pwm_mode_t currentPwmMode,
-                            uint8_t dutyCyclePercent);
+                            float dutyCyclePercent);
 
 /*!
  * @brief Update the edge level selection for a channel
