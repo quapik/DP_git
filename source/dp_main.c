@@ -4,9 +4,11 @@
 #include "fsl_tpm.h"
 #include <stdio.h>
 #include "clock_config.h"
+#include "fsl_adc16.h"
 
 #include "delay.h"
 #include "drive_control.h"
+#include "sensors_control.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -29,43 +31,31 @@ int main(void)
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
 
-    /* Select the clock source for the TPM counter as MCGPLLCLK */
 
 
-    /* Set up PWM with 50Hz frequency */
 
-    int angle = 0;
+
     PRINTF("APP START\r\n");
-    //Inicializace pro DELAY!!!
+
 
     SysTick_Init();
     motors_init();
+    irsensor_init();
+
+    dutyCycle =MOTOR_MIN;
+
+    uint16_t adc_value;
+    float cm_value;
 
 
-    dutyCycle = 0.0;
+
+
 	while (1){
-		/*
-			for(int i = 0; i < 10; i++)
-			{
-				motor_set_speed(1);
-						SysTick_DelayTicks(250U);
-						motor_set_speed(0);
-						SysTick_DelayTicks(250U);
-			}
 
-			SysTick_DelayTicks(1550U);
-		*/
-    	/*
-        do
-        {
-            PRINTF("\r\nEnter an angle between 0 and 180:\r\n");
-            PRINTF("Angle: ");
-            getCharValue = GETCHAR() - 0x30U;
-            angle = getCharValue * 10; // Přepočítá vstup na 10x hodnotu
-            PRINTF("%d", angle);
-            PRINTF("\r\n");
-        } while (angle > 180U);
-		*/
+
+		adc_value  = irsensor_mesure();
+		cm_value = irsensor_convert(adc_value);
+		SysTick_DelayTicks(200U);
 
 
     	//SERVO MOTOR RIZENI!!
@@ -83,28 +73,29 @@ int main(void)
         PRINTF("Servo angle set to %d degrees!\r\n", angle);
         */
 
-		/*
+/*
 		getCharValue = GETCHAR()  - 0x30U;
 
 		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
 		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
 		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-		if (dutyCycle > 50.0) dutyCycle  = 0.0;
-		*/
+		if (dutyCycle > SERVO_MAX) dutyCycle  = SERVO_MAX;
+		if (dutyCycle < SERVO_MIN) dutyCycle  = SERVO_MIN;
+*/
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-
+		        /*
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
-    		if (getCharValue == 0) dutyCycle = 5.9;
-    		if (getCharValue == 9) dutyCycle = 12.9;
+    		if (getCharValue == 0) dutyCycle = MOTOR_MIN;
+    		if (getCharValue == 9) dutyCycle = MOTOR_MAX;
     		if (getCharValue == 1) dutyCycle = dutyCycle - 0.02;
     		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_CenterAlignedPwm, dutyCycle);
     	}
-
+*/
 
     }
 }

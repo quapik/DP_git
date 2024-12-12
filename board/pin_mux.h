@@ -66,6 +66,24 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_LED_RED_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
                                                          /* @} */
 
+/*! @name PORTE20 (number 9), J4[6]/A2-ADC0_SE0
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_ADC0_SE0_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_ADC0_SE0_PIN 20U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_ADC0_SE0_PIN_MASK (1U << 20U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
+
+/*! @name PORTE16 (number 8), J4[2]/A0-ADC0_SE1
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_ADC0_SE1_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_ADC0_SE1_PIN 16U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_ADC0_SE1_PIN_MASK (1U << 16U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

@@ -62,8 +62,11 @@ void steer_straight(void);
 #define SERVO_L3 11.0
 #define SERVO_L_MAX 11.7
 
+#define SERVO_MAX 11.7
+#define SERVO_MIN 4.5
+
 #define MOTOR_MAX 13.0
-#define MOTOR_MIN 3.9
+#define MOTOR_MIN 5.4
 
 #define MAX_INIT 20
 #define MIN_INIT -1

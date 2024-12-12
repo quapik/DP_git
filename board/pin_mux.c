@@ -42,7 +42,9 @@ BOARD_InitPins:
   - {pin_num: '24', peripheral: LPUART0, signal: TX, pin_signal: PTA2/LPUART0_TX/TPM2_CH1}
   - {pin_num: '42', peripheral: TPM2, signal: 'CH, 1', pin_signal: PTB19/TPM2_CH1}
   - {pin_num: '41', peripheral: TPM2, signal: 'CH, 0', pin_signal: PTB18/TPM2_CH0}
-  - {pin_num: '35', peripheral: TPM1, signal: 'CH, 0', pin_signal: ADC0_SE8/PTB0/LLWU_P5/I2C0_SCL/TPM1_CH0/SPI1_MOSI/SPI1_MISO, identifier: ''}
+  - {pin_num: '9', peripheral: TPM1, signal: 'CH, 0', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4}
+  - {pin_num: '8', peripheral: ADC0, signal: 'SE, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
+  - {pin_num: '8', peripheral: ADC0, signal: 'DP, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, identifier: ''}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -59,6 +61,8 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortA);
     /* Port B Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortB);
+    /* Port E Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortE);
 
     /* PORTA1 (pin 23) is configured as LPUART0_RX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_RX_PORT, BOARD_INITPINS_DEBUG_UART0_RX_PIN, kPORT_MuxAlt2);
@@ -66,14 +70,17 @@ void BOARD_InitPins(void)
     /* PORTA2 (pin 24) is configured as LPUART0_TX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_TX_PORT, BOARD_INITPINS_DEBUG_UART0_TX_PIN, kPORT_MuxAlt2);
 
-    /* PORTB0 (pin 35) is configured as TPM1_CH0 */
-    PORT_SetPinMux(PORTB, 0U, kPORT_MuxAlt3);
-
     /* PORTB18 (pin 41) is configured as TPM2_CH0 */
     PORT_SetPinMux(BOARD_INITPINS_LED_RED_PORT, BOARD_INITPINS_LED_RED_PIN, kPORT_MuxAlt3);
 
     /* PORTB19 (pin 42) is configured as TPM2_CH1 */
     PORT_SetPinMux(BOARD_INITPINS_LED_GREEN_PORT, BOARD_INITPINS_LED_GREEN_PIN, kPORT_MuxAlt3);
+
+    /* PORTE16 (pin 8) is configured as ADC0_SE1, ADC0_DP1 */
+    PORT_SetPinMux(BOARD_INITPINS_ADC0_SE1_PORT, BOARD_INITPINS_ADC0_SE1_PIN, kPORT_PinDisabledOrAnalog);
+
+    /* PORTE20 (pin 9) is configured as TPM1_CH0 */
+    PORT_SetPinMux(BOARD_INITPINS_ADC0_SE0_PORT, BOARD_INITPINS_ADC0_SE0_PIN, kPORT_MuxAlt3);
 
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */

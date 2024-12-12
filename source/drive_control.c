@@ -59,7 +59,6 @@ void motors_init(void)
 	//MOTOR - defaultne se nastavi max (pak se to predela pro jistotu)
 	tpmParam.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR;
 	tpmParam.level            = TPM_MOTOR_ON_LEVEL;
-	tpmParam_servo.dutyCyclePercent = SERVO_MIDDLE;
 
 
 
@@ -88,12 +87,12 @@ void motors_init(void)
 void motor_set_check(void)
 {
     // INICIALIZACE MOTORU
-   	PRINTF("SET MAX\r\n");
+
    	motor_set_speed(MAX_INIT);
    	SysTick_DelayTicks(2000U);
-   	PRINTF("SET MIN\r\n");
    	motor_set_speed(MIN_INIT);
    	SysTick_DelayTicks(1000U);
+   	PRINTF("SET MOTOR DONE\r\n");
 
 }
 
@@ -119,12 +118,15 @@ void servo_check(void)
 	SysTick_DelayTicks(500U);
 	steer_straight();
 	SysTick_DelayTicks(200U);
+	PRINTF("SET SERVO DONE\r\n");
+
 }
 
 //Funkce pro nastaveni stredni hodnoty serva pro jizdvu vpred
 void steer_straight(void)
 {
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, SERVO_MIDDLE);
+
 }
 
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vlevo)
@@ -158,7 +160,6 @@ void motor_set_speed(int8_t speed_level)
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, speed);
 
 }
-
 
 
 

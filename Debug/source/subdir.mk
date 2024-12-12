@@ -8,21 +8,24 @@ C_SRCS += \
 ../source/dp_main.c \
 ../source/drive_control.c \
 ../source/mtb.c \
-../source/semihost_hardfault.c 
+../source/semihost_hardfault.c \
+../source/sensors_control.c 
 
 C_DEPS += \
 ./source/delay.d \
 ./source/dp_main.d \
 ./source/drive_control.d \
 ./source/mtb.d \
-./source/semihost_hardfault.d 
+./source/semihost_hardfault.d \
+./source/sensors_control.d 
 
 OBJS += \
 ./source/delay.o \
 ./source/dp_main.o \
 ./source/drive_control.o \
 ./source/mtb.o \
-./source/semihost_hardfault.o 
+./source/semihost_hardfault.o \
+./source/sensors_control.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -37,7 +40,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
+	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/mtb.d ./source/mtb.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sensors_control.d ./source/sensors_control.o
 
 .PHONY: clean-source
 
