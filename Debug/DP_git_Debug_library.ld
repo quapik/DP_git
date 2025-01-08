@@ -1,12 +1,12 @@
 /*
  * GENERATED FILE - DO NOT EDIT
  * Copyright 2008-2013 Code Red Technologies Ltd,
- * Copyright 2013-2024 NXP
+ * Copyright 2013-2025 NXP
  * SPDX-License-Identifier: BSD-3-Clause
  * Generated linker script file for MKL27Z64xxx4
  * Created from library.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v24.9 [Build 25] [2024-09-26] on 12. 12. 2024 1:03:46
+ * MCUXpresso IDE v24.9 [Build 25] [2024-09-26] on 8. 1. 2025 17:30:37
  */
 
 GROUP (

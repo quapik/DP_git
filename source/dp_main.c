@@ -31,6 +31,9 @@ int main(void)
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
 
+    color_sensors_init();
+
+
 
 
 
@@ -42,7 +45,7 @@ int main(void)
     motors_init();
     irsensor_init();
 
-    dutyCycle =MOTOR_MIN;
+    dutyCycle = MOTOR_MAX;
 
     uint16_t adc_value;
     float cm_value;
@@ -53,25 +56,23 @@ int main(void)
 	while (1){
 
 
-		adc_value  = irsensor_mesure();
-		cm_value = irsensor_convert(adc_value);
-		SysTick_DelayTicks(200U);
+		check_colors_sensors_interrupts();
 
-
-    	//SERVO MOTOR RIZENI!!
 		/*
-    	getCharValue = GETCHAR();
-    	angle = angle + 1;
+		//IR SENSOR
+		adc_value  = irsensor_mesure();
+		if (adc_value > 1000)
+		{
+		PRINTF("STOP\r\n");
+		motor_set_speed(0);
+		}
+		else motor_set_speed(15);
+
+		cm_value = irsensor_convert(adc_value);
+		SysTick_DelayTicks(20U);
+		*/
 
 
-    	if(angle>180) angle = 0;
-
-
-        dutyCycle = 3.0 + (angle / 180.0) * 10.0; // Duty cycle pro úhel
-        TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-
-        PRINTF("Servo angle set to %d degrees!\r\n", angle);
-        */
 
 /*
 		getCharValue = GETCHAR()  - 0x30U;
@@ -85,7 +86,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-		        /*
+		/*
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -95,7 +96,7 @@ int main(void)
     		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_CenterAlignedPwm, dutyCycle);
     	}
-*/
+	*/
 
     }
 }

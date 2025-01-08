@@ -148,14 +148,12 @@ void steer_right(uint8_t pct)
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 
-void motor_set_speed(int8_t speed_level)
-{	float speed = 0.0;
-	if(speed_level == 0 || speed_level > 6) speed = 5.0;
-	else speed = 6.0 + speed_level;
+void motor_set_speed(int8_t pct)
+{	float speed = MOTOR_MIN + (MOTOR_MAX-MOTOR_MIN)* (pct*0.01);
 
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
-	if(speed_level == MIN_INIT) speed = MOTOR_MIN;
-	if(speed_level == MAX_INIT) speed = MOTOR_MAX;
+	if(pct == 0) speed = MOTOR_MIN;
+	if(pct == 100) speed = MOTOR_MAX;
 
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, speed);
 

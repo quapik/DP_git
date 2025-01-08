@@ -13,6 +13,10 @@ package_id: MKL27Z64VLH4
 mcu_data: ksdk2_0
 processor_version: 13.0.1
 board: FRDM-KL27Z
+pin_labels:
+- {pin_num: '21', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, label: 'J1[8]/D3-TPM0_CH1', identifier: TPM0_CH1;color_sensor0;color_sensor1}
+- {pin_num: '20', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, label: 'J1[12]/D5-TPM0_CH0', identifier: TPM0_CH0;color_sensor1;color_sensor0}
+- {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -43,8 +47,9 @@ BOARD_InitPins:
   - {pin_num: '42', peripheral: TPM2, signal: 'CH, 1', pin_signal: PTB19/TPM2_CH1}
   - {pin_num: '41', peripheral: TPM2, signal: 'CH, 0', pin_signal: PTB18/TPM2_CH0}
   - {pin_num: '9', peripheral: TPM1, signal: 'CH, 0', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4}
-  - {pin_num: '8', peripheral: ADC0, signal: 'SE, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
-  - {pin_num: '8', peripheral: ADC0, signal: 'DP, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, identifier: ''}
+  - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: ir_sensor}
+  - {pin_num: '21', peripheral: TPM0, signal: 'CH, 1', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, identifier: color_sensor1, direction: INPUT}
+  - {pin_num: '20', peripheral: TPM0, signal: 'CH, 0', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, identifier: color_sensor0, direction: INPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -61,6 +66,8 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortA);
     /* Port B Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortB);
+    /* Port C Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortC);
     /* Port E Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortE);
 
@@ -76,11 +83,17 @@ void BOARD_InitPins(void)
     /* PORTB19 (pin 42) is configured as TPM2_CH1 */
     PORT_SetPinMux(BOARD_INITPINS_LED_GREEN_PORT, BOARD_INITPINS_LED_GREEN_PIN, kPORT_MuxAlt3);
 
-    /* PORTE16 (pin 8) is configured as ADC0_SE1, ADC0_DP1 */
-    PORT_SetPinMux(BOARD_INITPINS_ADC0_SE1_PORT, BOARD_INITPINS_ADC0_SE1_PIN, kPORT_PinDisabledOrAnalog);
+    /* PORTC0 (pin 43) is configured as ADC0_SE14 */
+    PORT_SetPinMux(BOARD_INITPINS_ir_sensor_PORT, BOARD_INITPINS_ir_sensor_PIN, kPORT_PinDisabledOrAnalog);
 
     /* PORTE20 (pin 9) is configured as TPM1_CH0 */
     PORT_SetPinMux(BOARD_INITPINS_ADC0_SE0_PORT, BOARD_INITPINS_ADC0_SE0_PIN, kPORT_MuxAlt3);
+
+    /* PORTE24 (pin 20) is configured as TPM0_CH0 */
+    PORT_SetPinMux(BOARD_INITPINS_color_sensor0_PORT, BOARD_INITPINS_color_sensor0_PIN, kPORT_MuxAlt3);
+
+    /* PORTE25 (pin 21) is configured as TPM0_CH1 */
+    PORT_SetPinMux(BOARD_INITPINS_color_sensor1_PORT, BOARD_INITPINS_color_sensor1_PIN, kPORT_MuxAlt3);
 
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */
