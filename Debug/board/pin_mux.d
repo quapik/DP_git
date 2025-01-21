@@ -10,7 +10,8 @@ board/pin_mux.o board/pin_mux.d: ../board/pin_mux.c \
  D:\Skola\DP\workspace\DP_git\device/MKL27Z644_features.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h \
- D:\Skola\DP\workspace\DP_git\drivers/fsl_port.h ../board/pin_mux.h
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_port.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_gpio.h ../board/pin_mux.h
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\device/fsl_device_registers.h:
 D:\Skola\DP\workspace\DP_git\device/MKL27Z644.h:
@@ -23,4 +24,5 @@ D:\Skola\DP\workspace\DP_git\device/MKL27Z644_features.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_port.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_gpio.h:
 ../board/pin_mux.h:

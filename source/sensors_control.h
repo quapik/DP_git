@@ -35,6 +35,19 @@
 
 #define TPM_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
 
+//SRF05 SENZORY
+#define SRF05_TMP TPM0
+#define SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL kTPM_Chnl_5
+
+//#define SRF05_TMP_INTERRUPT_NUMBER      TPM0_IRQn
+//#define SRF05_TMP_INPUT_CAPTURE_HANDLER TPM0_IRQHandler
+
+#define SRF05_TMP_TPM_CHANNEL_INTERRUPT_ENABLE kTPM_Chnl5InterruptEnable
+#define SRF05_TMP_TPM_CHANNEL_FLAG             kTPM_Chnl5Flag
+
+extern volatile bool pulse_measured;
+extern volatile uint32_t pulse_width_us;
+
 
 //ADC senzor na pinu PTE16
 #define DEMO_ADC16_BASE          ADC0

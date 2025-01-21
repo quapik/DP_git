@@ -9,18 +9,12 @@
 #include "delay.h"
 #include "drive_control.h"
 #include "sensors_control.h"
-/*******************************************************************************
- * Definitions
- ******************************************************************************/
-/*******************************************************************************
- * Variables
- ******************************************************************************/
+#include "pixySPI.h"
 
 
-/*******************************************************************************
- * Code
- ******************************************************************************/
 uint16_t dc = 0;
+
+
 int main(void)
 {
 
@@ -31,7 +25,7 @@ int main(void)
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
 
-    color_sensors_init();
+    //color_sensors_init();
 
 
 
@@ -39,24 +33,57 @@ int main(void)
 
 
     PRINTF("APP START\r\n");
-
-
     SysTick_Init();
+    //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
+    SysTick_DelayTicks(100U);
     motors_init();
-    irsensor_init();
+    //irsensor_init();
 
-    dutyCycle = MOTOR_MAX;
+    /*
+    PixyInit();
+    PixySetLamp(1,1);
+    SysTick_DelayTicks(1000U*1000);
+    PixySetServos(0,400);
+    SysTick_DelayTicks(1000U*1000);
+    PixySetServos(0,160);
+    SysTick_DelayTicks(1000U*1000);
+    PixySetLamp(0,0);
+    */
+    dutyCycle = MOTOR_MIN;
 
     uint16_t adc_value;
     float cm_value;
 
-
+    bool sendpulse = true;
+    int test = 0;
 
 
 	while (1){
 
 
-		check_colors_sensors_interrupts();
+		/*
+		if(sendpulse) {
+			sendpulse = false;
+			//PRINTF("ON\n");
+				GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 1);
+				SysTick_DelayTicks(10U);
+				//PRINTF("OF\n");
+				GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
+		}*/
+
+
+		/*
+		 if (pulse_measured)
+		        {
+		            // Zpracujte změřený impulz
+		            PRINTF("Pulse width: %u us\r\n", pulse_width_us);
+
+		            // Resetujte příznak
+		            pulse_measured = false;
+		            sendpulse = true;
+		        }
+		*/
+		//check_colors_sensors_interrupts();
 
 		/*
 		//IR SENSOR
@@ -86,7 +113,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-		/*
+
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -94,9 +121,10 @@ int main(void)
     		if (getCharValue == 9) dutyCycle = MOTOR_MAX;
     		if (getCharValue == 1) dutyCycle = dutyCycle - 0.02;
     		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
+    		PRINTF("%d \r\n", (int)(dutyCycle*1000));
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_CenterAlignedPwm, dutyCycle);
     	}
-	*/
+
 
     }
 }

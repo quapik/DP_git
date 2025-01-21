@@ -18,7 +18,15 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h \
  D:\Skola\DP\workspace\DP_git\board/clock_config.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_adc16.h ../source/delay.h \
- ../source/drive_control.h ../source/sensors_control.h
+ ../source/drive_control.h ../source/sensors_control.h \
+ ../source/pixySPI.h D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_cmsis.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_spi.h \
+ D:\Skola\DP\workspace\DP_git\board/RTE_Device.h \
+ D:\Skola\DP\workspace\DP_git\drivers/Driver_SPI.h \
+ D:\Skola\DP\workspace\DP_git\drivers/Driver_Common.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_dma.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_dma.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_dmamux.h
 D:\Skola\DP\workspace\DP_git\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\device/fsl_device_registers.h:
@@ -41,3 +49,12 @@ D:\Skola\DP\workspace\DP_git\drivers/fsl_adc16.h:
 ../source/delay.h:
 ../source/drive_control.h:
 ../source/sensors_control.h:
+../source/pixySPI.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_cmsis.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi.h:
+D:\Skola\DP\workspace\DP_git\board/RTE_Device.h:
+D:\Skola\DP\workspace\DP_git\drivers/Driver_SPI.h:
+D:\Skola\DP\workspace\DP_git\drivers/Driver_Common.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_dma.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_dma.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_dmamux.h:

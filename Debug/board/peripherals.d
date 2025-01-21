@@ -11,7 +11,15 @@ board/peripherals.o board/peripherals.d: ../board/peripherals.c \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h \
  D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h \
- D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_cmsis.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_spi.h \
+ D:\Skola\DP\workspace\DP_git\board/RTE_Device.h \
+ D:\Skola\DP\workspace\DP_git\drivers/Driver_SPI.h \
+ D:\Skola\DP\workspace\DP_git\drivers/Driver_Common.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_dma.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_dma.h \
+ D:\Skola\DP\workspace\DP_git\drivers/fsl_dmamux.h
 ../board/peripherals.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\device/fsl_device_registers.h:
@@ -26,3 +34,11 @@ D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_common.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:
 D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_cmsis.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi.h:
+D:\Skola\DP\workspace\DP_git\board/RTE_Device.h:
+D:\Skola\DP\workspace\DP_git\drivers/Driver_SPI.h:
+D:\Skola\DP\workspace\DP_git\drivers/Driver_Common.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_spi_dma.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_dma.h:
+D:\Skola\DP\workspace\DP_git\drivers/fsl_dmamux.h:

@@ -7,9 +7,14 @@ C_SRCS += \
 ../drivers/fsl_adc16.c \
 ../drivers/fsl_clock.c \
 ../drivers/fsl_common.c \
+../drivers/fsl_dma.c \
+../drivers/fsl_dmamux.c \
 ../drivers/fsl_gpio.c \
 ../drivers/fsl_lpuart.c \
 ../drivers/fsl_smc.c \
+../drivers/fsl_spi.c \
+../drivers/fsl_spi_cmsis.c \
+../drivers/fsl_spi_dma.c \
 ../drivers/fsl_tpm.c \
 ../drivers/fsl_uart.c 
 
@@ -17,9 +22,14 @@ C_DEPS += \
 ./drivers/fsl_adc16.d \
 ./drivers/fsl_clock.d \
 ./drivers/fsl_common.d \
+./drivers/fsl_dma.d \
+./drivers/fsl_dmamux.d \
 ./drivers/fsl_gpio.d \
 ./drivers/fsl_lpuart.d \
 ./drivers/fsl_smc.d \
+./drivers/fsl_spi.d \
+./drivers/fsl_spi_cmsis.d \
+./drivers/fsl_spi_dma.d \
 ./drivers/fsl_tpm.d \
 ./drivers/fsl_uart.d 
 
@@ -27,9 +37,14 @@ OBJS += \
 ./drivers/fsl_adc16.o \
 ./drivers/fsl_clock.o \
 ./drivers/fsl_common.o \
+./drivers/fsl_dma.o \
+./drivers/fsl_dmamux.o \
 ./drivers/fsl_gpio.o \
 ./drivers/fsl_lpuart.o \
 ./drivers/fsl_smc.o \
+./drivers/fsl_spi.o \
+./drivers/fsl_spi_cmsis.o \
+./drivers/fsl_spi_dma.o \
 ./drivers/fsl_tpm.o \
 ./drivers/fsl_uart.o 
 
@@ -46,7 +61,7 @@ drivers/%.o: ../drivers/%.c drivers/subdir.mk
 clean: clean-drivers
 
 clean-drivers:
-	-$(RM) ./drivers/fsl_adc16.d ./drivers/fsl_adc16.o ./drivers/fsl_clock.d ./drivers/fsl_clock.o ./drivers/fsl_common.d ./drivers/fsl_common.o ./drivers/fsl_gpio.d ./drivers/fsl_gpio.o ./drivers/fsl_lpuart.d ./drivers/fsl_lpuart.o ./drivers/fsl_smc.d ./drivers/fsl_smc.o ./drivers/fsl_tpm.d ./drivers/fsl_tpm.o ./drivers/fsl_uart.d ./drivers/fsl_uart.o
+	-$(RM) ./drivers/fsl_adc16.d ./drivers/fsl_adc16.o ./drivers/fsl_clock.d ./drivers/fsl_clock.o ./drivers/fsl_common.d ./drivers/fsl_common.o ./drivers/fsl_dma.d ./drivers/fsl_dma.o ./drivers/fsl_dmamux.d ./drivers/fsl_dmamux.o ./drivers/fsl_gpio.d ./drivers/fsl_gpio.o ./drivers/fsl_lpuart.d ./drivers/fsl_lpuart.o ./drivers/fsl_smc.d ./drivers/fsl_smc.o ./drivers/fsl_spi.d ./drivers/fsl_spi.o ./drivers/fsl_spi_cmsis.d ./drivers/fsl_spi_cmsis.o ./drivers/fsl_spi_dma.d ./drivers/fsl_spi_dma.o ./drivers/fsl_tpm.d ./drivers/fsl_tpm.o ./drivers/fsl_uart.d ./drivers/fsl_uart.o
 
 .PHONY: clean-drivers
 

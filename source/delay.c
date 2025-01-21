@@ -4,7 +4,8 @@ volatile uint32_t g_systickCounter;
 
 void SysTick_Init(void)
 {
-	if (SysTick_Config(SystemCoreClock / 1000U))
+	//if (SysTick_Config(SystemCoreClock / 1000U)) //MS
+	if (SysTick_Config(SystemCoreClock/1000000U)) //uS
 		{
 			while (1)
 			{

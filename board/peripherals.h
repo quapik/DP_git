@@ -12,6 +12,7 @@
 #include "fsl_common.h"
 #include "fsl_clock.h"
 #include "fsl_tpm.h"
+#include "fsl_spi_cmsis.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -37,12 +38,24 @@ extern "C" {
 #define TPM1_IRQN TPM1_IRQn
 /* TPM1 interrupt handler identifier. */
 #define TPM1_IRQHANDLER TPM1_IRQHandler
+/* Definition of peripheral ID */
+#define SPI0_PERIPHERAL Driver_SPI0
+/* Definition of the clock source frequency */
+#define SPI0_CLOCK_SOURCE_FREQ 24000000UL
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const tpm_config_t TPM2_config;
 extern const tpm_config_t TPM1_config;
+
+/***********************************************************************************************************************
+ * Global functions
+ **********************************************************************************************************************/
+/* Signal event function for component SPI0*/
+extern void SPI0_SignalEvent(uint32_t event);
+/* Get clock source frequency function for component SPI0 */
+uint32_t SPI0_GetFreq(void);
 
 /***********************************************************************************************************************
  * Initialization functions

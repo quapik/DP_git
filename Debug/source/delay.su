@@ -1,5 +1,5 @@
 D:\Skola\DP\workspace\DP_git\CMSIS/core_cm0plus.h:850:22:__NVIC_SetPriority	24	static
 D:\Skola\DP\workspace\DP_git\CMSIS/core_cm0plus.h:1056:26:SysTick_Config	16	static
 ../source/delay.c:5:6:SysTick_Init	8	static
-../source/delay.c:14:6:SysTick_Handler	8	static
-../source/delay.c:22:6:SysTick_DelayTicks	16	static
+../source/delay.c:15:6:SysTick_Handler	8	static
+../source/delay.c:23:6:SysTick_DelayTicks	16	static

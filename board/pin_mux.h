@@ -48,32 +48,14 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_DEBUG_UART0_TX_PIN_MASK (1U << 2U)      /*!<@brief PORT pin mask */
                                                                /* @} */
 
-/*! @name PORTB19 (number 42), J2[13]/D11[4]/LED_GREEN
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_LED_GREEN_PORT PORTB                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_LED_GREEN_PIN 19U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_LED_GREEN_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
-                                                           /* @} */
-
 /*! @name PORTB18 (number 41), J2[11]/D11[1]/LED_RED
   @{ */
 
 /* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_LED_RED_PORT PORTB                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_LED_RED_PIN 18U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_LED_RED_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
-                                                         /* @} */
-
-/*! @name PORTE20 (number 9), J4[6]/A2-ADC0_SE0
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_ADC0_SE0_PORT PORTE                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_ADC0_SE0_PIN 20U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_ADC0_SE0_PIN_MASK (1U << 20U)      /*!<@brief PORT pin mask */
-                                                          /* @} */
+#define BOARD_INITPINS_MOTOR_PWM1_PORT PORTB                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_MOTOR_PWM1_PIN 18U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_MOTOR_PWM1_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
+                                                            /* @} */
 
 /*! @name PORTC0 (number 43), J4[4]/A1-ADC0_SE14
   @{ */
@@ -101,6 +83,83 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_color_sensor0_PIN 24U                   /*!<@brief PORT pin number */
 #define BOARD_INITPINS_color_sensor0_PIN_MASK (1U << 24U)      /*!<@brief PORT pin mask */
                                                                /* @} */
+
+/*! @name PORTC9 (number 54), J1[14]/D6-TPM0_CH5/CMP0_IN3
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SRF05_echo_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SRF05_echo_PIN 9U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SRF05_echo_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
+                                                           /* @} */
+
+/*! @name PORTC8 (number 53), J1[16]/D7-TPM0_CH4/CMP0_IN2
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_SRF05_trigger_FGPIO FGPIOC             /*!<@brief FGPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger_GPIO GPIOC               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger_GPIO_PIN_MASK (1U << 8U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SRF05_trigger_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger_PIN 8U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SRF05_trigger_PIN_MASK (1U << 8U)      /*!<@brief PORT pin mask */
+                                                              /* @} */
+
+/*! @name PORTB2 (number 37), J1[15]
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SCL_PORT PORTB               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SCL_PIN 2U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SCL_PIN_MASK (1U << 2U)      /*!<@brief PORT pin mask */
+                                                    /* @} */
+
+/*! @name PORTB3 (number 38), J1[13]
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SDA_PORT PORTB               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SDA_PIN 3U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SDA_PIN_MASK (1U << 3U)      /*!<@brief PORT pin mask */
+                                                    /* @} */
+
+/*! @name PORTC4 (number 49), J2[6]/D10-SPI0_CS0
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SPI0_CS0_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SPI0_CS0_PIN 4U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SPI0_CS0_PIN_MASK (1U << 4U)      /*!<@brief PORT pin mask */
+                                                         /* @} */
+
+/*! @name PORTC5 (number 50), J2[12]/D13-SPI0_SCK
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SPI0_SCK_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SPI0_SCK_PIN 5U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SPI0_SCK_PIN_MASK (1U << 5U)      /*!<@brief PORT pin mask */
+                                                         /* @} */
+
+/*! @name PORTE20 (number 9), J4[6]/A2-ADC0_SE0
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SERVO_PWM_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SERVO_PWM_PIN 20U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SERVO_PWM_PIN_MASK (1U << 20U)      /*!<@brief PORT pin mask */
+                                                           /* @} */
+
+/*! @name PORTB19 (number 42), J2[13]/D11[4]/LED_GREEN
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_MOTOR_PWM2_PORT PORTB                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_MOTOR_PWM2_PIN 19U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_MOTOR_PWM2_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
+                                                            /* @} */
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.

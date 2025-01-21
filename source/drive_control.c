@@ -1,35 +1,8 @@
 #include "drive_control.h"
 
-#define BOARD_TPM_BASEADDR_MOTOR TPM2
-#define BOARD_TPM_BASEADDR_SERVO TPM1
-#define BOARD_TPM_CHANNEL_MOTOR 0U
-#define BOARD_TPM_CHANNEL_SERVO 0U
-
-
-/* Interrupt to enable and flag to read; depends on the TPM channel used */
-#define TPM_CHANNEL_INTERRUPT_ENABLE kTPM_Chnl0InterruptEnable
-#define TPM_CHANNEL_FLAG             kTPM_Chnl0Flag
-
-/* Interrupt number and interrupt handler for the TPM instance used */
-#define TPM_INTERRUPT_NUMBER TPM2_IRQn
-#define TPM_INTERRUPT_HANDLER    TPM2_IRQHandler
-
-
-/* Get source clock for TPM driver */
-#define TPM_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
-
-
-
 volatile uint8_t getCharValue = 0U;
 volatile uint8_t angle = 0U; //Uhel natoceni serva - rozsah 0 - 180 stupnu
 float dutyCycle = 0.0;
-
-
-tpm_config_t tpmInfo;
-tpm_chnl_pwm_signal_param_t tpmParam;
-
-tpm_config_t tpmInfo_servo;
-tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 #ifndef TPM_MOTOR_ON_LEVEL
 #define TPM_MOTOR_ON_LEVEL kTPM_HighTrue
@@ -66,7 +39,7 @@ void motors_init(void)
 
     //Nastaveni PWM pro motory
     TPM_GetDefaultConfig(&tpmInfo);
-    tpmInfo.prescale = kTPM_Prescale_Divide_16;
+    tpmInfo.prescale = kTPM_Prescale_Divide_32;
     TPM_Init(BOARD_TPM_BASEADDR_MOTOR, &tpmInfo);
     TPM_SetupPwm(BOARD_TPM_BASEADDR_MOTOR, &tpmParam, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_MOTOR, kTPM_SystemClock);
@@ -78,6 +51,8 @@ void motors_init(void)
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
+
+
     motor_set_check();
     servo_check();
 
@@ -88,10 +63,10 @@ void motor_set_check(void)
 {
     // INICIALIZACE MOTORU
 
-   	motor_set_speed(MAX_INIT);
-   	SysTick_DelayTicks(2000U);
-   	motor_set_speed(MIN_INIT);
-   	SysTick_DelayTicks(1000U);
+   	motor_set_speed(100);
+   	SysTick_DelayTicks(2000U*1000);
+   	motor_set_speed(0);
+   	SysTick_DelayTicks(1000U*1000);
    	PRINTF("SET MOTOR DONE\r\n");
 
 }
@@ -101,23 +76,23 @@ void motor_set_check(void)
 void servo_check(void)
 {
 	steer_straight();
-	SysTick_DelayTicks(200U);
+	SysTick_DelayTicks(200U*1000);
 	for(uint8_t i = 1; i < 11; i++)
 	{
 		steer_right(i*10);
-		SysTick_DelayTicks(100U);
+		SysTick_DelayTicks(100U*1000);
 	}
-	SysTick_DelayTicks(500U);
+	SysTick_DelayTicks(500U*1000);
 	steer_straight();
-	SysTick_DelayTicks(500U);
+	SysTick_DelayTicks(500U*1000);
 	for(uint8_t i = 1; i < 11; i++)
 	{
 		steer_left(i*10);
-		SysTick_DelayTicks(100U);
+		SysTick_DelayTicks(100U*1000);
 	}
-	SysTick_DelayTicks(500U);
+	SysTick_DelayTicks(500U*1000);
 	steer_straight();
-	SysTick_DelayTicks(200U);
+	SysTick_DelayTicks(200U*1000);
 	PRINTF("SET SERVO DONE\r\n");
 
 }
@@ -154,6 +129,8 @@ void motor_set_speed(int8_t pct)
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
 	if(pct == 0) speed = MOTOR_MIN;
 	if(pct == 100) speed = MOTOR_MAX;
+
+	PRINTF("%i\r\n", (int)speed);
 
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, speed);
 

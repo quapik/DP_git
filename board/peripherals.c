@@ -68,7 +68,8 @@ instance:
 - peripheral: 'NVIC'
 - config_sets:
   - nvic:
-    - interrupt_table: []
+    - interrupt_table:
+      - 0: []
     - interrupts: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
@@ -202,6 +203,55 @@ static void TPM1_init(void) {
 }
 
 /***********************************************************************************************************************
+ * SPI0 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'SPI0'
+- type: 'spi_cmsis'
+- mode: 'interrupt'
+- custom_name_enabled: 'false'
+- type_id: 'spi_cmsis_e8bff168b683c1ed1cf11a11d8939dbf'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'SPI0'
+- config_sets:
+  - general:
+    - main_config:
+      - spi_mode_user: 'ARM_SPI_MODE_INACTIVE'
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'ClocksTool_DefaultInit'
+      - clock_polarity: 'ARM_SPI_CPOL0_CPHA0'
+      - power_state: 'ARM_POWER_FULL'
+      - signalEventFunctionId: 'SPI0_SignalEvent'
+      - enableGetFreqFnCustomName: 'false'
+      - getFreqFunctionCustomID: 'SPI0_GetFreq'
+      - enableInitPinsFnCustomName: 'false'
+      - initPinFunctionCustomID: 'SPI0_InitPins'
+      - enableDeinitPinsFnCustomName: 'false'
+      - deinitPinFunctionCustomID: 'SPI0_DeinitPins'
+    - quick_selection: 'default'
+  - fsl_spi:
+    - interrupt:
+      - IRQn: 'SPI0_IRQn'
+      - enable_priority: 'false'
+      - priority: '0'
+    - quick_selection: 'default_dma'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+/* Get clock source frequency */
+uint32_t SPI0_GetFreq(void){
+  return SPI0_CLOCK_SOURCE_FREQ;
+};
+
+static void SPI0_init(void) {
+  /* Initialize CMSIS SPI */
+  SPI0_PERIPHERAL.Initialize(SPI0_SignalEvent);
+  /* Power control of CMSIS SPI */
+  SPI0_PERIPHERAL.PowerControl(ARM_POWER_FULL);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -209,6 +259,7 @@ void BOARD_InitPeripherals(void)
   /* Initialize components */
   TPM2_init();
   TPM1_init();
+  SPI0_init();
 }
 
 /***********************************************************************************************************************
