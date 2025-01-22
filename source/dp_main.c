@@ -39,7 +39,7 @@ int main(void)
     motors_init();
     //irsensor_init();
 
-    /*
+
     PixyInit();
     PixySetLamp(1,1);
     SysTick_DelayTicks(1000U*1000);
@@ -48,7 +48,7 @@ int main(void)
     PixySetServos(0,160);
     SysTick_DelayTicks(1000U*1000);
     PixySetLamp(0,0);
-    */
+
     dutyCycle = MOTOR_MIN;
 
     uint16_t adc_value;
@@ -122,7 +122,8 @@ int main(void)
     		if (getCharValue == 1) dutyCycle = dutyCycle - 0.02;
     		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
     		PRINTF("%d \r\n", (int)(dutyCycle*1000));
-    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_CenterAlignedPwm, dutyCycle);
+    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_CenterAlignedPwm, dutyCycle);
+    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_CenterAlignedPwm, dutyCycle);
     	}
 
 

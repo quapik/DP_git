@@ -1,9 +1,9 @@
 D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
 D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
-../source/drive_control.c:30:6:motors_init	16	static
-../source/drive_control.c:69:6:motor_set_check	8	static
-../source/drive_control.c:83:6:servo_check	16	static
-../source/drive_control.c:108:6:steer_straight	8	static
-../source/drive_control.c:115:6:steer_left	24	static
-../source/drive_control.c:124:6:steer_right	24	static
-../source/drive_control.c:133:6:motor_set_speed	24	static
+../source/drive_control.c:23:6:motors_init	16	static
+../source/drive_control.c:64:6:motor_set_check	8	static
+../source/drive_control.c:78:6:servo_check	16	static
+../source/drive_control.c:103:6:steer_straight	8	static
+../source/drive_control.c:110:6:steer_left	24	static
+../source/drive_control.c:119:6:steer_right	24	static
+../source/drive_control.c:128:6:motor_set_speed	24	static

@@ -13,8 +13,8 @@ float dutyCycle = 0.0;
 #endif
 
 
-tpm_config_t tpmInfo;
-tpm_chnl_pwm_signal_param_t tpmParam;
+tpm_config_t tpmInfo_motory;
+tpm_chnl_pwm_signal_param_t tpmParam_motory[2];
 
 tpm_config_t tpmInfo_servo;
 tpm_chnl_pwm_signal_param_t tpmParam_servo;
@@ -29,29 +29,31 @@ void motors_init(void)
 	tpmParam_servo.level            = TPM_SERVO_ON_LEVEL;
 	tpmParam_servo.dutyCyclePercent = SERVO_MIDDLE;
 
-	//MOTOR - defaultne se nastavi max (pak se to predela pro jistotu)
-	tpmParam.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR;
-	tpmParam.level            = TPM_MOTOR_ON_LEVEL;
+	//MOTORy - nastavit default cycle?
+
+	tpmParam_motory[0].chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0;
+	tpmParam_motory[0].level            = TPM_MOTOR_ON_LEVEL;
+
+	tpmParam_motory[1].chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1;
+	tpmParam_motory[1].level            = TPM_MOTOR_ON_LEVEL;
 
 
 
     CLOCK_SetTpmClock(1U);
 
     //Nastaveni PWM pro motory
-    TPM_GetDefaultConfig(&tpmInfo);
-    tpmInfo.prescale = kTPM_Prescale_Divide_32;
-    TPM_Init(BOARD_TPM_BASEADDR_MOTOR, &tpmInfo);
-    TPM_SetupPwm(BOARD_TPM_BASEADDR_MOTOR, &tpmParam, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
+    TPM_GetDefaultConfig(&tpmInfo_motory);
+    tpmInfo_motory.prescale = kTPM_Prescale_Divide_32;
+    TPM_Init(BOARD_TPM_BASEADDR_MOTOR, &tpmInfo_motory);
+    TPM_SetupPwm(BOARD_TPM_BASEADDR_MOTOR, tpmParam_motory, 2U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_MOTOR, kTPM_SystemClock);
 
-    //Nastaveni PWM pro srvo
+    //Nastaveni PWM pro servo
     TPM_GetDefaultConfig(&tpmInfo_servo);
     tpmInfo_servo.prescale = kTPM_Prescale_Divide_32;
     TPM_Init(BOARD_TPM_BASEADDR_SERVO, &tpmInfo_servo);
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
-
-
 
     motor_set_check();
     servo_check();
@@ -132,7 +134,8 @@ void motor_set_speed(int8_t pct)
 
 	PRINTF("%i\r\n", (int)speed);
 
-	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR, kTPM_EdgeAlignedPwm, speed);
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_EdgeAlignedPwm, speed);
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_EdgeAlignedPwm, speed);
 
 }
 
