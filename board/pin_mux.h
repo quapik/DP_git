@@ -88,10 +88,10 @@ void BOARD_InitBootPins(void);
   @{ */
 
 /* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_SRF05_echo_PORT PORTC               /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_SRF05_echo_PIN 9U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_SRF05_echo_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
-                                                           /* @} */
+#define BOARD_INITPINS_TPM0_CH5_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_TPM0_CH5_PIN 9U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_TPM0_CH5_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
+                                                         /* @} */
 
 /*! @name PORTC8 (number 53), J1[16]/D7-TPM0_CH4/CMP0_IN2
   @{ */

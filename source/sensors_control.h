@@ -45,7 +45,7 @@
 #define SRF05_TMP_TPM_CHANNEL_INTERRUPT_ENABLE kTPM_Chnl5InterruptEnable
 #define SRF05_TMP_TPM_CHANNEL_FLAG             kTPM_Chnl5Flag
 
-extern volatile bool pulse_measured;
+extern volatile bool SRF_pulse_measured;
 extern volatile uint32_t pulse_width_us;
 
 
@@ -60,6 +60,9 @@ uint16_t  irsensor_mesure(void);
 float irsensor_convert(uint16_t);
 void check_colors_sensors_interrupts(void);
 void color_sensors_init(void);
+
+void GetSRF5_distacne(void);
+void TriggerPulse(void);
 
 
 

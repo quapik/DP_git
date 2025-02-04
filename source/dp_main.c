@@ -17,37 +17,27 @@ uint16_t dc = 0;
 
 int main(void)
 {
-
-
-    /* Board pin, clock, debug console init */
 	BOARD_InitPins();
-    BOARD_InitBootClocks();
+    //BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
-
-    //color_sensors_init();
-
-
-
 
 
 
     PRINTF("APP START\r\n");
     SysTick_Init();
-    //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
-    SysTick_DelayTicks(100U);
-    motors_init();
-    //irsensor_init();
+    color_sensors_init();
+    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
+    //SysTick_DelayTicks(1000*1000U);
 
-
+    /*
     PixyInit();
     PixySetLamp(1,1);
-    SysTick_DelayTicks(1000U*1000);
-    PixySetServos(0,400);
-    SysTick_DelayTicks(1000U*1000);
-    PixySetServos(0,160);
-    SysTick_DelayTicks(1000U*1000);
-    PixySetLamp(0,0);
+    SysTick_DelayTicks(1000U*100);
+    PixySetServos(0, 400);
+    motors_init();
+    */
+    //irsensor_init();
 
     dutyCycle = MOTOR_MIN;
 
@@ -60,29 +50,19 @@ int main(void)
 
 	while (1){
 
-
-		/*
-		if(sendpulse) {
-			sendpulse = false;
-			//PRINTF("ON\n");
-				GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 1);
-				SysTick_DelayTicks(10U);
-				//PRINTF("OF\n");
-				GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
-		}*/
+		//PixyGetVectors();
+		//SysTick_DelayTicks(1000*500);
+		//motor_set_speed(0);
 
 
-		/*
-		 if (pulse_measured)
-		        {
-		            // Zpracujte změřený impulz
-		            PRINTF("Pulse width: %u us\r\n", pulse_width_us);
+		 TriggerPulse();
+		 while (!SRF_pulse_measured);
+		 SRF_pulse_measured = false;
+		 GetSRF5_distacne();
 
-		            // Resetujte příznak
-		            pulse_measured = false;
-		            sendpulse = true;
-		        }
-		*/
+
+		 SDK_DelayAtLeastUs(1000000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
 		//check_colors_sensors_interrupts();
 
 		/*
@@ -113,7 +93,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-
+/*
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -125,7 +105,7 @@ int main(void)
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_CenterAlignedPwm, dutyCycle);
     		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_CenterAlignedPwm, dutyCycle);
     	}
-
+*/
 
     }
 }

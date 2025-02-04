@@ -1,6 +1,7 @@
 #include "sensors_control.h"
 
 unsigned long counter = 0;
+volatile uint32_t overflowCount = 0;
 
 //SENZORY BARVY
 volatile bool tpmIsrFlag0 = false;
@@ -16,7 +17,11 @@ volatile bool rising1_detected = false;
 volatile uint32_t start_time = 0;
 volatile uint32_t end_time = 0;
 volatile uint32_t pulse_width_us = 0;
-volatile bool pulse_measured = false;
+volatile bool SRF_pulse_measured = false;
+volatile bool tpmIsrFlag = false;
+volatile uint32_t risingEdgeTime = 0;
+volatile uint32_t fallingEdgeTime = 0;
+volatile bool firstEdgeCaptured = false;
 
 //IR SENSOR
 const uint32_t g_Adc16_12bitFullRange = 4096U;
@@ -24,24 +29,45 @@ uint16_t ir_sensor_value;
 adc16_config_t adc16ConfigStruct;
 adc16_channel_config_t adc16ChannelConfigStruct;
 
+void TriggerPulse(void)
+{
+	PRINTF("SNED PULSE4 \r\n");
+	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 1);
+    SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+	//SysTick_DelayTicks(10U);
+    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
+}
+
+void GetSRF5_distacne(void)
+{
+	uint32_t pulseWidth = 0;
+    pulseWidth = (fallingEdgeTime >= risingEdgeTime) ?
+                     (fallingEdgeTime - risingEdgeTime + (overflowCount * 0xFFFF)) :
+                     ((0xFFFF - risingEdgeTime) + fallingEdgeTime + (overflowCount * 0xFFFF));
+
+        uint32_t pulseTime_us = pulseWidth * (1e6 / TPM_SOURCE_CLOCK);
+        uint32_t distance = (pulseWidth* 0.02083 * 0.034) /  2;
+        float test_distance = ((pulseWidth* 0.02083) * 0.34) /  200;
+        PRINTF("US %u Distance = %u cm\r\n",pulseTime_us, distance);}
+
 void color_sensors_init(void)
 {
-    CLOCK_SetTpmClock(1U); //Tohle asi nic nedela?
+    CLOCK_SetTpmClock(1U);
     tpm_config_t tpm0Info;
     TPM_GetDefaultConfig(&tpm0Info);
     tpm0Info.prescale = kTPM_Prescale_Divide_1;
     TPM_Init(COLOR_SENSORS_TMP, &tpm0Info);
 
     //Defaulte cekame na prvni rising edge (pak se to preklopi na falling a zase na rising)
-    TPM_SetupInputCapture(COLOR_SENSORS_TMP, COLOR_SENSOR0_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
-    TPM_SetupInputCapture(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
-    TPM_SetupInputCapture(SRF05_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge); // Přepněte zpět na náběžnou hranu
+    //TPM_SetupInputCapture(COLOR_SENSORS_TMP, COLOR_SENSOR0_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
+   // TPM_SetupInputCapture(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
+    TPM_SetupInputCapture(COLOR_SENSORS_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
 
     //nastaveni counter (do kolika pocita, pak pretece, 65555, vice nejde, 16bit)
     COLOR_SENSORS_TMP->MOD = 0xFFFF;
-    TPM_EnableInterrupts(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_CHANNEL_INTERRUPT_ENABLE);
-    TPM_EnableInterrupts(COLOR_SENSORS_TMP, COLOR_SENSOR0_TPM_CHANNEL_INTERRUPT_ENABLE);
-    TPM_EnableInterrupts(COLOR_SENSORS_TMP, SRF05_TMP_TPM_CHANNEL_INTERRUPT_ENABLE);
+    //TPM_EnableInterrupts(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_CHANNEL_INTERRUPT_ENABLE);
+    //TPM_EnableInterrupts(COLOR_SENSORS_TMP, COLOR_SENSOR0_TPM_CHANNEL_INTERRUPT_ENABLE);
+    TPM_EnableInterrupts(COLOR_SENSORS_TMP, SRF05_TMP_TPM_CHANNEL_INTERRUPT_ENABLE | kTPM_TimeOverflowInterruptEnable);
 
 
     EnableIRQ(COLOR_SENSORS_TPM_INTERRUPT_NUMBER);
@@ -53,15 +79,46 @@ void color_sensors_init(void)
 void COLOR_SENSORS_TPM_INPUT_CAPTURE_HANDLER(void)
 {
     uint32_t status = TPM_GetStatusFlags(COLOR_SENSORS_TMP);
+    uint32_t captureVal = COLOR_SENSORS_TMP->CONTROLS[SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL].CnV;
     PRINTF("status %u\r\n",status);
-    PRINTF("status %u\r\n",status & SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL);
-    //PRINTF("status %u\r\n",status & COLOR_SENSOR0_TPM_CHANNEL_FLAG);
-    //PRINTF("status %u\r\n", status & COLOR_SENSOR1_TPM_CHANNEL_FLAG);
+    //if(status != 256)PRINTF("status %u\r\n",status);
+   //PRINTF("status %u\r\n",status & SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL);
+
+    if (status & kTPM_TimeOverflowFlag)
+        {
+            overflowCount++;
+            TPM_ClearStatusFlags(COLOR_SENSORS_TMP, kTPM_TimeOverflowFlag);
+            PRINTF("OVERFLOW\r\n");
+        }
+
+    if (status & SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL)
+       {
+       	PRINTF("JSEM KURVA TADY?\r\n");
+       	if (!firstEdgeCaptured)
+       	        {
+       	        	PRINTF("NASTUPNA\r\n");
+       	            risingEdgeTime = captureVal;
+       	            firstEdgeCaptured = true;
+       	            overflowCount = 0;
+       	            TPM_SetupInputCapture(COLOR_SENSORS_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_FallingEdge);
+       	        }
+       	        else
+       	        {
+       	        	PRINTF("SESTUPNA\r\n");
+       	            fallingEdgeTime = captureVal;
+       	            SRF_pulse_measured = true;
+       	            firstEdgeCaptured = false;
+       	            TPM_SetupInputCapture(COLOR_SENSORS_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge);
+       	        }
+
+       	        TPM_ClearStatusFlags(COLOR_SENSORS_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL);
 
 
-
+       }
+    /*
     if (status & COLOR_SENSOR0_TPM_CHANNEL_FLAG)
     {
+
         if (!rising0_detected)
         {
         	counter++;
@@ -111,37 +168,14 @@ void COLOR_SENSORS_TPM_INPUT_CAPTURE_HANDLER(void)
             // Vyčistit příznak přerušení
             TPM_ClearStatusFlags(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_CHANNEL_FLAG);
         }
-    if (status & SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL)
-    {
-    	 uint32_t captured_value = SRF05_TMP->CONTROLS[0].CnV; // Přečtěte zachycený čas
-    	 PRINTF("PROC NEJSEM TADY \r\n");
-    	        if (!pulse_measured) // Pokud měříme první hranu
-    	        {
+        */
 
-    	            start_time = captured_value; // Uložte čas startu
-    	            TPM_SetupInputCapture(SRF05_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_FallingEdge); // Přepněte na sestupnou hranu
-    	        }
-    	        else
-    	        {
-    	            end_time = captured_value; // Uložte čas konce
-    	            pulse_width_us = (end_time > start_time)
-    	                                 ? (end_time - start_time)
-    	                                 : (SRF05_TMP->MOD - start_time + end_time + 1);
-    	            pulse_measured = true; // Signalizujte dokončení měření
-    	            TPM_SetupInputCapture(SRF05_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL, kTPM_RisingEdge); // Přepněte zpět na náběžnou hranu
-    	        }
-
-    	        // Vyčistěte příznak přerušení
-    	        TPM_ClearStatusFlags(SRF05_TMP, SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL);
-
-
-    }
     __DSB();
 }
 
 void check_colors_sensors_interrupts(void)
 {
-
+	PRINTF("JSEMasda TU\r\n");
 	 if (tpmIsrFlag0)
 	        {
 	            tpmIsrFlag0 = false;
@@ -186,31 +220,7 @@ void check_colors_sensors_interrupts(void)
 
 	            rising1_detected = false;
 	        }
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void irsensor_init(void){
     ADC16_GetDefaultConfig(&adc16ConfigStruct);
@@ -243,13 +253,6 @@ void irsensor_init(void){
 
 uint16_t irsensor_mesure(void)
 {
-	//GETCHAR();
-    /*
-     When in software trigger mode, each conversion would be launched once calling the "ADC16_ChannelConfigure()"
-     function, which works like writing a conversion command and executing it. For another channel's conversion,
-     just to change the "channelNumber" field in channel's configuration structure, and call the
-     "ADC16_ChannelConfigure() again.
-    */
     ADC16_SetChannelConfig(DEMO_ADC16_BASE, DEMO_ADC16_CHANNEL_GROUP, &adc16ChannelConfigStruct);
     while (0U == (kADC16_ChannelConversionDoneFlag &
                   ADC16_GetChannelStatusFlags(DEMO_ADC16_BASE, DEMO_ADC16_CHANNEL_GROUP)))

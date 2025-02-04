@@ -42,12 +42,21 @@ extern "C" {
 #define SPI0_PERIPHERAL Driver_SPI0
 /* Definition of the clock source frequency */
 #define SPI0_CLOCK_SOURCE_FREQ 24000000UL
+/* Definition of peripheral ID */
+#define TPM0_PERIPHERAL TPM0
+/* Definition of the clock source frequency */
+#define TPM0_CLOCK_SOURCE 48000000UL
+/* TPM0 interrupt vector ID (number). */
+#define TPM0_IRQN TPM0_IRQn
+/* TPM0 interrupt handler identifier. */
+#define TPM0_IRQHANDLER TPM0_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const tpm_config_t TPM2_config;
 extern const tpm_config_t TPM1_config;
+extern const tpm_config_t TPM0_config;
 
 /***********************************************************************************************************************
  * Global functions

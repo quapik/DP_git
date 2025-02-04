@@ -252,6 +252,211 @@ static void SPI0_init(void) {
 }
 
 /***********************************************************************************************************************
+ * TPM0 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'TPM0'
+- type: 'tpm'
+- mode: 'EdgeAligned'
+- custom_name_enabled: 'false'
+- type_id: 'tpm_e7472ea12d53461b8d293488f3ed72ec'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'TPM0'
+- config_sets:
+  - tpm_main_config:
+    - tpm_config:
+      - clockSource: 'kTPM_SystemClock'
+      - tpmSrcClkFreq: 'ClocksTool_DefaultInit'
+      - prescale: 'kTPM_Prescale_Divide_1'
+      - timerFrequency: '10000'
+      - useGlobalTimeBase: 'false'
+      - triggerSelect: 'kTPM_Trigger_Select_0'
+      - triggerSource: 'kTPM_TriggerSource_External'
+      - enableDoze: 'false'
+      - enableDebugMode: 'false'
+      - enableReloadOnTrigger: 'false'
+      - enableStopOnOverflow: 'false'
+      - enableStartOnTrigger: 'false'
+      - enablePauseOnTrigger: 'false'
+    - timer_interrupts: ''
+    - enable_irq: 'false'
+    - tpm_interrupt:
+      - IRQn: 'TPM0_IRQn'
+      - enable_interrrupt: 'enabled'
+      - enable_priority: 'false'
+      - priority: '0'
+      - enable_custom_name: 'false'
+    - EnableTimerInInit: 'true'
+    - quick_selection: 'QuickSelectionDefault'
+  - tpm_edge_aligned_mode:
+    - tpm_edge_aligned_channels_config: []
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const tpm_config_t TPM0_config = {
+  .prescale = kTPM_Prescale_Divide_1,
+  .useGlobalTimeBase = false,
+  .triggerSelect = kTPM_Trigger_Select_0,
+  .triggerSource = kTPM_TriggerSource_External,
+  .enableDoze = false,
+  .enableDebugMode = false,
+  .enableReloadOnTrigger = false,
+  .enableStopOnOverflow = false,
+  .enableStartOnTrigger = false,
+  .enablePauseOnTrigger = false
+};
+
+static void TPM0_init(void) {
+  TPM_Init(TPM0_PERIPHERAL, &TPM0_config);
+  TPM_SetTimerPeriod(TPM0_PERIPHERAL, ((TPM0_CLOCK_SOURCE/ (1U << (TPM0_PERIPHERAL->SC & TPM_SC_PS_MASK))) / 10000) + 1);
+  TPM_StartTimer(TPM0_PERIPHERAL, kTPM_SystemClock);
+}
+
+/***********************************************************************************************************************
+ * LPUART0 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'LPUART0'
+- type: 'lpuart'
+- mode: 'polling'
+- custom_name_enabled: 'false'
+- type_id: 'lpuart_54a65a580e3462acdbacefd5299e0cac'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'LPUART0'
+- config_sets:
+  - lpuartConfig_t:
+    - lpuartConfig:
+      - clockSource: 'LpuartClock'
+      - lpuartSrcClkFreq: 'ClocksTool_DefaultInit'
+      - baudRate_Bps: '115200'
+      - parityMode: 'kLPUART_ParityDisabled'
+      - dataBitsCount: 'kLPUART_EightDataBits'
+      - isMsb: 'false'
+      - stopBitCount: 'kLPUART_OneStopBit'
+      - rxIdleType: 'kLPUART_IdleTypeStartBit'
+      - rxIdleConfig: 'kLPUART_IdleCharacter1'
+      - enableTx: 'true'
+      - enableRx: 'true'
+    - quick_selection: 'QuickSelection1'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+static void LPUART0_init(void) {
+  /* Configuration of the component LPUART0 of functional group BOARD_InitPeripherals is not valid. */
+}
+
+/***********************************************************************************************************************
+ * FATFS initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'FATFS'
+- type: 'fatfs'
+- mode: 'general'
+- custom_name_enabled: 'false'
+- type_id: 'fatfs_2f85acf758668258920f70258052a088'
+- functional_group: 'BOARD_InitPeripherals'
+- config_sets:
+  - init_config:
+    - initConfig:
+      - initPartitionsStr: 'false'
+      - multiplePartitions:
+        - 0:
+          - Volume: '0'
+          - Partition: 'autoDetect'
+        - 1:
+          - Volume: '0'
+          - Partition: 'autoDetect'
+      - enablePhysicalLayerInit: 'false'
+      - diskConfig:
+        - initFunctionID: 'FATFS_DiskInit'
+      - initResultObject: 'false'
+      - resultName: 'FATFS_Result'
+      - fatfsObjects:
+        - 0:
+          - objID: 'FATFS_System_0'
+          - diskMount: 'false'
+          - mountPath: '0:'
+          - mountInitOpt: 'false'
+      - filObjects: []
+      - filInfoObjects: []
+      - dirObjects: []
+    - quick_selection: 'default'
+  - ff_config:
+    - revisionID: 'rev14_3'
+    - MSDKadaptation: ''
+    - functionConfig:
+      - FF_FS_READONLY: 'false'
+      - FF_FS_MINIMIZE: 'level1'
+      - FF_USE_FIND: 'disableDirRead'
+      - FF_USE_MKFS: 'true'
+      - FF_USE_FASTSEEK: 'false'
+      - FF_USE_EXPAND: 'false'
+      - FF_USE_CHMOD: 'false'
+      - FF_USE_LABEL: 'false'
+      - FF_USE_FORWARD: 'false'
+      - FF_USE_STRFUNC: 'enableWithoutConversion'
+      - FF_PRINT_LLI: 'false'
+      - FF_PRINT_FLOAT: 'disable'
+    - namespaceConfig:
+      - FF_USE_LFN: 'disableLfn'
+      - FF_MAX_LFN: '255'
+      - FF_LFN_BUF: 'LFNID'
+      - FF_SFN_BUF: 'SFNID'
+      - FF_LFN_UNICODE: 'UTF16'
+      - FF_STRF_ENCODE: 'UTF16LE'
+      - FF_CODE_PAGE: 'cpUS'
+      - FF_FS_RPATH: 'enableRP2'
+    - driveConfig:
+      - FF_VOLUMES: '6'
+      - FF_STR_VOLUME_ID: 'numericId'
+      - volumes:
+        - 0:
+          - volumeStr: 'RAM'
+        - 1:
+          - volumeStr: 'NAND'
+        - 2:
+          - volumeStr: 'CF'
+        - 3:
+          - volumeStr: 'SD'
+        - 4:
+          - volumeStr: 'SD2'
+        - 5:
+          - volumeStr: 'USB'
+      - FF_MULTI_PARTITION: 'false'
+      - FF_MIN_SS: 'value512'
+      - FF_MAX_SS: 'value512'
+      - FF_LBA64: 'false'
+      - FF_MIN_GPT: '0x10000000'
+      - FF_USE_TRIM: 'false'
+    - systemConfig:
+      - FF_FS_TINY: 'false'
+      - FF_FS_EXFAT: 'false'
+      - FF_FS_NORTC: 'false'
+      - FF_NORTC_MON: '1'
+      - FF_NORTC_MDAY: '1'
+      - FF_NORTC_YEAR: '2020'
+      - FF_FS_NOFSINFO: ''
+      - FF_FS_LOCK: '0'
+      - FF_FS_REENTRANT: 'false'
+      - FF_FS_TIMEOUT: '1000'
+      - FF_SYNC_t: 'HANDLE'
+      - includeOS: 'false'
+      - headerFileName: 'somertos.h'
+    - fatfs_codegenerator: []
+    - quick_selection: 'default'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+static void FATFS_init(void) {
+  /* Configuration of the component FATFS of functional group BOARD_InitPeripherals is not valid. */
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -260,6 +465,9 @@ void BOARD_InitPeripherals(void)
   TPM2_init();
   TPM1_init();
   SPI0_init();
+  TPM0_init();
+  LPUART0_init();
+  FATFS_init();
 }
 
 /***********************************************************************************************************************
