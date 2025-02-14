@@ -1,2 +1,2 @@
-D:\Skola\DP\workspace\DP_git\drivers/fsl_gpio.h:162:20:GPIO_PinWrite	32	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h:162:20:GPIO_PinWrite	32	static
 ../source/dp_main.c:18:5:main	16	static

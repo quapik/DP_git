@@ -1,11 +1,9 @@
-D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:574:20:TPM_SetTimerPeriod	16	static
-D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:574:20:TPM_SetTimerPeriod	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
 ../board/peripherals.c:137:13:TPM2_init	8	static
 ../board/peripherals.c:199:13:TPM1_init	8	static
 ../board/peripherals.c:243:10:SPI0_GetFreq	8	static
 ../board/peripherals.c:247:13:SPI0_init	8	static
 ../board/peripherals.c:310:13:TPM0_init	8	static
-../board/peripherals.c:347:13:LPUART0_init	8	static
-../board/peripherals.c:455:13:FATFS_init	8	static
-../board/peripherals.c:462:6:BOARD_InitPeripherals	8	static
-../board/peripherals.c:476:6:BOARD_InitBootPeripherals	8	static
+../board/peripherals.c:319:6:BOARD_InitPeripherals	8	static
+../board/peripherals.c:331:6:BOARD_InitBootPeripherals	8	static

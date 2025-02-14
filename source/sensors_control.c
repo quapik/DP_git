@@ -88,7 +88,7 @@ void COLOR_SENSORS_TPM_INPUT_CAPTURE_HANDLER(void)
         {
             overflowCount++;
             TPM_ClearStatusFlags(COLOR_SENSORS_TMP, kTPM_TimeOverflowFlag);
-            PRINTF("OVERFLOW\r\n");
+            //PRINTF("OVERFLOW\r\n");
         }
 
     if (status & SRF05_TMP_TPM_INPUT_CAPTURE_CHANNEL)

@@ -18,7 +18,7 @@
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Clocks v14.0
+product: Clocks v15.0
 processor: MKL27Z64xxx4
 package_id: MKL27Z64VLH4
 mcu_data: ksdk2_0

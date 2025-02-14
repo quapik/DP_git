@@ -7,7 +7,7 @@
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Pins v16.0
+product: Pins v17.0
 processor: MKL27Z64xxx4
 package_id: MKL27Z64VLH4
 mcu_data: ksdk2_0

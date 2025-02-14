@@ -18,7 +18,7 @@ uint16_t dc = 0;
 int main(void)
 {
 	BOARD_InitPins();
-    //BOARD_InitBootClocks();
+    BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
 
@@ -26,16 +26,17 @@ int main(void)
 
     PRINTF("APP START\r\n");
     SysTick_Init();
-    color_sensors_init();
+    //color_sensors_init();
     GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger_GPIO, BOARD_INITPINS_SRF05_trigger_PIN, 0);
     //SysTick_DelayTicks(1000*1000U);
+    motors_init();
 
     /*
     PixyInit();
     PixySetLamp(1,1);
     SysTick_DelayTicks(1000U*100);
     PixySetServos(0, 400);
-    motors_init();
+
     */
     //irsensor_init();
 
@@ -54,14 +55,15 @@ int main(void)
 		//SysTick_DelayTicks(1000*500);
 		//motor_set_speed(0);
 
-
+		/*
 		 TriggerPulse();
 		 while (!SRF_pulse_measured);
 		 SRF_pulse_measured = false;
 		 GetSRF5_distacne();
+		 */
 
 
-		 SDK_DelayAtLeastUs(1000000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		 //SDK_DelayAtLeastUs(1000000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
 		//check_colors_sensors_interrupts();
 

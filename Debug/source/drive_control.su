@@ -1,5 +1,5 @@
-D:\Skola\DP\workspace\DP_git\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
-D:\Skola\DP\workspace\DP_git\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
 ../source/drive_control.c:23:6:motors_init	16	static
 ../source/drive_control.c:64:6:motor_set_check	8	static
 ../source/drive_control.c:78:6:servo_check	16	static
