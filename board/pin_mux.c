@@ -54,10 +54,7 @@ BOARD_InitPins:
   - {pin_num: '23', peripheral: LPUART0, signal: RX, pin_signal: PTA1/LPUART0_RX/TPM2_CH0}
   - {pin_num: '24', peripheral: LPUART0, signal: TX, pin_signal: PTA2/LPUART0_TX/TPM2_CH1}
   - {pin_num: '41', peripheral: TPM2, signal: 'CH, 0', pin_signal: PTB18/TPM2_CH0, identifier: MOTOR_PWM1, direction: OUTPUT}
-  - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: ir_sensor}
-  - {pin_num: '21', peripheral: TPM0, signal: 'CH, 1', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, identifier: color_sensor1, direction: INPUT}
-  - {pin_num: '20', peripheral: TPM0, signal: 'CH, 0', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, identifier: color_sensor0, direction: INPUT}
-  - {pin_num: '54', peripheral: TPM0, signal: 'CH, 5', pin_signal: CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5, identifier: TPM0_CH5, direction: INPUT}
+  - {pin_num: '54', peripheral: TPM0, signal: 'CH, 5', pin_signal: CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5}
   - {pin_num: '53', peripheral: GPIOC, signal: 'GPIO, 8', pin_signal: CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4, identifier: SRF05_trigger, direction: OUTPUT}
   - {pin_num: '37', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0}
   - {pin_num: '38', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1}
@@ -113,9 +110,6 @@ void BOARD_InitPins(void)
     /* PORTB3 (pin 38) is configured as I2C0_SDA */
     PORT_SetPinMux(BOARD_INITPINS_SDA_PORT, BOARD_INITPINS_SDA_PIN, kPORT_MuxAlt2);
 
-    /* PORTC0 (pin 43) is configured as ADC0_SE14 */
-    PORT_SetPinMux(BOARD_INITPINS_ir_sensor_PORT, BOARD_INITPINS_ir_sensor_PIN, kPORT_PinDisabledOrAnalog);
-
     /* PORTC4 (pin 49) is configured as SPI0_PCS0 */
     PORT_SetPinMux(BOARD_INITPINS_SPI0_CS0_PORT, BOARD_INITPINS_SPI0_CS0_PIN, kPORT_MuxAlt2);
 
@@ -132,16 +126,10 @@ void BOARD_InitPins(void)
     PORT_SetPinMux(BOARD_INITPINS_SRF05_trigger_PORT, BOARD_INITPINS_SRF05_trigger_PIN, kPORT_MuxAsGpio);
 
     /* PORTC9 (pin 54) is configured as TPM0_CH5 */
-    PORT_SetPinMux(BOARD_INITPINS_TPM0_CH5_PORT, BOARD_INITPINS_TPM0_CH5_PIN, kPORT_MuxAlt3);
+    PORT_SetPinMux(PORTC, 9U, kPORT_MuxAlt3);
 
     /* PORTE20 (pin 9) is configured as TPM1_CH0 */
     PORT_SetPinMux(BOARD_INITPINS_SERVO_PWM_PORT, BOARD_INITPINS_SERVO_PWM_PIN, kPORT_MuxAlt3);
-
-    /* PORTE24 (pin 20) is configured as TPM0_CH0 */
-    PORT_SetPinMux(BOARD_INITPINS_color_sensor0_PORT, BOARD_INITPINS_color_sensor0_PIN, kPORT_MuxAlt3);
-
-    /* PORTE25 (pin 21) is configured as TPM0_CH1 */
-    PORT_SetPinMux(BOARD_INITPINS_color_sensor1_PORT, BOARD_INITPINS_color_sensor1_PIN, kPORT_MuxAlt3);
 
     SIM->SOPT4 = ((SIM->SOPT4 &
                    /* Mask bits to zero which are setting */

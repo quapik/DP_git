@@ -252,68 +252,6 @@ static void SPI0_init(void) {
 }
 
 /***********************************************************************************************************************
- * TPM0 initialization code
- **********************************************************************************************************************/
-/* clang-format off */
-/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
-instance:
-- name: 'TPM0'
-- type: 'tpm'
-- mode: 'EdgeAligned'
-- custom_name_enabled: 'false'
-- type_id: 'tpm_e7472ea12d53461b8d293488f3ed72ec'
-- functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'TPM0'
-- config_sets:
-  - tpm_main_config:
-    - tpm_config:
-      - clockSource: 'kTPM_SystemClock'
-      - tpmSrcClkFreq: 'ClocksTool_DefaultInit'
-      - prescale: 'kTPM_Prescale_Divide_1'
-      - timerFrequency: '10000'
-      - useGlobalTimeBase: 'false'
-      - triggerSelect: 'kTPM_Trigger_Select_0'
-      - triggerSource: 'kTPM_TriggerSource_External'
-      - enableDoze: 'false'
-      - enableDebugMode: 'false'
-      - enableReloadOnTrigger: 'false'
-      - enableStopOnOverflow: 'false'
-      - enableStartOnTrigger: 'false'
-      - enablePauseOnTrigger: 'false'
-    - timer_interrupts: ''
-    - enable_irq: 'false'
-    - tpm_interrupt:
-      - IRQn: 'TPM0_IRQn'
-      - enable_interrrupt: 'enabled'
-      - enable_priority: 'false'
-      - priority: '0'
-      - enable_custom_name: 'false'
-    - EnableTimerInInit: 'true'
-    - quick_selection: 'QuickSelectionDefault'
-  - tpm_edge_aligned_mode:
-    - tpm_edge_aligned_channels_config: []
- * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
-/* clang-format on */
-const tpm_config_t TPM0_config = {
-  .prescale = kTPM_Prescale_Divide_1,
-  .useGlobalTimeBase = false,
-  .triggerSelect = kTPM_Trigger_Select_0,
-  .triggerSource = kTPM_TriggerSource_External,
-  .enableDoze = false,
-  .enableDebugMode = false,
-  .enableReloadOnTrigger = false,
-  .enableStopOnOverflow = false,
-  .enableStartOnTrigger = false,
-  .enablePauseOnTrigger = false
-};
-
-static void TPM0_init(void) {
-  TPM_Init(TPM0_PERIPHERAL, &TPM0_config);
-  TPM_SetTimerPeriod(TPM0_PERIPHERAL, ((TPM0_CLOCK_SOURCE/ (1U << (TPM0_PERIPHERAL->SC & TPM_SC_PS_MASK))) / 10000) + 1);
-  TPM_StartTimer(TPM0_PERIPHERAL, kTPM_SystemClock);
-}
-
-/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -322,7 +260,6 @@ void BOARD_InitPeripherals(void)
   TPM2_init();
   TPM1_init();
   SPI0_init();
-  TPM0_init();
 }
 
 /***********************************************************************************************************************

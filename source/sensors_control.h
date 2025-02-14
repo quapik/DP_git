@@ -4,7 +4,7 @@
  *  Created on: 11. 12. 2024
  *      Author: xsimav01
  */
-
+/*
 #ifndef SENSORS_CONTROL_H_
 #define SENSORS_CONTROL_H_
 
@@ -52,8 +52,7 @@ extern volatile uint32_t pulse_width_us;
 //ADC senzor na pinu PTE16
 #define DEMO_ADC16_BASE          ADC0
 #define DEMO_ADC16_CHANNEL_GROUP 0U
-#define DEMO_ADC16_USER_CHANNEL  1U /* PTE16, A0-ADC0_SE1, J4-2 on FRDM-KL27Z. */
-
+#define DEMO_ADC16_USER_CHANNEL  1U
 
 void irsensor_init(void);
 uint16_t  irsensor_mesure(void);
@@ -65,20 +64,5 @@ void GetSRF5_distacne(void);
 void TriggerPulse(void);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif /* SENSORS_CONTROL_H_ */
+#endif
+*/

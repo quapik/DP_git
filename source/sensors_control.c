@@ -1,3 +1,4 @@
+/*
 #include "sensors_control.h"
 
 unsigned long counter = 0;
@@ -115,7 +116,7 @@ void COLOR_SENSORS_TPM_INPUT_CAPTURE_HANDLER(void)
 
 
        }
-    /*
+
     if (status & COLOR_SENSOR0_TPM_CHANNEL_FLAG)
     {
 
@@ -168,7 +169,7 @@ void COLOR_SENSORS_TPM_INPUT_CAPTURE_HANDLER(void)
             // Vyčistit příznak přerušení
             TPM_ClearStatusFlags(COLOR_SENSORS_TMP, COLOR_SENSOR1_TPM_CHANNEL_FLAG);
         }
-        */
+
 
     __DSB();
 }
@@ -228,7 +229,7 @@ void irsensor_init(void){
     adc16ConfigStruct.referenceVoltageSource = kADC16_ReferenceVoltageSourceValt;
 #endif
     ADC16_Init(DEMO_ADC16_BASE, &adc16ConfigStruct);
-    ADC16_EnableHardwareTrigger(DEMO_ADC16_BASE, false); /* Make sure the software trigger is used. */
+    ADC16_EnableHardwareTrigger(DEMO_ADC16_BASE, false);
 #if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
     if (kStatus_Success == ADC16_DoAutoCalibration(DEMO_ADC16_BASE))
     {
@@ -238,7 +239,7 @@ void irsensor_init(void){
     {
         PRINTF("ADC16_DoAutoCalibration() Failed.\r\n");
     }
-#endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
+#endif
 
     PRINTF("ADC Full Range: %d\r\n", g_Adc16_12bitFullRange);
     //PRINTF("Press any key to get user channel's ADC value ...\r\n");
@@ -247,7 +248,7 @@ void irsensor_init(void){
     adc16ChannelConfigStruct.enableInterruptOnConversionCompleted = false;
 #if defined(FSL_FEATURE_ADC16_HAS_DIFF_MODE) && FSL_FEATURE_ADC16_HAS_DIFF_MODE
     adc16ChannelConfigStruct.enableDifferentialConversion = false;
-#endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
+#endif
 }
 
 
@@ -269,3 +270,4 @@ float irsensor_convert(uint16_t ir_orig)
 	ir_new = 6 + ((4095.0 - ir_orig)/4095.0) * 27;
 	return ir_new;
 }
+*/

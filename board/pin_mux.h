@@ -57,42 +57,6 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_MOTOR_PWM1_PIN_MASK (1U << 18U)      /*!<@brief PORT pin mask */
                                                             /* @} */
 
-/*! @name PORTC0 (number 43), J4[4]/A1-ADC0_SE14
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_ir_sensor_PORT PORTC               /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_ir_sensor_PIN 0U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_ir_sensor_PIN_MASK (1U << 0U)      /*!<@brief PORT pin mask */
-                                                          /* @} */
-
-/*! @name PORTE25 (number 21), J1[8]/D3-TPM0_CH1
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_color_sensor1_PORT PORTE                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_color_sensor1_PIN 25U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_color_sensor1_PIN_MASK (1U << 25U)      /*!<@brief PORT pin mask */
-                                                               /* @} */
-
-/*! @name PORTE24 (number 20), J1[12]/D5-TPM0_CH0
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_color_sensor0_PORT PORTE                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_color_sensor0_PIN 24U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_color_sensor0_PIN_MASK (1U << 24U)      /*!<@brief PORT pin mask */
-                                                               /* @} */
-
-/*! @name PORTC9 (number 54), J1[14]/D6-TPM0_CH5/CMP0_IN3
-  @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_TPM0_CH5_PORT PORTC               /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_TPM0_CH5_PIN 9U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_TPM0_CH5_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
-                                                         /* @} */
-
 /*! @name PORTC8 (number 53), J1[16]/D7-TPM0_CH4/CMP0_IN2
   @{ */
 

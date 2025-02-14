@@ -1,2 +1,10 @@
+D:\Skola\DP\workspace_reinstall\DP\CMSIS/core_cm0plus.h:741:22:__NVIC_EnableIRQ	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h:476:20:CLOCK_SetTpmClock	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:747:28:EnableIRQ	24	static
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h:162:20:GPIO_PinWrite	32	static
-../source/dp_main.c:18:5:main	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:491:24:TPM_GetStatusFlags	24	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:526:20:TPM_ClearStatusFlags	16	static
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:608:20:TPM_StartTimer	24	static
+../source/dp_main.c:33:6:TriggerPulse	8	static
+../source/dp_main.c:41:6:TPM0_IRQHandler	16	static
+../source/dp_main.c:80:5:main	48	static
