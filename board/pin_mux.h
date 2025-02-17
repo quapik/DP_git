@@ -61,15 +61,15 @@ void BOARD_InitBootPins(void);
   @{ */
 
 /* Symbols to be used with GPIO driver */
-#define BOARD_INITPINS_SRF05_trigger_FGPIO FGPIOC             /*!<@brief FGPIO peripheral base pointer */
-#define BOARD_INITPINS_SRF05_trigger_GPIO GPIOC               /*!<@brief GPIO peripheral base pointer */
-#define BOARD_INITPINS_SRF05_trigger_GPIO_PIN_MASK (1U << 8U) /*!<@brief GPIO pin mask */
+#define BOARD_INITPINS_SRF05_trigger1_FGPIO FGPIOC             /*!<@brief FGPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger1_GPIO GPIOC               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger1_GPIO_PIN_MASK (1U << 8U) /*!<@brief GPIO pin mask */
 
 /* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_SRF05_trigger_PORT PORTC               /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_SRF05_trigger_PIN 8U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_SRF05_trigger_PIN_MASK (1U << 8U)      /*!<@brief PORT pin mask */
-                                                              /* @} */
+#define BOARD_INITPINS_SRF05_trigger1_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger1_PIN 8U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SRF05_trigger1_PIN_MASK (1U << 8U)      /*!<@brief PORT pin mask */
+                                                               /* @} */
 
 /*! @name PORTB2 (number 37), J1[15]
   @{ */
@@ -124,6 +124,20 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_MOTOR_PWM2_PIN 19U                   /*!<@brief PORT pin number */
 #define BOARD_INITPINS_MOTOR_PWM2_PIN_MASK (1U << 19U)      /*!<@brief PORT pin mask */
                                                             /* @} */
+
+/*! @name PORTA5 (number 27), J2[4]/D9-TPM0_CH2
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_SRF05_trigger2_FGPIO FGPIOA             /*!<@brief FGPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger2_GPIO GPIOA               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger2_GPIO_PIN_MASK (1U << 5U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_SRF05_trigger2_PORT PORTA               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_SRF05_trigger2_PIN 5U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_SRF05_trigger2_PIN_MASK (1U << 5U)      /*!<@brief PORT pin mask */
+                                                               /* @} */
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.

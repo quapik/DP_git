@@ -27,7 +27,8 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
- D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
+ ../source/sonic.h
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
 D:\Skola\DP\workspace_reinstall\DP\device/fsl_device_registers.h:
@@ -59,3 +60,4 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
+../source/sonic.h:
