@@ -16,7 +16,7 @@
 
 
 uint16_t dc = 0;
-
+uint16_t pct = 0;
 
 /*
 void TriggerPulse(void)
@@ -78,7 +78,7 @@ int main(void)
     PRINTF("APP START\r\n");
     SysTick_Init();
     tmp0_init();
-    //motors_init();
+    motors_init();
 
     /*
     PixyInit();
@@ -135,13 +135,12 @@ int main(void)
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
-    		if (getCharValue == 0) dutyCycle = MOTOR_MIN;
-    		if (getCharValue == 9) dutyCycle = MOTOR_MAX;
-    		if (getCharValue == 1) dutyCycle = dutyCycle - 0.02;
-    		if (getCharValue == 2) dutyCycle = dutyCycle + 0.02;
-    		PRINTF("%d \r\n", (int)(dutyCycle*1000));
-    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_CenterAlignedPwm, dutyCycle);
-    		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_CenterAlignedPwm, dutyCycle);
+    		if (getCharValue == 0) pct = 0;
+    		if (getCharValue == 9) pct = 100;
+    		if (getCharValue == 1) pct = pct -1;
+    		if (getCharValue == 2) pct = pct +1;
+    		PRINTF("%d \r\n", (int)(pct));
+    		motor_set_speed(pct);
     	}
 */
 

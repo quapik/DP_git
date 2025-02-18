@@ -55,7 +55,7 @@ void motors_init(void)
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
-    //motor_set_check();
+    motor_set_check();
     servo_check();
 
 }
@@ -132,7 +132,7 @@ void motor_set_speed(int8_t pct)
 	if(pct == 0) speed = MOTOR_MIN;
 	if(pct == 100) speed = MOTOR_MAX;
 
-	PRINTF("%i\r\n", (int)speed);
+	//PRINTF("%i\r\n", (int)speed);
 
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_EdgeAlignedPwm, speed);
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_EdgeAlignedPwm, speed);

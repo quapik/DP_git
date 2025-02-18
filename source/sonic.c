@@ -31,10 +31,10 @@ uint32_t distance2;
 uint32_t distance1_sum;
 uint32_t distance2_sum;
 
-#define POCET_MERENI 5
+#define POCET_MERENI 10
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
-bool prumerovani = false;
+bool prumerovani = true;
 
 tpm_config_t tmp0info;
 
