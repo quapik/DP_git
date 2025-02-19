@@ -26,16 +26,20 @@
             <processor_version>13.0.1</processor_version>
             <pin_labels>
                <pin_label pin_num="21" pin_signal="PTE25/TPM0_CH1/I2C0_SDA" label="J1[8]/D3-TPM0_CH1" identifier="TPM0_CH1;color_sensor0;color_sensor1"/>
+               <pin_label pin_num="28" pin_signal="PTA12/TPM1_CH0" label="J1[6]/D2-TPM1_CH0" identifier="TPM1_CH0;SERVO_PWM"/>
                <pin_label pin_num="20" pin_signal="PTE24/TPM0_CH0/I2C0_SCL" label="J1[12]/D5-TPM0_CH0" identifier="TPM0_CH0;color_sensor1;color_sensor0"/>
                <pin_label pin_num="54" pin_signal="CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5" label="J1[14]/D6-TPM0_CH5/CMP0_IN3" identifier="TPM0_CH5;SRF05_echo"/>
                <pin_label pin_num="53" pin_signal="CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4" label="J1[16]/D7-TPM0_CH4/CMP0_IN2" identifier="CMP0_IN2;SRF05_trigger;SRF05_trigger1"/>
                <pin_label pin_num="27" pin_signal="PTA5/USB_CLKIN/TPM0_CH2" label="J2[4]/D9-TPM0_CH2" identifier="TPM0_CH2;SRF05_trigger2"/>
+               <pin_label pin_num="63" pin_signal="ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6" label="J2[18]/J24[1]/D14-I2C1_SDA" identifier="ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX"/>
+               <pin_label pin_num="64" pin_signal="PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7" label="J2[20]/J23[1]/D15-I2C1_SCL" identifier="ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT"/>
                <pin_label pin_num="43" pin_signal="ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT" label="J4[4]/A1-ADC0_SE14" identifier="USB_SOF_OUT;ir_sensor"/>
                <pin_label pin_num="9" pin_signal="ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4" label="J4[6]/A2-ADC0_SE0" identifier="ADC0_SE0;SERVO_PWM"/>
                <pin_label pin_num="41" pin_signal="PTB18/TPM2_CH0" label="J2[11]/D11[1]/LED_RED" identifier="LED_RED;MOTOR_PWM;MOTOR_PWM1"/>
                <pin_label pin_num="42" pin_signal="PTB19/TPM2_CH1" label="J2[13]/D11[4]/LED_GREEN" identifier="LED_GREEN;MOTOR_PWM2"/>
-               <pin_label pin_num="38" pin_signal="ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1" label="J1[13]" identifier="SDA"/>
-               <pin_label pin_num="37" pin_signal="ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0" label="J1[15]" identifier="SCL"/>
+               <pin_label pin_num="46" pin_signal="PTC3/LLWU_P7/SPI1_SCK/LPUART1_RX/TPM0_CH2/CLKOUT" label="J2[15]/U10[11]/J28[1]/INT1_ACCEL" identifier="INT1_ACCEL;BUTTON1"/>
+               <pin_label pin_num="38" pin_signal="ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1" label="J1[13]" identifier="SDA;MOTOR_PWM1"/>
+               <pin_label pin_num="37" pin_signal="ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0" label="J1[15]" identifier="SCL;MOTOR_PWM2"/>
             </pin_labels>
             <external_user_signals>
                <properties/>
@@ -55,17 +59,7 @@
                         <data>true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="Peripheral" resourceId="TPM2" description="Peripheral TPM2 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
-                     <feature name="initialized" evaluation="equal">
-                        <data>true</data>
-                     </feature>
-                  </dependency>
                   <dependency resourceType="Peripheral" resourceId="TPM0" description="Peripheral TPM0 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
-                     <feature name="initialized" evaluation="equal">
-                        <data>true</data>
-                     </feature>
-                  </dependency>
-                  <dependency resourceType="Peripheral" resourceId="I2C0" description="Peripheral I2C0 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -76,6 +70,21 @@
                      </feature>
                   </dependency>
                   <dependency resourceType="Peripheral" resourceId="TPM1" description="Peripheral TPM1 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="TPM2" description="Peripheral TPM2 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPIOA" description="Peripheral GPIOA is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPIOC" description="Peripheral GPIOC is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -99,12 +108,6 @@
                <pins>
                   <pin peripheral="LPUART0" signal="RX" pin_num="23" pin_signal="PTA1/LPUART0_RX/TPM2_CH0"/>
                   <pin peripheral="LPUART0" signal="TX" pin_num="24" pin_signal="PTA2/LPUART0_TX/TPM2_CH1"/>
-                  <pin peripheral="TPM2" signal="CH, 0" pin_num="41" pin_signal="PTB18/TPM2_CH0">
-                     <pin_features>
-                        <pin_feature name="identifier" value="MOTOR_PWM1"/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
                   <pin peripheral="TPM0" signal="CH, 5" pin_num="54" pin_signal="CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5"/>
                   <pin peripheral="GPIOC" signal="GPIO, 8" pin_num="53" pin_signal="CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4">
                      <pin_features>
@@ -112,8 +115,6 @@
                         <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="I2C0" signal="SCL" pin_num="37" pin_signal="ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0"/>
-                  <pin peripheral="I2C0" signal="SDA" pin_num="38" pin_signal="ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1"/>
                   <pin peripheral="SPI0" signal="PCS0" pin_num="49" pin_signal="PTC4/LLWU_P8/SPI0_PCS0/LPUART1_TX/TPM0_CH3/SPI1_PCS0"/>
                   <pin peripheral="SPI0" signal="SCK" pin_num="50" pin_signal="PTC5/LLWU_P9/SPI0_SCK/LPTMR0_ALT2/CMP0_OUT"/>
                   <pin peripheral="SPI0" signal="MOSI" pin_num="51" pin_signal="CMP0_IN0/PTC6/LLWU_P10/SPI0_MOSI/EXTRG_IN/SPI0_MISO">
@@ -126,18 +127,6 @@
                         <pin_feature name="identifier" value=""/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="TPM1" signal="CH, 0" pin_num="9" pin_signal="ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4">
-                     <pin_features>
-                        <pin_feature name="identifier" value="SERVO_PWM"/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="TPM2" signal="CH, 1" pin_num="42" pin_signal="PTB19/TPM2_CH1">
-                     <pin_features>
-                        <pin_feature name="identifier" value="MOTOR_PWM2"/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
                   <pin peripheral="TPM0" signal="CH, 4" pin_num="19" pin_signal="PTE31/TPM0_CH4">
                      <pin_features>
                         <pin_feature name="identifier" value=""/>
@@ -147,6 +136,56 @@
                      <pin_features>
                         <pin_feature name="identifier" value="SRF05_trigger2"/>
                         <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="TPM1" signal="CH, 0" pin_num="28" pin_signal="PTA12/TPM1_CH0">
+                     <pin_features>
+                        <pin_feature name="identifier" value="SERVO_PWM"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="TPM2" signal="CH, 0" pin_num="37" pin_signal="ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0">
+                     <pin_features>
+                        <pin_feature name="identifier" value="MOTOR_PWM2"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="TPM2" signal="CH, 1" pin_num="38" pin_signal="ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1">
+                     <pin_features>
+                        <pin_feature name="identifier" value="MOTOR_PWM1"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIOB" signal="GPIO, 19" pin_num="42" pin_signal="PTB19/TPM2_CH1">
+                     <pin_features>
+                        <pin_feature name="identifier" value="LED_GREEN"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                        <pin_feature name="gpio_init_state" value="true"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIOB" signal="GPIO, 18" pin_num="41" pin_signal="PTB18/TPM2_CH0">
+                     <pin_features>
+                        <pin_feature name="identifier" value="LED_RED"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                        <pin_feature name="gpio_init_state" value="true"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIOA" signal="GPIO, 13" pin_num="29" pin_signal="PTA13/TPM1_CH1">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                        <pin_feature name="gpio_init_state" value="true"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIOA" signal="GPIO, 4" pin_num="26" pin_signal="PTA4/I2C1_SDA/TPM0_CH1/NMI_b">
+                     <pin_features>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="gpio_interrupt" value="kPORT_InterruptFallingEdge"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIOC" signal="GPIO, 1" pin_num="44" pin_signal="ADC0_SE15/PTC1/LLWU_P6/RTC_CLKIN/I2C1_SCL/TPM0_CH0">
+                     <pin_features>
+                        <pin_feature name="direction" value="INPUT"/>
+                        <pin_feature name="gpio_interrupt" value="kPORT_InterruptFallingEdge"/>
                      </pin_features>
                   </pin>
                </pins>

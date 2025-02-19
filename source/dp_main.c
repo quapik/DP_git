@@ -12,6 +12,7 @@
 #include "pixySPI.h"
 
 #include "sonic.h"
+#include "led_button.h"
 
 
 
@@ -76,8 +77,13 @@ int main(void)
 
 
     PRINTF("APP START\r\n");
+
+    button_IRQ_init();
+
     SysTick_Init();
-    tmp0_init();
+
+
+
     motors_init();
 
     /*
@@ -98,6 +104,11 @@ int main(void)
 
     bool sendpulse = true;
     int test = 0;
+    while (GPIO_PinRead(BOARD_INITPINS_SW3_GPIO, BOARD_INITPINS_SW3_PIN)){}
+    tmp0_init();
+    SDK_DelayAtLeastUs(500, 48000000);
+    led_G();
+    motor_set_speed(20);
     TriggerPulse1();
     TriggerPulse2();
 

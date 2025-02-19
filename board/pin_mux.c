@@ -16,16 +16,20 @@ board: FRDM-KL27Z
 external_user_signals: {}
 pin_labels:
 - {pin_num: '21', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, label: 'J1[8]/D3-TPM0_CH1', identifier: TPM0_CH1;color_sensor0;color_sensor1}
+- {pin_num: '28', pin_signal: PTA12/TPM1_CH0, label: 'J1[6]/D2-TPM1_CH0', identifier: TPM1_CH0;SERVO_PWM}
 - {pin_num: '20', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, label: 'J1[12]/D5-TPM0_CH0', identifier: TPM0_CH0;color_sensor1;color_sensor0}
 - {pin_num: '54', pin_signal: CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5, label: 'J1[14]/D6-TPM0_CH5/CMP0_IN3', identifier: TPM0_CH5;SRF05_echo}
 - {pin_num: '53', pin_signal: CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4, label: 'J1[16]/D7-TPM0_CH4/CMP0_IN2', identifier: CMP0_IN2;SRF05_trigger;SRF05_trigger1}
 - {pin_num: '27', pin_signal: PTA5/USB_CLKIN/TPM0_CH2, label: 'J2[4]/D9-TPM0_CH2', identifier: TPM0_CH2;SRF05_trigger2}
+- {pin_num: '63', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, label: 'J2[18]/J24[1]/D14-I2C1_SDA', identifier: ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX}
+- {pin_num: '64', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, label: 'J2[20]/J23[1]/D15-I2C1_SCL', identifier: ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT}
 - {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor}
 - {pin_num: '9', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, label: 'J4[6]/A2-ADC0_SE0', identifier: ADC0_SE0;SERVO_PWM}
 - {pin_num: '41', pin_signal: PTB18/TPM2_CH0, label: 'J2[11]/D11[1]/LED_RED', identifier: LED_RED;MOTOR_PWM;MOTOR_PWM1}
 - {pin_num: '42', pin_signal: PTB19/TPM2_CH1, label: 'J2[13]/D11[4]/LED_GREEN', identifier: LED_GREEN;MOTOR_PWM2}
-- {pin_num: '38', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1, label: 'J1[13]', identifier: SDA}
-- {pin_num: '37', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0, label: 'J1[15]', identifier: SCL}
+- {pin_num: '46', pin_signal: PTC3/LLWU_P7/SPI1_SCK/LPUART1_RX/TPM0_CH2/CLKOUT, label: 'J2[15]/U10[11]/J28[1]/INT1_ACCEL', identifier: INT1_ACCEL;BUTTON1}
+- {pin_num: '38', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1, label: 'J1[13]', identifier: SDA;MOTOR_PWM1}
+- {pin_num: '37', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0, label: 'J1[15]', identifier: SCL;MOTOR_PWM2}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -54,19 +58,22 @@ BOARD_InitPins:
 - pin_list:
   - {pin_num: '23', peripheral: LPUART0, signal: RX, pin_signal: PTA1/LPUART0_RX/TPM2_CH0}
   - {pin_num: '24', peripheral: LPUART0, signal: TX, pin_signal: PTA2/LPUART0_TX/TPM2_CH1}
-  - {pin_num: '41', peripheral: TPM2, signal: 'CH, 0', pin_signal: PTB18/TPM2_CH0, identifier: MOTOR_PWM1, direction: OUTPUT}
   - {pin_num: '54', peripheral: TPM0, signal: 'CH, 5', pin_signal: CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5}
   - {pin_num: '53', peripheral: GPIOC, signal: 'GPIO, 8', pin_signal: CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4, identifier: SRF05_trigger1, direction: OUTPUT}
-  - {pin_num: '37', peripheral: I2C0, signal: SCL, pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0}
-  - {pin_num: '38', peripheral: I2C0, signal: SDA, pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1}
   - {pin_num: '49', peripheral: SPI0, signal: PCS0, pin_signal: PTC4/LLWU_P8/SPI0_PCS0/LPUART1_TX/TPM0_CH3/SPI1_PCS0}
   - {pin_num: '50', peripheral: SPI0, signal: SCK, pin_signal: PTC5/LLWU_P9/SPI0_SCK/LPTMR0_ALT2/CMP0_OUT}
   - {pin_num: '51', peripheral: SPI0, signal: MOSI, pin_signal: CMP0_IN0/PTC6/LLWU_P10/SPI0_MOSI/EXTRG_IN/SPI0_MISO, identifier: ''}
   - {pin_num: '52', peripheral: SPI0, signal: MISO, pin_signal: CMP0_IN1/PTC7/SPI0_MISO/USB_SOF_OUT/SPI0_MOSI, identifier: ''}
-  - {pin_num: '9', peripheral: TPM1, signal: 'CH, 0', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, identifier: SERVO_PWM, direction: OUTPUT}
-  - {pin_num: '42', peripheral: TPM2, signal: 'CH, 1', pin_signal: PTB19/TPM2_CH1, identifier: MOTOR_PWM2, direction: OUTPUT}
   - {pin_num: '19', peripheral: TPM0, signal: 'CH, 4', pin_signal: PTE31/TPM0_CH4, identifier: ''}
   - {pin_num: '27', peripheral: GPIOA, signal: 'GPIO, 5', pin_signal: PTA5/USB_CLKIN/TPM0_CH2, identifier: SRF05_trigger2, direction: OUTPUT}
+  - {pin_num: '28', peripheral: TPM1, signal: 'CH, 0', pin_signal: PTA12/TPM1_CH0, identifier: SERVO_PWM, direction: OUTPUT}
+  - {pin_num: '37', peripheral: TPM2, signal: 'CH, 0', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0, identifier: MOTOR_PWM2, direction: OUTPUT}
+  - {pin_num: '38', peripheral: TPM2, signal: 'CH, 1', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1, identifier: MOTOR_PWM1, direction: OUTPUT}
+  - {pin_num: '42', peripheral: GPIOB, signal: 'GPIO, 19', pin_signal: PTB19/TPM2_CH1, identifier: LED_GREEN, direction: OUTPUT, gpio_init_state: 'true'}
+  - {pin_num: '41', peripheral: GPIOB, signal: 'GPIO, 18', pin_signal: PTB18/TPM2_CH0, identifier: LED_RED, direction: OUTPUT, gpio_init_state: 'true'}
+  - {pin_num: '29', peripheral: GPIOA, signal: 'GPIO, 13', pin_signal: PTA13/TPM1_CH1, direction: OUTPUT, gpio_init_state: 'true'}
+  - {pin_num: '26', peripheral: GPIOA, signal: 'GPIO, 4', pin_signal: PTA4/I2C1_SDA/TPM0_CH1/NMI_b, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge}
+  - {pin_num: '44', peripheral: GPIOC, signal: 'GPIO, 1', pin_signal: ADC0_SE15/PTC1/LLWU_P6/RTC_CLKIN/I2C1_SCL/TPM0_CH0, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -88,12 +95,47 @@ void BOARD_InitPins(void)
     /* Port E Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortE);
 
+    gpio_pin_config_t SW1_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTA4 (pin 26)  */
+    GPIO_PinInit(BOARD_INITPINS_SW1_GPIO, BOARD_INITPINS_SW1_PIN, &SW1_config);
+
     gpio_pin_config_t SRF05_trigger2_config = {
         .pinDirection = kGPIO_DigitalOutput,
         .outputLogic = 0U
     };
     /* Initialize GPIO functionality on pin PTA5 (pin 27)  */
     GPIO_PinInit(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, &SRF05_trigger2_config);
+
+    gpio_pin_config_t LED_BLUE_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 1U
+    };
+    /* Initialize GPIO functionality on pin PTA13 (pin 29)  */
+    GPIO_PinInit(BOARD_INITPINS_LED_BLUE_GPIO, BOARD_INITPINS_LED_BLUE_PIN, &LED_BLUE_config);
+
+    gpio_pin_config_t LED_RED_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 1U
+    };
+    /* Initialize GPIO functionality on pin PTB18 (pin 41)  */
+    GPIO_PinInit(BOARD_INITPINS_LED_RED_GPIO, BOARD_INITPINS_LED_RED_PIN, &LED_RED_config);
+
+    gpio_pin_config_t LED_GREEN_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 1U
+    };
+    /* Initialize GPIO functionality on pin PTB19 (pin 42)  */
+    GPIO_PinInit(BOARD_INITPINS_LED_GREEN_GPIO, BOARD_INITPINS_LED_GREEN_PIN, &LED_GREEN_config);
+
+    gpio_pin_config_t SW3_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTC1 (pin 44)  */
+    GPIO_PinInit(BOARD_INITPINS_SW3_GPIO, BOARD_INITPINS_SW3_PIN, &SW3_config);
 
     gpio_pin_config_t SRF05_trigger1_config = {
         .pinDirection = kGPIO_DigitalOutput,
@@ -105,23 +147,41 @@ void BOARD_InitPins(void)
     /* PORTA1 (pin 23) is configured as LPUART0_RX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_RX_PORT, BOARD_INITPINS_DEBUG_UART0_RX_PIN, kPORT_MuxAlt2);
 
+    /* PORTA12 (pin 28) is configured as TPM1_CH0 */
+    PORT_SetPinMux(BOARD_INITPINS_SERVO_PWM_PORT, BOARD_INITPINS_SERVO_PWM_PIN, kPORT_MuxAlt3);
+
+    /* PORTA13 (pin 29) is configured as PTA13 */
+    PORT_SetPinMux(BOARD_INITPINS_LED_BLUE_PORT, BOARD_INITPINS_LED_BLUE_PIN, kPORT_MuxAsGpio);
+
     /* PORTA2 (pin 24) is configured as LPUART0_TX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_TX_PORT, BOARD_INITPINS_DEBUG_UART0_TX_PIN, kPORT_MuxAlt2);
+
+    /* PORTA4 (pin 26) is configured as PTA4 */
+    PORT_SetPinMux(BOARD_INITPINS_SW1_PORT, BOARD_INITPINS_SW1_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTA4 (pin 26): Interrupt on falling edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_SW1_PORT, BOARD_INITPINS_SW1_PIN, kPORT_InterruptFallingEdge);
 
     /* PORTA5 (pin 27) is configured as PTA5 */
     PORT_SetPinMux(BOARD_INITPINS_SRF05_trigger2_PORT, BOARD_INITPINS_SRF05_trigger2_PIN, kPORT_MuxAsGpio);
 
-    /* PORTB18 (pin 41) is configured as TPM2_CH0 */
-    PORT_SetPinMux(BOARD_INITPINS_MOTOR_PWM1_PORT, BOARD_INITPINS_MOTOR_PWM1_PIN, kPORT_MuxAlt3);
+    /* PORTB18 (pin 41) is configured as PTB18 */
+    PORT_SetPinMux(BOARD_INITPINS_LED_RED_PORT, BOARD_INITPINS_LED_RED_PIN, kPORT_MuxAsGpio);
 
-    /* PORTB19 (pin 42) is configured as TPM2_CH1 */
+    /* PORTB19 (pin 42) is configured as PTB19 */
+    PORT_SetPinMux(BOARD_INITPINS_LED_GREEN_PORT, BOARD_INITPINS_LED_GREEN_PIN, kPORT_MuxAsGpio);
+
+    /* PORTB2 (pin 37) is configured as TPM2_CH0 */
     PORT_SetPinMux(BOARD_INITPINS_MOTOR_PWM2_PORT, BOARD_INITPINS_MOTOR_PWM2_PIN, kPORT_MuxAlt3);
 
-    /* PORTB2 (pin 37) is configured as I2C0_SCL */
-    PORT_SetPinMux(BOARD_INITPINS_SCL_PORT, BOARD_INITPINS_SCL_PIN, kPORT_MuxAlt2);
+    /* PORTB3 (pin 38) is configured as TPM2_CH1 */
+    PORT_SetPinMux(BOARD_INITPINS_MOTOR_PWM1_PORT, BOARD_INITPINS_MOTOR_PWM1_PIN, kPORT_MuxAlt3);
 
-    /* PORTB3 (pin 38) is configured as I2C0_SDA */
-    PORT_SetPinMux(BOARD_INITPINS_SDA_PORT, BOARD_INITPINS_SDA_PIN, kPORT_MuxAlt2);
+    /* PORTC1 (pin 44) is configured as PTC1 */
+    PORT_SetPinMux(BOARD_INITPINS_SW3_PORT, BOARD_INITPINS_SW3_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTC1 (pin 44): Interrupt on falling edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_SW3_PORT, BOARD_INITPINS_SW3_PIN, kPORT_InterruptFallingEdge);
 
     /* PORTC4 (pin 49) is configured as SPI0_PCS0 */
     PORT_SetPinMux(BOARD_INITPINS_SPI0_CS0_PORT, BOARD_INITPINS_SPI0_CS0_PIN, kPORT_MuxAlt2);
@@ -140,9 +200,6 @@ void BOARD_InitPins(void)
 
     /* PORTC9 (pin 54) is configured as TPM0_CH5 */
     PORT_SetPinMux(PORTC, 9U, kPORT_MuxAlt3);
-
-    /* PORTE20 (pin 9) is configured as TPM1_CH0 */
-    PORT_SetPinMux(BOARD_INITPINS_SERVO_PWM_PORT, BOARD_INITPINS_SERVO_PWM_PIN, kPORT_MuxAlt3);
 
     /* PORTE31 (pin 19) is configured as TPM0_CH4 */
     PORT_SetPinMux(PORTE, 31U, kPORT_MuxAlt3);

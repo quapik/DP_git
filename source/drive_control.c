@@ -22,7 +22,7 @@ tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 void motors_init(void)
 {
-	//PRINTF("CLK %d\r\n",TPM_SOURCE_CLOCK);
+
 
 	//SERVO  - defaultne nastaveno na middle hodnotu
 	tpmParam_servo.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO;
@@ -58,18 +58,20 @@ void motors_init(void)
     motor_set_check();
     servo_check();
 
+
 }
 
 
 void motor_set_check(void)
 {
     // INICIALIZACE MOTORU
-
+	led_C();
    	motor_set_speed(100);
    	SysTick_DelayTicks(2000U*1000);
    	motor_set_speed(0);
    	SysTick_DelayTicks(1000U*1000);
    	PRINTF("SET MOTOR DONE\r\n");
+   	led_off();
 
 }
 
@@ -77,6 +79,7 @@ void motor_set_check(void)
 //Óbcas se krajni hodnoty zasekly, proto potreba vyzkouset pred spustenim na drahu
 void servo_check(void)
 {
+	led_M();
 	steer_straight();
 	SysTick_DelayTicks(200U*1000);
 	for(uint8_t i = 1; i < 11; i++)
@@ -96,6 +99,7 @@ void servo_check(void)
 	steer_straight();
 	SysTick_DelayTicks(200U*1000);
 	PRINTF("SET SERVO DONE\r\n");
+	led_off();
 
 }
 

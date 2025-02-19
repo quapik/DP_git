@@ -25,8 +25,8 @@ volatile uint32_t timerVal2;
 volatile uint32_t pulseWidth1 = 0;
 volatile uint32_t pulseWidth2 = 0;
 
-uint32_t distance1;
-uint32_t distance2;
+uint32_t distance1 = 450;
+uint32_t distance2 = 450;
 
 uint32_t distance1_sum;
 uint32_t distance2_sum;
@@ -34,7 +34,7 @@ uint32_t distance2_sum;
 #define POCET_MERENI 10
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
-bool prumerovani = true;
+bool prumerovani = false;
 
 tpm_config_t tmp0info;
 
@@ -147,12 +147,14 @@ void TMP0_INTERRUPT_HANDLER(void)
             		PRINTF("AVG Distance1 = %u cm\r\n",distance1);
             		pocet_mereni1 = 1;
             		distance1_sum = 0;
+            		isObstacle(distance1,distance2);
             	}
             }
 
             else
             {
             	PRINTF("Distance1 = %u cm (%u) \r\n",distance1, distance2);
+            	isObstacle(distance1,distance2);
             }
 
 			SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
@@ -204,12 +206,14 @@ void TMP0_INTERRUPT_HANDLER(void)
                 		PRINTF("AVG Distance2 = %u cm\r\n",distance2);
                 		pocet_mereni2 = 1;
                 		distance2_sum = 0;
+                		isObstacle(distance1,distance2);
                 	}
                 }
 
                 else
                 {
                 	PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
+                	isObstacle(distance1,distance2);
                 }
 
     			SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
@@ -221,4 +225,12 @@ void TMP0_INTERRUPT_HANDLER(void)
     __DSB();
 }
 
+void isObstacle(uint32_t d1, uint32_t d2)
+{
+	if(d1 < 50 | d2 < 50)
+	{
+		led_R();
+		motor_set_speed(0);
+	}
 
+}

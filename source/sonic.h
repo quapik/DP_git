@@ -40,6 +40,7 @@ void TriggerPulse1(void);
 void TriggerPulse2(void);
 void TMP0_INTERRUPT_HANDLER(void);
 uint32_t distanceCountF(uint32_t PW);
+void isObstacle(uint32_t d1, uint32_t d2);
 
 
 #endif /* SONIC_H_ */

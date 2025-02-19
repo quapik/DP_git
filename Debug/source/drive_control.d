@@ -18,7 +18,8 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h \
  D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h \
- ../source/delay.h
+ ../source/delay.h ../source/led_button.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h
 ../source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
@@ -39,3 +40,5 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h:
 D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h:
 ../source/delay.h:
+../source/led_button.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
