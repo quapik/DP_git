@@ -38,8 +38,6 @@ bool prumerovani = false;
 
 tpm_config_t tmp0info;
 
-
-
 //Funkce na inicializace TMP0 - obsluhuje senzory na ruznych channelech
 void tmp0_init(void)
 {
@@ -164,7 +162,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 
             else
             {
-            	PRINTF("Distance1 = %u cm (%u) \r\n",distance1, distance2);
+            	//PRINTF("Distance1 = %u cm (%u) \r\n",distance1, distance2);
             	isObstacle(distance1,distance2);
             }
 
@@ -223,7 +221,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 
                 else
                 {
-                	PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
+                	//PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
                 	isObstacle(distance1,distance2);
                 }
 
@@ -246,7 +244,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		//Vypnuti motoru a nastaveni pro
 		motor_set_speed(0);
 		steer_straight();
-		PRINTF("OBSTACLE DETECTED \r\n");
+		//PRINTF("OBSTACLE DETECTED \r\n");
 		startMotorsButtonPressed = false;
 		isObstacleDetected = true;
 	}

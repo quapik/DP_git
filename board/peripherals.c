@@ -298,7 +298,7 @@ instance:
   - fsl_gpio:
     - enable_irq: 'false'
     - port_interrupt:
-      - IRQn: 'PORTA_IRQn'
+      - IRQn: 'PORTB_PORTC_PORTD_PORTE_IRQn'
       - enable_interrrupt: 'enabled'
       - enable_priority: 'false'
       - priority: '0'

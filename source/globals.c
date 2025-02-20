@@ -12,4 +12,6 @@ int8_t pctServo = 0;
 bool isObstacleDetected = false;
 bool startMotorsButtonPressed = false;
 
+bool ir_trackers[6] = {false,false,false,false,false,false};
+
 

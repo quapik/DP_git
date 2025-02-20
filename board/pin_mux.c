@@ -27,6 +27,12 @@ pin_labels:
 - {pin_num: '9', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, label: 'J4[6]/A2-ADC0_SE0', identifier: ADC0_SE0;SERVO_PWM}
 - {pin_num: '41', pin_signal: PTB18/TPM2_CH0, label: 'J2[11]/D11[1]/LED_RED', identifier: LED_RED;MOTOR_PWM;MOTOR_PWM1}
 - {pin_num: '42', pin_signal: PTB19/TPM2_CH1, label: 'J2[13]/D11[4]/LED_GREEN', identifier: LED_GREEN;MOTOR_PWM2}
+- {pin_num: '57', pin_signal: PTD0/SPI0_PCS0/TPM0_CH0/FXIO0_D0, label: 'J1[1]', identifier: tracker;tracker6}
+- {pin_num: '58', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/TPM0_CH1/FXIO0_D1, label: 'J1[3]', identifier: tracker5}
+- {pin_num: '59', pin_signal: PTD2/SPI0_MOSI/UART2_RX/TPM0_CH2/SPI0_MISO/FXIO0_D2, label: 'J1[5]', identifier: tracker4}
+- {pin_num: '60', pin_signal: PTD3/SPI0_MISO/UART2_TX/TPM0_CH3/SPI0_MOSI/FXIO0_D3, label: 'J1[7]', identifier: tracker3}
+- {pin_num: '61', pin_signal: PTD4/LLWU_P14/SPI1_PCS0/UART2_RX/TPM0_CH4/FXIO0_D4, label: 'J1[9]/SDA_LED', identifier: SDA_LED;tracker2}
+- {pin_num: '62', pin_signal: ADC0_SE6b/PTD5/SPI1_SCK/UART2_TX/TPM0_CH5/FXIO0_D5, label: 'J1[11]/J3[2]/SDA_PTD5', identifier: tracker1}
 - {pin_num: '46', pin_signal: PTC3/LLWU_P7/SPI1_SCK/LPUART1_RX/TPM0_CH2/CLKOUT, label: 'J2[15]/U10[11]/J28[1]/INT1_ACCEL', identifier: INT1_ACCEL;BUTTON1}
 - {pin_num: '38', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1, label: 'J1[13]', identifier: SDA;MOTOR_PWM1}
 - {pin_num: '37', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0, label: 'J1[15]', identifier: SCL;MOTOR_PWM2}
@@ -74,6 +80,13 @@ BOARD_InitPins:
   - {pin_num: '29', peripheral: GPIOA, signal: 'GPIO, 13', pin_signal: PTA13/TPM1_CH1, direction: OUTPUT, gpio_init_state: 'true'}
   - {pin_num: '26', peripheral: GPIOA, signal: 'GPIO, 4', pin_signal: PTA4/I2C1_SDA/TPM0_CH1/NMI_b, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge}
   - {pin_num: '44', peripheral: GPIOC, signal: 'GPIO, 1', pin_signal: ADC0_SE15/PTC1/LLWU_P6/RTC_CLKIN/I2C1_SCL/TPM0_CH0, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge}
+  - {pin_num: '62', peripheral: GPIOD, signal: 'GPIO, 5', pin_signal: ADC0_SE6b/PTD5/SPI1_SCK/UART2_TX/TPM0_CH5/FXIO0_D5, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '61', peripheral: GPIOD, signal: 'GPIO, 4', pin_signal: PTD4/LLWU_P14/SPI1_PCS0/UART2_RX/TPM0_CH4/FXIO0_D4, identifier: tracker2, direction: INPUT,
+    gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '60', peripheral: GPIOD, signal: 'GPIO, 3', pin_signal: PTD3/SPI0_MISO/UART2_TX/TPM0_CH3/SPI0_MOSI/FXIO0_D3, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '59', peripheral: GPIOD, signal: 'GPIO, 2', pin_signal: PTD2/SPI0_MOSI/UART2_RX/TPM0_CH2/SPI0_MISO/FXIO0_D2, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '58', peripheral: GPIOD, signal: 'GPIO, 1', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/TPM0_CH1/FXIO0_D1, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '57', peripheral: GPIOD, signal: 'GPIO, 0', pin_signal: PTD0/SPI0_PCS0/TPM0_CH0/FXIO0_D0, identifier: tracker6, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -92,6 +105,8 @@ void BOARD_InitPins(void)
     CLOCK_EnableClock(kCLOCK_PortB);
     /* Port C Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortC);
+    /* Port D Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortD);
     /* Port E Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortE);
 
@@ -143,6 +158,48 @@ void BOARD_InitPins(void)
     };
     /* Initialize GPIO functionality on pin PTC8 (pin 53)  */
     GPIO_PinInit(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, &SRF05_trigger1_config);
+
+    gpio_pin_config_t tracker6_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD0 (pin 57)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker6_GPIO, BOARD_INITPINS_tracker6_PIN, &tracker6_config);
+
+    gpio_pin_config_t tracker5_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD1 (pin 58)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker5_GPIO, BOARD_INITPINS_tracker5_PIN, &tracker5_config);
+
+    gpio_pin_config_t tracker4_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD2 (pin 59)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker4_GPIO, BOARD_INITPINS_tracker4_PIN, &tracker4_config);
+
+    gpio_pin_config_t tracker3_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD3 (pin 60)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker3_GPIO, BOARD_INITPINS_tracker3_PIN, &tracker3_config);
+
+    gpio_pin_config_t tracker2_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD4 (pin 61)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker2_GPIO, BOARD_INITPINS_tracker2_PIN, &tracker2_config);
+
+    gpio_pin_config_t tracker1_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD5 (pin 62)  */
+    GPIO_PinInit(BOARD_INITPINS_tracker1_GPIO, BOARD_INITPINS_tracker1_PIN, &tracker1_config);
 
     /* PORTA1 (pin 23) is configured as LPUART0_RX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_RX_PORT, BOARD_INITPINS_DEBUG_UART0_RX_PIN, kPORT_MuxAlt2);
@@ -200,6 +257,42 @@ void BOARD_InitPins(void)
 
     /* PORTC9 (pin 54) is configured as TPM0_CH5 */
     PORT_SetPinMux(PORTC, 9U, kPORT_MuxAlt3);
+
+    /* PORTD0 (pin 57) is configured as PTD0 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker6_PORT, BOARD_INITPINS_tracker6_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD0 (pin 57): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker6_PORT, BOARD_INITPINS_tracker6_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD1 (pin 58) is configured as PTD1 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker5_PORT, BOARD_INITPINS_tracker5_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD1 (pin 58): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker5_PORT, BOARD_INITPINS_tracker5_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD2 (pin 59) is configured as PTD2 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker4_PORT, BOARD_INITPINS_tracker4_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD2 (pin 59): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker4_PORT, BOARD_INITPINS_tracker4_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD3 (pin 60) is configured as PTD3 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker3_PORT, BOARD_INITPINS_tracker3_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD3 (pin 60): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker3_PORT, BOARD_INITPINS_tracker3_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD4 (pin 61) is configured as PTD4 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker2_PORT, BOARD_INITPINS_tracker2_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD4 (pin 61): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker2_PORT, BOARD_INITPINS_tracker2_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD5 (pin 62) is configured as PTD5 */
+    PORT_SetPinMux(BOARD_INITPINS_tracker1_PORT, BOARD_INITPINS_tracker1_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD5 (pin 62): Interrupt on either edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker1_PORT, BOARD_INITPINS_tracker1_PIN, kPORT_InterruptEitherEdge);
 
     /* PORTE31 (pin 19) is configured as TPM0_CH4 */
     PORT_SetPinMux(PORTE, 31U, kPORT_MuxAlt3);

@@ -31,6 +31,8 @@ extern int8_t pctServo;
 extern bool isObstacleDetected;
 extern bool startMotorsButtonPressed;
 
+extern bool ir_trackers[6];
+
 
 
 #endif /* GLOBALS_H_ */
