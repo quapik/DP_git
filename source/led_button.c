@@ -27,28 +27,22 @@ void led_M(void){led_set(1,0,1);}
 void led_C(void){led_set(0,1,1);}
 void led_Y(void){led_set(1,1,0);}
 
-void button_IRQ_init()
+
+void SW1_pressed(void)
 {
-	   NVIC_SetPriority(PORTA_IRQn, 2);
-	    NVIC_EnableIRQ(PORTA_IRQn);
-	    /*
-	    NVIC_SetPriority(PORTC_IRQn, 2);
-	    NVIC_EnableIRQ(PORTACIRQn);
-	    */
+	PRINTF("SW1 stisknuto!\r\n");
+	if(startMotorsButtonPressed==false)
+	{
+		startMotorsButtonPressed=true;
+	    led_G();
+	    motor_set_speed(20);
+	}
+
 }
-/*
-void PORTA_IRQHandler(void) {
-    if (PORT_GetPinsInterruptFlags(BOARD_INITPINS_SW1_PORT) & (1 << BOARD_INITPINS_SW1_PIN)) {
-        PRINTF("SW1 stisknuto!\r\n");
-        PORT_ClearPinsInterruptFlags(BOARD_INITPINS_SW1_PORT, (1 << BOARD_INITPINS_SW1_PIN));
-    }
+
+void SW3_pressed(void)
+{
+	PRINTF("S3 stisknuto!\r\n");
+
 }
-*/
-/*
-void PORTC_IRQHandler(void) {
-    if (PORT_GetPinsInterruptFlags(BOARD_INITPINS_SW3_PORT) & (1 << BOARD_INITPINS_SW3_PIN)) {
-        PRINTF("SW1 stisknuto!\r\n");
-        PORT_ClearPinsInterruptFlags(BOARD_INITPINS_SW3_PORT, (1 << BOARD_INITPINS_SW3_PIN));
-    }
-}
-*/
+

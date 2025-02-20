@@ -13,6 +13,8 @@
 #include "fsl_port.h"
 #include "board.h"
 #include "fsl_debug_console.h"
+#include "interrupts.h"
+#include "globals.h"
 void led_on(void);
 void led_off(void);
 void led_set(uint8_t R,uint8_t G,uint8_t B);
@@ -23,7 +25,8 @@ void led_Y(void);
 void led_C(void);
 void led_M(void);
 
-void button_IRQ_init();
+void SW1_pressed(void);
+void SW3_pressed(void);;
 
 
 

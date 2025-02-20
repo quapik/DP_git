@@ -7,6 +7,8 @@ C_SRCS += \
 ../source/delay.c \
 ../source/dp_main.c \
 ../source/drive_control.c \
+../source/globals.c \
+../source/interrupts.c \
 ../source/led_button.c \
 ../source/mtb.c \
 ../source/pixy.c \
@@ -19,6 +21,8 @@ C_DEPS += \
 ./source/delay.d \
 ./source/dp_main.d \
 ./source/drive_control.d \
+./source/globals.d \
+./source/interrupts.d \
 ./source/led_button.d \
 ./source/mtb.d \
 ./source/pixy.d \
@@ -31,6 +35,8 @@ OBJS += \
 ./source/delay.o \
 ./source/dp_main.o \
 ./source/drive_control.o \
+./source/globals.o \
+./source/interrupts.o \
 ./source/led_button.o \
 ./source/mtb.o \
 ./source/pixy.o \
@@ -52,7 +58,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixy.d ./source/pixy.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sensors_control.d ./source/sensors_control.o ./source/sonic.d ./source/sonic.o
+	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/globals.d ./source/globals.o ./source/interrupts.d ./source/interrupts.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixy.d ./source/pixy.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sensors_control.d ./source/sensors_control.o ./source/sonic.d ./source/sonic.o
 
 .PHONY: clean-source
 

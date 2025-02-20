@@ -9,6 +9,8 @@
 #include "clock_config.h"
 #include "delay.h"
 #include "led_button.h"
+#include "interrupts.h"
+
 
 
 #define BOARD_TPM_BASEADDR_MOTOR TPM2

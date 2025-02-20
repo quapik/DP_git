@@ -19,7 +19,19 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_tpm.h \
  D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h \
  ../source/delay.h ../source/led_button.h \
- D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h \
+ ../source/interrupts.h ../source/globals.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h \
+ ../source/sensors_control.h ../source/pixySPI.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h \
+ D:\Skola\DP\workspace_reinstall\DP\board/RTE_Device.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_SPI.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
+ ../source/sonic.h
 ../source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
@@ -42,3 +54,17 @@ D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h:
 ../source/delay.h:
 ../source/led_button.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
+../source/interrupts.h:
+../source/globals.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:
+../source/sensors_control.h:
+../source/pixySPI.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h:
+D:\Skola\DP\workspace_reinstall\DP\board/RTE_Device.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_SPI.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
+../source/sonic.h:

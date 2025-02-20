@@ -13,6 +13,8 @@
 #include "fsl_clock.h"
 #include "fsl_tpm.h"
 #include "fsl_spi_cmsis.h"
+#include "fsl_gpio.h"
+#include "fsl_port.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -42,6 +44,8 @@ extern "C" {
 #define SPI0_PERIPHERAL Driver_SPI0
 /* Definition of the clock source frequency */
 #define SPI0_CLOCK_SOURCE_FREQ 24000000UL
+/* Alias for GPIOA peripheral */
+#define GPIOA_2_GPIO GPIOA
 
 /***********************************************************************************************************************
  * Global variables

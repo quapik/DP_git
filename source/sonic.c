@@ -61,6 +61,9 @@ void tmp0_init(void)
    EnableIRQ(TPM0_INTERRUPT_NUMBER);
 	//NVIC_SetPriority(TPM0_INTERRUPT_NUMBER, 2);
    TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
+   //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
+   TriggerPulse1();
+   TriggerPulse2();
 
 }
 
@@ -84,7 +87,15 @@ void TriggerPulse2(void)
 
 uint32_t distanceCountF(uint32_t PW)
 {
-	return (PW* COUNTER_TO_US * RYCHLOST_ZVUKU) /  2;
+	uint32_t d = (PW* COUNTER_TO_US * RYCHLOST_ZVUKU) /  2;
+	d = checkMaxDistance(d);
+	return d;
+}
+
+uint32_t checkMaxDistance(uint32_t d)
+{
+	if (d > 450) return 450;
+	else return d;
 }
 
 
@@ -227,10 +238,17 @@ void TMP0_INTERRUPT_HANDLER(void)
 
 void isObstacle(uint32_t d1, uint32_t d2)
 {
+
+	//TODO ZPOMALOVANI PODLE VZDALENOSTI
 	if(d1 < 50 | d2 < 50)
 	{
 		led_R();
+		//Vypnuti motoru a nastaveni pro
 		motor_set_speed(0);
+		steer_straight();
+		PRINTF("OBSTACLE DETECTED \r\n");
+		startMotorsButtonPressed = false;
+		isObstacleDetected = true;
 	}
 
 }
