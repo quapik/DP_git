@@ -14,13 +14,13 @@ void updateTrackerValues(uint8_t index)
 	if(ir_trackers[index] == false)
 	{
 		ir_trackers[index] = true;
-		PRINTF("TRACKER %u TRUE \r\n", index);
+		//PRINTF("TRACKER %u TRUE \r\n", index);
 		getTrackersValuesCount();
 	}
 	else
 	{
 		ir_trackers[index] = false;
-		PRINTF("TRACKER %u FALSE \r\n", index);
+		//PRINTF("TRACKER %u FALSE \r\n", index);
 		getTrackersValuesCount();
 	}
 }
@@ -30,9 +30,19 @@ void  getTrackersValuesCount (void)
 	uint8_t cnt = 0;
 	for(uint8_t i = 0; i < 6; i++)
 	{
-		if(ir_trackers[i] == false) cnt++;
+		if(ir_trackers[i] == true) cnt++;
 	}
-	PRINTF("FALSE COUNT %u \r\n", cnt);
+	//PRINTF("TRUE COUNT %u \r\n", cnt);
+
+	if(cnt > 2)
+	{	led_R();
+		motor_set_speed(0);
+		steer_straight();
+		PRINTF("LINE DETECTED \r\n");
+		startMotorsButtonPressed = false;
+		driving = false;
+	}
+
 	//return cnt;
 }
 

@@ -31,12 +31,22 @@ void led_Y(void){led_set(1,1,0);}
 void SW1_pressed(void)
 {
 	PRINTF("SW1 stisknuto!\r\n");
+
 	if(startMotorsButtonPressed==false)
 	{
 		startMotorsButtonPressed=true;
 	    led_G();
 	    motor_set_speed(20);
+	    driving = true;
 	}
+	else if(startMotorsButtonPressed==true)
+		{
+			startMotorsButtonPressed=false;
+		    led_R();
+		    motor_set_speed(0);
+		    driving = false;
+		}
+
 
 }
 

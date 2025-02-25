@@ -20,7 +20,7 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h \
  ../source/delay.h ../source/led_button.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h \
- ../source/interrupts.h ../source/globals.h \
+ ../source/interrupts.h ../source/ir_tracker.h ../source/globals.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h \
  ../source/sensors_control.h ../source/pixySPI.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h \
@@ -55,6 +55,7 @@ D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h:
 ../source/led_button.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
 ../source/interrupts.h:
+../source/ir_tracker.h:
 ../source/globals.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:
 ../source/sensors_control.h:

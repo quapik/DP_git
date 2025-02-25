@@ -14,4 +14,6 @@ bool startMotorsButtonPressed = false;
 
 bool ir_trackers[6] = {false,false,false,false,false,false};
 
+bool driving = false;
+
 

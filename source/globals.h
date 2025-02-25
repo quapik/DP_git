@@ -33,6 +33,8 @@ extern bool startMotorsButtonPressed;
 
 extern bool ir_trackers[6];
 
+extern bool driving;
+
 
 
 #endif /* GLOBALS_H_ */

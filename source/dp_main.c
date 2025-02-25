@@ -23,15 +23,14 @@ int main(void)
     motors_init();
 
     tmp0_init();
-    SDK_DelayAtLeastUs(500, 48000000);
 
 
+/*
     PixyInit();
     PixySetLamp(1,1);
-    SysTick_DelayTicks(1000U*100);
     PixySetServos(0, 400);
     PixySetLamp(0,0);
-
+*/
 
     //irsensor_init();
 
@@ -44,6 +43,9 @@ int main(void)
 
 
 	while (1){
+
+		//PixyGetVectors();
+		//SDK_DelayAtLeastUs(100000, 48000000);
 
 		/*
 		//IR SENSOR

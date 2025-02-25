@@ -24,14 +24,23 @@
 #define COUNTER_MAX 0xFFFF
 
 #define TPM0_BASEADDR TPM0
+
 #define SRF05_1_channel kTPM_Chnl_5
 #define SRF05_2_channel kTPM_Chnl_4
+#define COLOR_1_channel kTPM_Chnl_0
+#define COLOR_2_channel kTPM_Chnl_1
+
 #define TPM0_INTERRUPT_NUMBER      TPM0_IRQn
 #define TMP0_INTERRUPT_HANDLER TPM0_IRQHandler
+
 #define SRF05_1_channel_INTERRUPT_ENABLE kTPM_Chnl5InterruptEnable
 #define SRF05_1_CHANNEL_FLAG             kTPM_Chnl5Flag
 #define SRF05_2_channel_INTERRUPT_ENABLE kTPM_Chnl4InterruptEnable
 #define SRF05_2_CHANNEL_FLAG             kTPM_Chnl4Flag
+#define COLOR_1_channel_INTERRUPT_ENABLE kTPM_Chnl0InterruptEnable
+#define COLOR_1_CHANNEL_FLAG   			kTPM_Chnl0Flag
+#define COLOR_2_channel_INTERRUPT_ENABLE kTPM_Chnl1InterruptEnable
+#define COLOR_2_CHANNEL_FLAG   kTPM_Chnl1Flag
 #define TPM0_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
 
 
@@ -42,6 +51,7 @@ uint32_t checkMaxDistance(uint32_t d);
 void TMP0_INTERRUPT_HANDLER(void);
 uint32_t distanceCountF(uint32_t PW);
 void isObstacle(uint32_t d1, uint32_t d2);
+uint32_t pulseWidthCount(uint32_t rising, uint32_t falling, uint32_t overflow);
 
 
 #endif /* SONIC_H_ */
