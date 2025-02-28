@@ -20,9 +20,15 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h \
  ../source/delay.h ../source/led_button.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h \
- ../source/interrupts.h ../source/ir_tracker.h ../source/globals.h \
+ ../source/interrupts.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/globals.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h \
- ../source/sensors_control.h ../source/pixySPI.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/delay.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/sensors_control.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h \
  D:\Skola\DP\workspace_reinstall\DP\board/RTE_Device.h \
@@ -31,7 +37,9 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
- ../source/sonic.h
+ D:\Skola\DP\workspace_reinstall\DP\source/led_button.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h \
+ ../source/globals.h
 ../source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
@@ -55,11 +63,14 @@ D:\Skola\DP\workspace_reinstall\DP\board/clock_config.h:
 ../source/led_button.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
 ../source/interrupts.h:
-../source/ir_tracker.h:
-../source/globals.h:
+D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h:
+D:\Skola\DP\workspace_reinstall\DP\source/globals.h:
+D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:
-../source/sensors_control.h:
-../source/pixySPI.h:
+D:\Skola\DP\workspace_reinstall\DP\source/delay.h:
+D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h:
+D:\Skola\DP\workspace_reinstall\DP\source/sensors_control.h:
+D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h:
 D:\Skola\DP\workspace_reinstall\DP\board/RTE_Device.h:
@@ -68,4 +79,6 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
-../source/sonic.h:
+D:\Skola\DP\workspace_reinstall\DP\source/led_button.h:
+D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h:
+../source/globals.h:

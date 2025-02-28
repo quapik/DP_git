@@ -5,7 +5,7 @@
  *      Author: xsimav01
  */
 
-#include "sonic.h"
+#include <sonic_color.h>
 volatile uint32_t tmp0_interrupt_status;
 
 volatile bool probehloUspesneMereniSRF05_1 = false;
@@ -54,6 +54,7 @@ uint32_t distance2_sum;
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
 bool prumerovani = true;
+uint32_t counter = 0;
 
 tpm_config_t tmp0info;
 
@@ -65,18 +66,24 @@ void tmp0_init(void)
    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
 
-   //tmp inicializace
+   //TMP INIT
    TPM_GetDefaultConfig(&tmp0info);
+   tmp0info.prescale = kTPM_Prescale_Divide_128;
    TPM_Init(TPM0_BASEADDR, &tmp0info);
+
 
    //defaultni nastaveni na to aby prvne byla zachycavana Rising edge
    TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
    TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
    TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
    TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);
+
+   //Nastaveni do kolika bude pocitanbo, pak preteceni
    TPM0_BASEADDR->MOD = COUNTER_MAX;
 
-   TPM_EnableInterrupts(TPM0_BASEADDR, COLOR_1_channel_INTERRUPT_ENABLE | COLOR_1_channel_INTERRUPT_ENABLE | SRF05_1_channel_INTERRUPT_ENABLE |SRF05_2_channel_INTERRUPT_ENABLE | kTPM_TimeOverflowInterruptEnable);
+   TPM_EnableInterrupts(TPM0_BASEADDR, COLOR_1_channel_INTERRUPT_ENABLE | COLOR_2_channel_INTERRUPT_ENABLE | SRF05_1_channel_INTERRUPT_ENABLE |SRF05_2_channel_INTERRUPT_ENABLE | kTPM_TimeOverflowInterruptEnable);
+   //TPM_EnableInterrupts(TPM0_BASEADDR, SRF05_1_channel_INTERRUPT_ENABLE |SRF05_2_channel_INTERRUPT_ENABLE | kTPM_TimeOverflowInterruptEnable);
+
    EnableIRQ(TPM0_INTERRUPT_NUMBER);
 	//NVIC_SetPriority(TPM0_INTERRUPT_NUMBER, 2);
    TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
@@ -84,9 +91,10 @@ void tmp0_init(void)
    TriggerPulse1();
    TriggerPulse2();
    PRINTF("TMP0 INIT FINISHED\r\n");
-
 }
 
+
+//Funkce, která vyšle na GPIO pinu 10s dlouhý signál, kdy SRF05 senzor vysílá ultrazuvkový signál
 void TriggerPulse1(void)
 {
 	//PRINTF("Byl poslan pulse na SRF05_1 \r\n");
@@ -105,18 +113,72 @@ void TriggerPulse2(void)
     GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
 }
 
+//Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru
+uint32_t checkMaxDistance(uint32_t d)
+{
+	return ((d > 450) ? 450 : d);
+}
+
+//Funkce, co počítá na základě počátečního a koncového času kdy je signál v 1 (rising a falling edge)
+uint32_t pulseWidthLength(uint32_t rising, uint32_t falling, uint32_t overflow)
+{
+	return ((falling >= rising) ?
+            (falling - rising + (overflow * COUNTER_MAX)) :
+            ((COUNTER_MAX - rising) + falling + (overflow * COUNTER_MAX)));
+}
+
+// Funkce, která počítá v závislosti na počtu ticků vzdálenost SRF05 ultrasonic senzoru
+// Delka pulzu je prevedena na casovy udaj v US a proveden výpočet
 uint32_t distanceCountF(uint32_t PW)
 {
-	uint32_t d = (PW* COUNTER_TO_US * RYCHLOST_ZVUKU) /  2;
+	uint32_t d = (pulseWidthToUs(PW) * RYCHLOST_ZVUKU) /  2;
 	d = checkMaxDistance(d);
 	return d;
 }
-
-uint32_t checkMaxDistance(uint32_t d)
+//Převod délky pulsu v ticks na US
+uint32_t pulseWidthToUs(uint32_t PW)
 {
-	if (d > 450) return 450;
-	else return d;
+	//COUNTER_TO_US == 2.67 při prescaler == 128
+	return (PW *  COUNTER_TO_US);
 }
+
+
+
+void checkColorSensorValue(uint32_t PW_US, uint8_t i)
+{
+	//Zaznamenae merici honoty, pirmo na ledky, NIC je pohled do prazdna na zem cca metr
+	//100% S0 S1 H H | NIC - cca 53, BILA 26-23, CERNA PASKA 16, FIXA 18
+	//2%   S0 S1 L H | NIC - cca 2880, BILA 163, CERNA PASKA 980 - 1150, FIXA 980-1110
+	//20%  S0 S1 H L | NIC - cca 280, BILA 13, CERNA PASKA 60-100, FIXA cca 90
+	uint16_t color_treshold_WHITE = 30;
+	uint16_t color_treshold_BLACK = 120;
+	if(i == 0) COLOR1_value_global = PW_US;
+	else COLOR2_value_global = PW_US;
+
+	//PRINTF("US %u \r\n", PW_US);
+	if (PW_US <color_treshold_BLACK)
+	{
+		if(PW_US < color_treshold_WHITE)
+		{
+			//BILA
+			led_on();
+		}
+		else
+		{
+			//CERNA
+			led_B();
+		}
+
+
+	}
+	else
+	{
+		led_off();
+	}
+}
+
+
+
 
 
 void TMP0_INTERRUPT_HANDLER(void)
@@ -158,7 +220,7 @@ void TMP0_INTERRUPT_HANDLER(void)
             TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 
             //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-            pulseWidth1 = pulseWidthCount(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
+            pulseWidth1 = pulseWidthLength(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
 
 
             distance1 = distanceCountF(pulseWidth1);
@@ -189,7 +251,7 @@ void TMP0_INTERRUPT_HANDLER(void)
             }
 
 			//SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-			TriggerPulse2();
+			TriggerPulse1();
         }
         TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_1_CHANNEL_FLAG);
     }
@@ -215,7 +277,7 @@ void TMP0_INTERRUPT_HANDLER(void)
                 TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 
                 //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-                pulseWidth2 = pulseWidthCount(risingEdgeTime2,fallingEdgeTime2,overflowCount2);
+                pulseWidth2 = pulseWidthLength(risingEdgeTime2,fallingEdgeTime2,overflowCount2);
 
 
                 distance2 = distanceCountF(pulseWidth2);
@@ -238,15 +300,13 @@ void TMP0_INTERRUPT_HANDLER(void)
                 		isObstacle(distance1,distance2);
                 	}
                 }
-
                 else
                 {
-                	PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
+                	//PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
                 	isObstacle(distance1,distance2);
                 }
-
     			//SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-    			TriggerPulse1();
+    			TriggerPulse2();
             }
             TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_2_CHANNEL_FLAG);
         }
@@ -271,11 +331,16 @@ void TMP0_INTERRUPT_HANDLER(void)
                probehloUspesneMereniColor_1 = true;
                risigneEdgeCapturedColor1 = false;
                TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
-
+               counter++;
                //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-               pulseWidthColor1 = pulseWidthCount(risingEdgeTimeColor1,risingEdgeTimeColor1,risingEdgeTimeColor1);
 
-   			SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+               pulseWidthColor1 = pulseWidthLength(risingEdgeTimeColor1,fallingEdgeTimeColor1,overflowCountColor1);
+               checkColorSensorValue(pulseWidthToUs(pulseWidthColor1),1);
+               //TPM_DisableInterrupts(TPM0_BASEADDR, COLOR_1_channel_INTERRUPT_ENABLE);
+               //PRINTF("COUNTER %u COLOR1 width %u \r\n", counter, pulseWidthToUs(pulseWidthColor1));
+               //SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+               //TPM_EnableInterrupts(TPM0_BASEADDR, COLOR_1_channel_INTERRUPT_ENABLE);
+               //SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
            }
            TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_1_CHANNEL_FLAG);
        }
@@ -301,22 +366,16 @@ void TMP0_INTERRUPT_HANDLER(void)
                    TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);
 
                    //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-                   pulseWidthColor2 = pulseWidthCount(risingEdgeTimeColor2,risingEdgeTimeColor2,risingEdgeTimeColor2);
-
-       			//SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+                   pulseWidthColor2 = pulseWidthLength(risingEdgeTimeColor2,fallingEdgeTimeColor2,overflowCountColor2);
+                   checkColorSensorValue(pulseWidthToUs(pulseWidthColor2),2);
+                   //PRINTF("COLOR 2 width %u \r\n",pulseWidthToUs(pulseWidthColor2));
+                   //SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
                }
-               TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_2_CHANNEL_FLAG);
+               //TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_2_CHANNEL_FLAG);
            }
 
 
     __DSB();
-}
-
-uint32_t pulseWidthCount(uint32_t rising, uint32_t falling, uint32_t overflow)
-{
-	return ((falling >= rising) ?
-            (falling - rising + (overflow * COUNTER_MAX)) :
-            ((COUNTER_MAX - rising) + falling + (overflow * COUNTER_MAX)));
 }
 
 void isObstacle(uint32_t d1, uint32_t d2)

@@ -5,8 +5,8 @@
  *      Author: xsimav01
  */
 
-#ifndef SONIC_H_
-#define SONIC_H_
+#ifndef SONIC_COLOR_H_
+#define SONIC_COLOR_H_
 
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
@@ -20,7 +20,8 @@
 #include "drive_control.h"
 
 #define RYCHLOST_ZVUKU 0.034
-#define COUNTER_TO_US 0.02083
+//#define COUNTER_TO_US 0.02083 // prescaler1
+#define COUNTER_TO_US 2.67 // prescaler128
 #define COUNTER_MAX 0xFFFF
 
 #define TPM0_BASEADDR TPM0
@@ -51,7 +52,9 @@ uint32_t checkMaxDistance(uint32_t d);
 void TMP0_INTERRUPT_HANDLER(void);
 uint32_t distanceCountF(uint32_t PW);
 void isObstacle(uint32_t d1, uint32_t d2);
-uint32_t pulseWidthCount(uint32_t rising, uint32_t falling, uint32_t overflow);
+uint32_t pulseWidthLength(uint32_t rising, uint32_t falling, uint32_t overflow);
+uint32_t pulseWidthToUs(uint32_t PW);
+void checkColorSensorValue(uint32_t PW_US, uint8_t i);
 
 
-#endif /* SONIC_H_ */
+#endif /* SONIC_COLOR_H_ */

@@ -8,6 +8,7 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+#include <sonic_color.h>
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
 #include "board.h"
@@ -21,7 +22,6 @@
 #include "sensors_control.h"
 #include "pixySPI.h"
 
-#include "sonic.h"
 #include "led_button.h"
 #include "interrupts.h"
 
@@ -35,6 +35,8 @@ extern bool ir_trackers[6];
 
 extern bool driving;
 
+extern uint16_t COLOR1_value_global;
+extern uint16_t COLOR2_value_global;
 
 
 #endif /* GLOBALS_H_ */

@@ -24,6 +24,9 @@ int main(void)
 
     tmp0_init();
 
+    irsensor_init();
+
+
 
 /*
     PixyInit();
@@ -32,17 +35,15 @@ int main(void)
     PixySetLamp(0,0);
 */
 
-    //irsensor_init();
-
-    dutyCycle = MOTOR_MIN   ;
+    //
 
 
-    while (startMotorsButtonPressed==false){}
-
-
-
+    uint16_t test = 0;
 
 	while (1){
+
+		test = irsensor_mesure();
+		test = irsensor_convert(test);
 
 		//PixyGetVectors();
 		//SDK_DelayAtLeastUs(100000, 48000000);

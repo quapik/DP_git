@@ -275,6 +275,33 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_tracker6_PIN_MASK (1U << 0U)      /*!<@brief PORT pin mask */
                                                          /* @} */
 
+/*! @name PORTE24 (number 20), J1[12]/D5-TPM0_CH0
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_TPM0_CH0_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_TPM0_CH0_PIN 24U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_TPM0_CH0_PIN_MASK (1U << 24U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
+
+/*! @name PORTE25 (number 21), J1[8]/D3-TPM0_CH1
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_TPM0_CH1_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_TPM0_CH1_PIN 25U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_TPM0_CH1_PIN_MASK (1U << 25U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
+
+/*! @name PORTE16 (number 8), J4[2]/A0-ADC0_SE1
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_IR_sensor_PORT PORTE                /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_IR_sensor_PIN 16U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_IR_sensor_PIN_MASK (1U << 16U)      /*!<@brief PORT pin mask */
+                                                           /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

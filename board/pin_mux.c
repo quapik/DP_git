@@ -23,6 +23,7 @@ pin_labels:
 - {pin_num: '27', pin_signal: PTA5/USB_CLKIN/TPM0_CH2, label: 'J2[4]/D9-TPM0_CH2', identifier: TPM0_CH2;SRF05_trigger2}
 - {pin_num: '63', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, label: 'J2[18]/J24[1]/D14-I2C1_SDA', identifier: ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX}
 - {pin_num: '64', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, label: 'J2[20]/J23[1]/D15-I2C1_SCL', identifier: ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT}
+- {pin_num: '8', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, label: 'J4[2]/A0-ADC0_SE1', identifier: ADC0_SE1;IR_sensor}
 - {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor}
 - {pin_num: '9', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, label: 'J4[6]/A2-ADC0_SE0', identifier: ADC0_SE0;SERVO_PWM}
 - {pin_num: '41', pin_signal: PTB18/TPM2_CH0, label: 'J2[11]/D11[1]/LED_RED', identifier: LED_RED;MOTOR_PWM;MOTOR_PWM1}
@@ -87,6 +88,9 @@ BOARD_InitPins:
   - {pin_num: '59', peripheral: GPIOD, signal: 'GPIO, 2', pin_signal: PTD2/SPI0_MOSI/UART2_RX/TPM0_CH2/SPI0_MISO/FXIO0_D2, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
   - {pin_num: '58', peripheral: GPIOD, signal: 'GPIO, 1', pin_signal: ADC0_SE5b/PTD1/SPI0_SCK/TPM0_CH1/FXIO0_D1, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
   - {pin_num: '57', peripheral: GPIOD, signal: 'GPIO, 0', pin_signal: PTD0/SPI0_PCS0/TPM0_CH0/FXIO0_D0, identifier: tracker6, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
+  - {pin_num: '20', peripheral: TPM0, signal: 'CH, 0', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, identifier: TPM0_CH0, direction: INPUT}
+  - {pin_num: '21', peripheral: TPM0, signal: 'CH, 1', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, identifier: TPM0_CH1, direction: INPUT}
+  - {pin_num: '8', peripheral: ADC0, signal: 'SE, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, identifier: IR_sensor}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -293,6 +297,15 @@ void BOARD_InitPins(void)
 
     /* Interrupt configuration on PORTD5 (pin 62): Interrupt on either edge */
     PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker1_PORT, BOARD_INITPINS_tracker1_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTE16 (pin 8) is configured as ADC0_SE1 */
+    PORT_SetPinMux(BOARD_INITPINS_IR_sensor_PORT, BOARD_INITPINS_IR_sensor_PIN, kPORT_PinDisabledOrAnalog);
+
+    /* PORTE24 (pin 20) is configured as TPM0_CH0 */
+    PORT_SetPinMux(BOARD_INITPINS_TPM0_CH0_PORT, BOARD_INITPINS_TPM0_CH0_PIN, kPORT_MuxAlt3);
+
+    /* PORTE25 (pin 21) is configured as TPM0_CH1 */
+    PORT_SetPinMux(BOARD_INITPINS_TPM0_CH1_PORT, BOARD_INITPINS_TPM0_CH1_PIN, kPORT_MuxAlt3);
 
     /* PORTE31 (pin 19) is configured as TPM0_CH4 */
     PORT_SetPinMux(PORTE, 31U, kPORT_MuxAlt3);
