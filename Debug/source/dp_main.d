@@ -27,8 +27,7 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h \
  D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h \
  D:\Skola\DP\workspace_reinstall\DP\source/globals.h ../source/delay.h \
- ../source/drive_control.h ../source/sensors_control.h \
- ../source/pixySPI.h \
+ ../source/drive_control.h ../source/pixySPI.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h \
  D:\Skola\DP\workspace_reinstall\DP\board/RTE_Device.h \
@@ -68,7 +67,6 @@ D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h:
 D:\Skola\DP\workspace_reinstall\DP\source/globals.h:
 ../source/delay.h:
 ../source/drive_control.h:
-../source/sensors_control.h:
 ../source/pixySPI.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h:

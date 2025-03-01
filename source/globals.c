@@ -19,11 +19,14 @@ bool startMotorsButtonPressed = false;
 
 //IR TRACKERY
 bool ir_trackers[6] = {false,false,false,false,false,false};
-
+uint16_t IR_sensor_cm = 0;
+uint32_t IR_sensor_raw = 0;
 
 //SENZORY BARVY¨
 uint16_t COLOR1_value_global = 0;
 uint16_t COLOR2_value_global = 0;
+
+
 
 
 

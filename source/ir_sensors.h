@@ -9,7 +9,7 @@
 void updateTrackerValues(uint8_t index);
 void getTrackersValuesCount (void);
 void irsensor_init(void);
-uint16_t irsensor_mesure(void);
-uint16_t irsensor_convert(uint16_t ir_orig);
+void irsensor_convert(uint32_t ir_orig);
+void irsensor_mesure(void);
 
 

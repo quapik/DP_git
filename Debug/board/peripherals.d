@@ -22,7 +22,8 @@ board/peripherals.o board/peripherals.d: ../board/peripherals.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h \
- D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h
 ../board/peripherals.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
 D:\Skola\DP\workspace_reinstall\DP\device/fsl_device_registers.h:
@@ -47,3 +48,4 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_gpio.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:

@@ -19,7 +19,6 @@
 
 #include "delay.h"
 #include "drive_control.h"
-#include "sensors_control.h"
 #include "pixySPI.h"
 
 #include "led_button.h"
@@ -32,6 +31,8 @@ extern bool isObstacleDetected;
 extern bool startMotorsButtonPressed;
 
 extern bool ir_trackers[6];
+extern uint16_t IR_sensor_cm;
+extern uint32_t IR_sensor_raw;
 
 extern bool driving;
 

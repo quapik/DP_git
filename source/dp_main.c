@@ -24,7 +24,8 @@ int main(void)
 
     tmp0_init();
 
-    irsensor_init();
+
+    //irsensor_init();
 
 
 
@@ -38,12 +39,11 @@ int main(void)
     //
 
 
-    uint16_t test = 0;
 
 	while (1){
+		//irsensor_mesure();
 
-		test = irsensor_mesure();
-		test = irsensor_convert(test);
+
 
 		//PixyGetVectors();
 		//SDK_DelayAtLeastUs(100000, 48000000);

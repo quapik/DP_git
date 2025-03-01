@@ -27,7 +27,6 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h \
  D:\Skola\DP\workspace_reinstall\DP\source/delay.h \
  D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h \
- D:\Skola\DP\workspace_reinstall\DP\source/sensors_control.h \
  D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h \
@@ -69,7 +68,6 @@ D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:
 D:\Skola\DP\workspace_reinstall\DP\source/delay.h:
 D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h:
-D:\Skola\DP\workspace_reinstall\DP\source/sensors_control.h:
 D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_cmsis.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi.h:

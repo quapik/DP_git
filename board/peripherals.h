@@ -15,6 +15,7 @@
 #include "fsl_spi_cmsis.h"
 #include "fsl_gpio.h"
 #include "fsl_port.h"
+#include "fsl_adc16.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -46,12 +47,20 @@ extern "C" {
 #define SPI0_CLOCK_SOURCE_FREQ 24000000UL
 /* Alias for GPIOA peripheral */
 #define GPIOA_2_GPIO GPIOA
+/* Alias for ADC0 peripheral */
+#define ADC0_PERIPHERAL ADC0
+/* ADC0 interrupt vector ID (number). */
+#define ADC0_IRQN ADC0_IRQn
+/* ADC0 interrupt handler identifier. */
+#define ADC0_IRQHANDLER ADC0_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const tpm_config_t TPM2_config;
 extern const tpm_config_t TPM1_config;
+extern const adc16_config_t ADC0_config;
+extern const adc16_channel_mux_mode_t ADC0_muxMode;
 
 /***********************************************************************************************************************
  * Global functions
