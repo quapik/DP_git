@@ -1,12 +1,15 @@
 #include "globals.h"
 
 
-
 uint16_t dc = 0;
 uint16_t pct = 0;
 
+
+
+
 int main(void)
 {
+
 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
@@ -18,7 +21,7 @@ int main(void)
 
     SysTick_Init();
 
-
+    PIT_Timers_Init();
 
     motors_init();
 
@@ -38,12 +41,10 @@ int main(void)
 
     //
 
-
-
 	while (1){
+
+		processColorSensorValue();
 		//irsensor_mesure();
-
-
 
 		//PixyGetVectors();
 		//SDK_DelayAtLeastUs(100000, 48000000);

@@ -26,6 +26,11 @@ uint32_t IR_sensor_raw = 0;
 uint16_t COLOR1_value_global = 0;
 uint16_t COLOR2_value_global = 0;
 
+uint16_t SRF_distance1_global = 0;
+uint16_t SRF_distance2_global = 0;
+
+bool probihaZmena = false;
+
 
 
 

@@ -23,8 +23,10 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  ../source/interrupts.h \
  D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h \
  D:\Skola\DP\workspace_reinstall\DP\source/globals.h \
- D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_pit.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h \
+ D:\Skola\DP\workspace_reinstall\DP\component\timer/fsl_adapter_timer.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h \
  D:\Skola\DP\workspace_reinstall\DP\source/delay.h \
  D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h \
  D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h \
@@ -36,8 +38,10 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h \
  D:\Skola\DP\workspace_reinstall\DP\source/led_button.h \
  D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/pit_control.h \
  ../source/globals.h
 ../source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
@@ -64,8 +68,10 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
 ../source/interrupts.h:
 D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h:
 D:\Skola\DP\workspace_reinstall\DP\source/globals.h:
-D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_pit.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_adc16.h:
+D:\Skola\DP\workspace_reinstall\DP\component\timer/fsl_adapter_timer.h:
+D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h:
 D:\Skola\DP\workspace_reinstall\DP\source/delay.h:
 D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\source/pixySPI.h:
@@ -77,6 +83,8 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/Driver_Common.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
+D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h:
 D:\Skola\DP\workspace_reinstall\DP\source/led_button.h:
 D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h:
+D:\Skola\DP\workspace_reinstall\DP\source/pit_control.h:
 ../source/globals.h:

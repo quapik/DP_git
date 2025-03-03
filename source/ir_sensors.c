@@ -78,7 +78,7 @@ void irsensor_init(void)
 
 void irsensor_mesure(void)
 {
-	SDK_DelayAtLeastUs(100000, 48000000);
+	//SDK_DelayAtLeastUs(100000, 48000000);
 	IR_mesure_done = false;
 	ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
 	while (!IR_mesure_done)

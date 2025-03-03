@@ -55,6 +55,12 @@ void isObstacle(uint32_t d1, uint32_t d2);
 uint32_t pulseWidthLength(uint32_t rising, uint32_t falling, uint32_t overflow);
 uint32_t pulseWidthToUs(uint32_t PW);
 void checkColorSensorValue(uint32_t PW_US, uint8_t i);
+void processColorSensorValue();
+void tmp0_reset(void);
+
+extern volatile bool color_event_flag;
+extern volatile uint32_t last_color_pw;
+extern volatile uint8_t last_color_index;
 
 
 #endif /* SONIC_COLOR_H_ */
