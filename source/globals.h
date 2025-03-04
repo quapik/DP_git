@@ -48,5 +48,7 @@ extern uint16_t SRF_distance1_global;
 extern uint16_t SRF_distance2_global;
 
 extern bool probihaZmena;
+extern uint8_t actualTrigger;
+extern bool isTriggerTriggering;
 
 #endif /* GLOBALS_H_ */

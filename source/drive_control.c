@@ -56,7 +56,7 @@ void motors_init(void)
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
     //motor_set_check();
-    servo_check();
+    //servo_check();
 
 
 }

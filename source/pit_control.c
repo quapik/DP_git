@@ -39,8 +39,19 @@ void PIT_Timer_Init(hal_timer_handle_t timerHandler, uint32_t timeout, hal_timer
 
 void PIT_Callback_10us(void *param)
 {
+	PRINTF("CALLBACK, actual %u\r\n",actualTrigger);
     PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag);
     HAL_TimerDisable(param);
+
+    if(actualTrigger == 1)
+    {
+    	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
+    }
+    else
+    {
+        GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
+    }
+    isTriggerTriggering = false;
 }
 
 void PIT_delay_10us(void)

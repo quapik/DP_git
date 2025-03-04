@@ -30,6 +30,8 @@ uint16_t SRF_distance1_global = 0;
 uint16_t SRF_distance2_global = 0;
 
 bool probihaZmena = false;
+uint8_t actualTrigger = 1;
+bool isTriggerTriggering = false;
 
 
 

@@ -114,24 +114,29 @@ void tmp0_init(void)
    TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
    //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
    TriggerPulse1();
-   TriggerPulse2();
+   //TriggerPulse2();
    PRINTF("TMP0 INIT FINISHED\r\n");
 }
 
 
 //Funkce, která vyšle na GPIO pinu 10s dlouhý signál, kdy SRF05 senzor vysílá ultrazuvkový signál
 void TriggerPulse1(void)
-{
+{	isTriggerTriggering = true;
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 1);
-	SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
+	//SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+	//GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
+	actualTrigger = 1;
+	PIT_delay_10us();
 }
 
 void TriggerPulse2(void)
 {
+	isTriggerTriggering = true;
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 1);
-    SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
+    //SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
+	actualTrigger = 2;
+	PIT_delay_10us();
 }
 
 //Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru

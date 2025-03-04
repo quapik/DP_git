@@ -26,6 +26,7 @@ int main(void)
     motors_init();
 
     tmp0_init();
+    TriggerPulse1();
 
 
     //irsensor_init();
