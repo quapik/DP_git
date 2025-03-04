@@ -6,7 +6,6 @@ uint16_t pct = 0;
 
 
 
-
 int main(void)
 {
 
@@ -21,12 +20,10 @@ int main(void)
 
     SysTick_Init();
 
-    PIT_Timers_Init();
-
     motors_init();
-
+    PIT_Timer_Init();
     tmp0_init();
-    TriggerPulse1();
+
 
 
     //irsensor_init();
@@ -40,10 +37,11 @@ int main(void)
     PixySetLamp(0,0);
 */
 
-    //
+
+
+        int counter = 0;
 
 	while (1){
-
 		processColorSensorValue();
 		//irsensor_mesure();
 

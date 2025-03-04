@@ -113,7 +113,7 @@ void  getTrackersValuesCount (void)
 	{
 		if(ir_trackers[i] == true) cnt++;
 	}
-	//PRINTF("TRUE COUNT %u \r\n", cnt);
+	PRINTF("TRUE COUNT %u \r\n", cnt);
 
 	if(cnt > 2)
 	{	led_R();

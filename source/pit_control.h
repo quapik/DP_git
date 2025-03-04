@@ -11,9 +11,8 @@
 
 
 #endif /* PIT_CONTROL_H_ */
-void PIT_Timer_Init(hal_timer_handle_t timerHandler, uint32_t timeout, hal_timer_callback_t callback, pit_chnl_t channel);
-void PIT_Timers_Init();
-void PIT_Callback_10us(void *param);
-void PIT_Callback_100ms(void *param);
-void PIT_delay_10us(void);
-void PIT_delay_100ms(void);
+void PIT_Timer_Init(void);
+void PIT_timer0_start(void);
+void PIT_timer1_start(void);
+
+

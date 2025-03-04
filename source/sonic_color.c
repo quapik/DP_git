@@ -126,7 +126,7 @@ void TriggerPulse1(void)
 	//SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	//GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
 	actualTrigger = 1;
-	PIT_delay_10us();
+	PIT_timer0_start();
 }
 
 void TriggerPulse2(void)
@@ -136,7 +136,7 @@ void TriggerPulse2(void)
     //SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
 	actualTrigger = 2;
-	PIT_delay_10us();
+	PIT_timer0_start();
 }
 
 //Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru
@@ -206,9 +206,11 @@ void processColorSensorValue()
 						{
 							PRINTF("C1 %u A \r\n", COLOR1_value_global);
 							probihaZmena = true;
+
 							steer_left(50);
+							PIT_timer1_start();
 							led_B();
-							PIT_delay_100ms();
+							//PIT_delay_100ms();
 						}
 				}
 			}
@@ -227,8 +229,11 @@ void processColorSensorValue()
 						PRINTF("C2 %u A \r\n", COLOR2_value_global);
 						probihaZmena = true;
 						steer_right(50);
+						PIT_timer1_start();
 						led_B();
-						PIT_delay_100ms();
+
+
+
 
 					}
 
