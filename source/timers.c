@@ -8,27 +8,26 @@
 #define LPTMR_BASE   LPTMR0
 #define LPTMR_IRQn   LPTMR0_IRQn
 #define LPTMR_IRQ_HANDLER LPTMR0_IRQHandler
-#define LPTMR_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_LpoClk)
-#define LPTMR_USEC_COUNT 10U
+#define LPTMR_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgInternalRefClk)
 
 
 volatile bool PIT_timer1_finished = false;
 volatile bool PIT_timer0_finished = false;
-
 volatile bool LPTMR_timer_finished = false;
 
-volatile uint32_t lptmrCounter = 0U;
 
 void LPTMR_Timer_Init(void)
 {
+	/*
 	uint32_t clockFreq = LPTMR_SOURCE_CLOCK;
 	PRINTF("LPTMR Source Clock: %u Hz\r\n", clockFreq);
+	*/
 
 	uint32_t currentCounter = 0U;
 	lptmr_config_t lptmrConfig;
     LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR_BASE, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(LPTMR_USEC_COUNT, LPTMR_SOURCE_CLOCK));
+    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(10U, LPTMR_SOURCE_CLOCK));
     LPTMR_EnableInterrupts(LPTMR_BASE, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR_IRQn);
 
@@ -46,9 +45,9 @@ void LPTMR_timer_start(void)
 void LPTMR_IRQ_HANDLER(void)
 {
     LPTMR_ClearStatusFlags(LPTMR_BASE, kLPTMR_TimerCompareFlag);
-    lptmrCounter++;
+
     LPTMR_timer_finished = true;
-    //PRINTF("LPTMR interrupt No.%d \r\n", lptmrCounter);
+
     		if(isTriggerTriggering)
     		{
     			if(actualTrigger == 1)
@@ -114,6 +113,8 @@ void PIT_timer1_start(void)
 //Funkce na inicializaci timeru
 void PIT_Timer_Init(void)
 {
+	uint32_t clockFreq = PIT_SOURCE_CLOCK;
+		PRINTF("PIT Source Clock: %u Hz\r\n", clockFreq);
 
 	pit_config_t pitConfig;
 	PIT_GetDefaultConfig(&pitConfig);
