@@ -126,7 +126,7 @@ void TriggerPulse1(void)
 	//SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	//GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
 	actualTrigger = 1;
-	PIT_timer0_start();
+	LPTMR_timer_start();
 }
 
 void TriggerPulse2(void)
@@ -136,7 +136,7 @@ void TriggerPulse2(void)
     //SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
 	actualTrigger = 2;
-	PIT_timer0_start();
+	LPTMR_timer_start();
 }
 
 //Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru
@@ -232,12 +232,7 @@ void processColorSensorValue()
 						PIT_timer1_start();
 						led_B();
 
-
-
-
 					}
-
-
 				}
 			}
 		}

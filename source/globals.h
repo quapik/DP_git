@@ -20,14 +20,16 @@
 #include "fsl_adapter_timer.h"
 #include "fsl_port.h"
 #include "fsl_clock.h"
+#include "fsl_lptmr.h"
 
 #include "delay.h"
 #include "drive_control.h"
 #include "pixySPI.h"
 #include <sonic_color.h>
+#include <timers.h>
 #include "led_button.h"
 #include "interrupts.h"
-#include "pit_control.h"
+
 
 extern bool jedouMotory;
 extern uint8_t pctMotory;

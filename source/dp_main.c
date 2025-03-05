@@ -22,6 +22,7 @@ int main(void)
 
     motors_init();
     PIT_Timer_Init();
+    LPTMR_Timer_Init();
     tmp0_init();
 
 
