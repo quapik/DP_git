@@ -8,69 +8,34 @@
 
 #define DRIVER_MASTER_SPI Driver_SPI0
 
-#define TRANSFER_SIZE     32U     /* Transfer dataSize */
+#define TRANSFER_SIZE     16U     /* Transfer dataSize */
 #define TRANSFER_BAUDRATE 500000U /* Transfer baudrate - 500k */
 
 uint8_t actual_tranfser_size = 0;
 uint8_t masterRxData[TRANSFER_SIZE] = {0};
 uint8_t masterTxData[TRANSFER_SIZE] = {0};
 
-volatile bool isTransferCompleted = false;
-volatile bool isMasterOnTransmit  = false;
-volatile bool isMasterOnReceive   = false;
+uint8_t masterRxDataVECTORS[TRANSFER_SIZE] = {0};
+uint8_t masterTxDataVECTORS[TRANSFER_SIZE] = {174U, 193U, 48U, 2U, 1U, 1U};
+bool pixyInitFinished = false;
+volatile bool SPI_Finished = false;
 
-void PixyInit(void)
+
+void PixyZpracujVektory(void)
 {
-	 DRIVER_MASTER_SPI.Initialize(SPI_MasterSignalEvent_t);
-	 DRIVER_MASTER_SPI.PowerControl(ARM_POWER_FULL);
-	 DRIVER_MASTER_SPI.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT, TRANSFER_BAUDRATE);}
-
-void SPI_MasterSignalEvent_t(uint32_t event)
-{
-    if (true == isMasterOnReceive)
-    {
-        PRINTF("This is SPI_MasterSignalEvent_t\r\n");
-        PRINTF("Master receive data from slave has completed!\r\n");
-        isMasterOnReceive = false;
-    }
-    if (true == isMasterOnTransmit)
-    {
-        PRINTF("This is SPI_MasterSignalEvent_t\r\n");
-        PRINTF("Master transmit data to slave has completed!\r\n");
-        isMasterOnTransmit = false;
-    }
-    isTransferCompleted = true;
-}
-void PixyGetVectors()
-{
-
-	actual_tranfser_size = 10;
-	masterTxData[0] = 174U;
-	masterTxData[1] = 193U;
-	masterTxData[2] = 48U;
-	masterTxData[3] = 2U;
-	masterTxData[4] = 1U;
-	masterTxData[5] = 1U;
-
-
-	isTransferCompleted = false;
-
-		DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, 64);
-		while (!isTransferCompleted)
-			{}
-
-	uint8_t pocet_vektoru = masterRxData[20]/6;
+	//TODO deklarace pryc z fce
+	uint8_t pocet_vektoru = masterRxDataVECTORS[20]/6;
 	uint16_t offset = 20;
 	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
 	int8_t x0, y0, x1, y1, index = 0;
 	int8_t delka, smer = 0;
 	while(pocet_vektoru>0)
 	{
-		x0 = masterRxData[offset+1];
-		y0 = masterRxData[offset+2];
-		x1 = masterRxData[offset+3];
-		y1 = masterRxData[offset+4];
-		index = masterRxData[offset+5];
+		x0 = masterRxDataVECTORS[offset+1];
+		y0 = masterRxDataVECTORS[offset+2];
+		x1 = masterRxDataVECTORS[offset+3];
+		y1 = masterRxDataVECTORS[offset+4];
+		index = masterRxDataVECTORS[offset+5];
 		PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      index  %u \r\n",x0,y0,x1,y1,index);
 		delka = y0 -y1;
 		smer = x1 - x0;
@@ -80,14 +45,64 @@ void PixyGetVectors()
 		offset = offset + 6;
 	}
 
-
-	/*
-	for (int i = 0; i < 64; i++)
-	{
-		PRINTF("%u . %u\r\n", i, masterRxData[i]);
-	}
-	*/
 	PRINTF("------------------------------------\r\n");
+
+
+}
+/*
+void SetTxForVectors()
+{
+	masterTxDataVECTORS[0] = 174U;
+	masterTxDataVECTORS[1] = 193U;
+	masterTxDataVECTORS[2] = 48U;
+	masterTxDataVECTORS[3] = 2U;
+	masterTxDataVECTORS[4] = 1U;
+	masterTxDataVECTORS[5] = 1U;
+}
+*/
+void PixyStart(void)
+{
+    PixyInit();
+    SDK_DelayAtLeastUs(100*1000, MHZ48);
+    PixySetLamp(1,1);
+    PixySetServos(0, 400);
+    PixySetLED(0,255,255);
+    SDK_DelayAtLeastUs(100*1000, MHZ48);
+    pixyInitFinished = true;
+    PIT_timer0_start();
+
+    //TADY MAS PROBLEM, tohle kdyz zavolas tak se ti to zacykli
+    //je potreba to vyresit aby se to neseklo
+	//PixyGetVectors();
+}
+
+void PixyInit(void)
+{
+	 DRIVER_MASTER_SPI.Initialize(SPI_IRQ_HANDLER);
+	 DRIVER_MASTER_SPI.PowerControl(ARM_POWER_FULL);
+	 DRIVER_MASTER_SPI.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT, TRANSFER_BAUDRATE);}
+
+void SPI_IRQ_HANDLER(uint32_t e)
+{
+	//PRINTF("SPI IRQ\r\n");
+	if (e & ARM_SPI_EVENT_TRANSFER_COMPLETE)
+	    {
+	        SPI_Finished = true;
+	    }
+	if(pixyInitFinished) PixyGetVectors();
+}
+void PixyGetVectors(void)
+{
+
+	actual_tranfser_size = 10;
+	SPI_Finished = false;
+
+	//CO TU TECH 32, mozna potreba vic pro vic vektoru?
+	DRIVER_MASTER_SPI.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
+	/*
+	while (!SPI_Finished)
+		{}
+	 */
 }
 
 
@@ -117,10 +132,10 @@ void PixySetServos(uint16_t s1, uint16_t s2)
 	masterTxData[6] = s2 & 0xFF;
 	masterTxData[7] = (s2 >> 8) & 0xFF;
 
-	isTransferCompleted = false;
+	SPI_Finished = false;
 
 		DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
-		while (!isTransferCompleted)
+		while (!SPI_Finished)
 			{}
 
 }
@@ -147,16 +162,12 @@ void PixySetLED(uint8_t r, uint8_t g ,uint8_t b)
 	masterTxData[5] = g;
 	masterTxData[6] = b;
 
-	isTransferCompleted = false;
+	SPI_Finished = false;
 
 	DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
-	while (!isTransferCompleted)
+	while (!SPI_Finished)
 		{}
 
-}
-
-void PixyGetResolution(void)
-{
 }
 
 void PixySetLamp(uint8_t upper, uint8_t lower)
@@ -176,10 +187,10 @@ void PixySetLamp(uint8_t upper, uint8_t lower)
 	masterTxData[4] = upper;
 	masterTxData[5] = lower;
 
-	isTransferCompleted = false;
+	SPI_Finished = false;
 
 	DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
-	while (!isTransferCompleted)
+	while (!SPI_Finished)
 		{}
 
 }

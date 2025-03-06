@@ -71,23 +71,26 @@ void LPTMR_IRQ_HANDLER(void)
 
 void PIT_IRQ_HANDLER(void)
 {
-	//PIT TIMER CHANNEL 2
+	//PRINTF("PIT IQR\r\n");
+	//PIT TIMER CHANNEL 0
 	if((PIT_GetStatusFlags(PIT_BASEADDR, kPIT_Chnl_0)) == 1)
 	{
-		//PRINTF("\r\n Channel No.0 interrupt is occurred !");¨
+		//PRINTF("\r\n Channel No.0 interrupt is occurred !");
 		PIT_timer0_finished = true;
 		PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_0, kPIT_TimerFlag);
-		PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
+		PixyZpracujVektory();
+
+		//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	}
 
-	//PIT TIMER CHANNEL 2 - delsi timeout
+	//PIT TIMER CHANNEL 1 - delsi timeout
 	if((PIT_GetStatusFlags(PIT_BASEADDR, kPIT_Chnl_1)) == 1)
 	{
 	//PRINTF("\r\n Channel No.1 interrupt is occurred !");
-	PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_1, kPIT_TimerFlag);
-	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 	PIT_timer1_finished = true;
 	probihaZmena = false;
+	PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_1, kPIT_TimerFlag);
+	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 	steer_straight();
 
 	}
@@ -99,7 +102,6 @@ void PIT_timer0_start(void)
 {
 	PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	PIT_timer0_finished = false;
-
 }
 
 
@@ -121,7 +123,7 @@ void PIT_Timer_Init(void)
 	PIT_Init(PIT_BASEADDR, &pitConfig);
 
 
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(10, PIT_SOURCE_CLOCK));
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(2000000, PIT_SOURCE_CLOCK));
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK));
 
 

@@ -53,4 +53,6 @@ extern bool probihaZmena;
 extern uint8_t actualTrigger;
 extern bool isTriggerTriggering;
 
+#define MHZ48 48000000U
+
 #endif /* GLOBALS_H_ */

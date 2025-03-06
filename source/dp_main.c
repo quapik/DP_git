@@ -16,38 +16,26 @@ int main(void)
 
     PRINTF("APP START\r\n");
 
-    enableInterruptsOnPorts();
 
     SysTick_Init();
 
+    enableInterruptsOnPorts();
     motors_init();
+
     PIT_Timer_Init();
     LPTMR_Timer_Init();
     tmp0_init();
 
-
-
     //irsensor_init();
+    PixyStart();
 
 
-
-/*
-    PixyInit();
-    PixySetLamp(1,1);
-    PixySetServos(0, 400);
-    PixySetLamp(0,0);
-*/
-
-
-
-        int counter = 0;
 
 	while (1){
 		processColorSensorValue();
 		//irsensor_mesure();
 
-		//PixyGetVectors();
-		//SDK_DelayAtLeastUs(100000, 48000000);
+
 
 		/*
 		//IR SENSOR

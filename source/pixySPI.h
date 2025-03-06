@@ -15,15 +15,17 @@
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
+#include "globals.h"
 
 
-void SPI_MasterSignalEvent_t(uint32_t event);
+void SPI_IRQ_HANDLER(uint32_t e);
 void PixyInit(void);
 void PixySetLamp(uint8_t upper, uint8_t lower);
 void PixySetLED(uint8_t r, uint8_t g ,uint8_t b);
 void PixyGetResolution(void);
 void PixySetServos(uint16_t s1, uint16_t s2);
-void PixyGetVectors();
-
+void PixyGetVectors(void);
+void PixyZpracujVektory(void);
+void PixyStart(void);
 
 #endif /* PIXYSPI_H_ */

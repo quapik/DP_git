@@ -168,75 +168,89 @@ uint32_t pulseWidthToUs(uint32_t PW)
 	return (PW *  COUNTER_TO_US);
 }
 
+//Ulozeni uklada na zaklade preruseni na TMP channelech do proenych pro budouci zpracovani
 void checkColorSensorValue(uint32_t PW_US, uint8_t i)
 {
+	 last_color_pw = PW_US;
+	 last_color_index = i;
+	 color_event_flag = true;
+}
+
+//Funkce ktera  zpracovava periodicky ulozene hodnoty v promenych a kontroluje barvu
+//Volaana z mainu
+void processColorSensorValue()
+{
+	//TODO pridat sem veci z preruseni
+	DisableIRQ(TPM0_INTERRUPT_NUMBER);
 	//Zaznamenae merici honoty, pirmo na ledky, NIC je pohled do prazdna na zem cca metr
 	//100% S0 S1 H H | NIC - cca 53, BILA 26-23, CERNA PASKA 16, FIXA 18
 	//2%   S0 S1 L H | NIC - cca 2880, BILA 163, CERNA PASKA 980 - 1150, FIXA 980-1110
 	//20%  S0 S1 H L | NIC - cca 280, BILA 13, CERNA PASKA 60-100, FIXA cca 90
 	// S2 H
 	// S3 L  for clear (no filter)
-	 last_color_pw = PW_US;
-	 last_color_index = i;
-	 color_event_flag = true;
 
-}
-
-//VOLANO Z MAINU
-void processColorSensorValue()
-{
-
-	if(color_event_flag)
+	if(1) //driving
 	{
-		color_event_flag = false;
-		uint16_t color_treshold1_WHITE = 400;
-		uint16_t color_treshold1_BLACK = 1000;
-		uint16_t color_treshold2_WHITE = 1000;
-		uint16_t color_treshold2_BLACK = 5000;
-
-		if(last_color_index == 1)
-		{
-			COLOR1_value_global = last_color_pw;
-			//PRINTF("COLOR1 value = %u \r\n", PW_US);
-			if(probihaZmena == false)
+		if(color_event_flag)
 			{
-				if(COLOR1_value_global < color_treshold1_BLACK)
+				color_event_flag = false;
+				/*// BILA
+				uint16_t color_treshold1_WHITE = 500;
+				uint16_t color_treshold1_BLACK = 1000;
+				uint16_t color_treshold2_WHITE = 1500;
+				uint16_t color_treshold2_BLACK = 5000;
+				*/
+				//karton
+				uint16_t color_treshold1_WHITE = 550;
+				uint16_t color_treshold1_BLACK = 1000;
+				uint16_t color_treshold2_WHITE = 2000;
+				uint16_t color_treshold2_BLACK = 5000;
+				if(last_color_index == 1)
 				{
-					if(COLOR1_value_global > color_treshold1_WHITE)
-						{
-							PRINTF("C1 %u A \r\n", COLOR1_value_global);
-							probihaZmena = true;
-
-							steer_left(50);
-							PIT_timer1_start();
-							led_B();
-							//PIT_delay_100ms();
-						}
-				}
-			}
-
-		}
-		else
-		{
-
-			COLOR2_value_global = last_color_pw;
-			if(probihaZmena == false)
-			{
-				if(COLOR2_value_global < color_treshold2_BLACK)
-				{
-					if(COLOR2_value_global > color_treshold2_WHITE)
+					COLOR1_value_global = last_color_pw;
+					//PRINTF("COLOR1 value = %u \r\n", PW_US);
+					if(probihaZmena == false)
 					{
-						PRINTF("C2 %u A \r\n", COLOR2_value_global);
-						probihaZmena = true;
-						steer_right(50);
-						PIT_timer1_start();
-						led_B();
+						if(COLOR1_value_global < color_treshold1_BLACK)
+						{
+							if(COLOR1_value_global > color_treshold1_WHITE)
+								{
+									PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
+									probihaZmena = true;
 
+									steer_left(50);
+									PIT_timer1_start();
+									led_B();
+								}
+						}
+					}
+
+				}
+				else
+				{
+					COLOR2_value_global = last_color_pw;
+					if(probihaZmena == false)
+					{
+						if(COLOR2_value_global < color_treshold2_BLACK)
+						{
+							if(COLOR2_value_global > color_treshold2_WHITE)
+							{
+								PRINTF("C2 %u  (c1 %u) \r\n", COLOR2_value_global,COLOR1_value_global);
+								probihaZmena = true;
+								steer_right(50);
+								PIT_timer1_start();
+								led_B();
+
+							}
+						}
 					}
 				}
 			}
-		}
+
 	}
+
+	EnableIRQ(TPM0_INTERRUPT_NUMBER);
+
 }
 
 
@@ -433,7 +447,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
 	if(driving)
 	{
-		uint16_t hranice = 10;
+		uint16_t hranice = 20;
 		if(d1 < hranice | d2 < hranice)
 		{
 		led_R();

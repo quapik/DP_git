@@ -82,7 +82,7 @@ void servo_check(void)
 	led_M();
 	steer_straight();
 	SysTick_DelayTicks(200U*1000);
-	for(uint8_t i = 1; i < 11; i++)
+	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_right(i*10);
 		SysTick_DelayTicks(100U*1000);
@@ -90,7 +90,7 @@ void servo_check(void)
 	SysTick_DelayTicks(500U*1000);
 	steer_straight();
 	SysTick_DelayTicks(500U*1000);
-	for(uint8_t i = 1; i < 11; i++)
+	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_left(i*10);
 		SysTick_DelayTicks(100U*1000);
