@@ -7,6 +7,7 @@
 #include "pixySPI.h"
 
 #define DRIVER_MASTER_SPI Driver_SPI0
+#define SPI_IRQN SPI0_IRQn
 
 #define TRANSFER_SIZE     16U     /* Transfer dataSize */
 #define TRANSFER_BAUDRATE 500000U /* Transfer baudrate - 500k */
@@ -20,23 +21,34 @@ uint8_t masterTxDataVECTORS[TRANSFER_SIZE] = {174U, 193U, 48U, 2U, 1U, 1U};
 bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
 
+uint8_t vector_index;
+uint8_t x0;
+uint8_t x1;
+uint8_t y0;
+uint8_t y1;
+uint8_t pocet_vektoru;
+
+int8_t delka, smer;
+int16_t offset;
+
+
 
 void PixyZpracujVektory(void)
 {
 	//TODO deklarace pryc z fce
-	uint8_t pocet_vektoru = masterRxDataVECTORS[20]/6;
-	uint16_t offset = 20;
+	pocet_vektoru = masterRxDataVECTORS[20]/6;
+	offset = 20;
 	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
-	int8_t x0, y0, x1, y1, index = 0;
-	int8_t delka, smer = 0;
+
+
 	while(pocet_vektoru>0)
 	{
 		x0 = masterRxDataVECTORS[offset+1];
 		y0 = masterRxDataVECTORS[offset+2];
 		x1 = masterRxDataVECTORS[offset+3];
 		y1 = masterRxDataVECTORS[offset+4];
-		index = masterRxDataVECTORS[offset+5];
-		PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      index  %u \r\n",x0,y0,x1,y1,index);
+		vector_index = masterRxDataVECTORS[offset+5];
+		PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      vector_index  %u \r\n",x0,y0,x1,y1,vector_index);
 		delka = y0 -y1;
 		smer = x1 - x0;
 		if(smer < 0) PRINTF("ZAPORNO");
@@ -44,6 +56,7 @@ void PixyZpracujVektory(void)
 		pocet_vektoru--;
 		offset = offset + 6;
 	}
+	PixyGetVectors();
 
 	PRINTF("------------------------------------\r\n");
 
@@ -64,6 +77,7 @@ void PixyStart(void)
 {
     PixyInit();
     SDK_DelayAtLeastUs(100*1000, MHZ48);
+    PixySetLamp(0,0);
     PixySetLamp(1,1);
     PixySetServos(0, 400);
     PixySetLED(0,255,255);
@@ -73,12 +87,13 @@ void PixyStart(void)
 
     //TADY MAS PROBLEM, tohle kdyz zavolas tak se ti to zacykli
     //je potreba to vyresit aby se to neseklo
-	//PixyGetVectors();
+	PixyGetVectors();
 }
 
 void PixyInit(void)
 {
 	 DRIVER_MASTER_SPI.Initialize(SPI_IRQ_HANDLER);
+	 NVIC_SetPriority(SPI_IRQN, 3);
 	 DRIVER_MASTER_SPI.PowerControl(ARM_POWER_FULL);
 	 DRIVER_MASTER_SPI.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT, TRANSFER_BAUDRATE);}
 
@@ -89,11 +104,18 @@ void SPI_IRQ_HANDLER(uint32_t e)
 	    {
 	        SPI_Finished = true;
 	    }
-	if(pixyInitFinished) PixyGetVectors();
+	/*
+	if(pixyInitFinished)
+		{
+		uint8_t pocet_vektoruSS = masterRxDataVECTORS[20]/6;
+		PRINTF("POCET VEKTORUSS %u  \r\n", pocet_vektoruSS);
+		PixyGetVectors();
+		}
+	*/
 }
 void PixyGetVectors(void)
 {
-
+	//PRINTF("SPI VECTORS SEND \r\n");
 	actual_tranfser_size = 10;
 	SPI_Finished = false;
 

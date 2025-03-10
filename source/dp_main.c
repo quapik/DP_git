@@ -32,7 +32,7 @@ int main(void)
 
 
 	while (1){
-		processColorSensorValue();
+		//processColorSensorValue();
 		//irsensor_mesure();
 
 

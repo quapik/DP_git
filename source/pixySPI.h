@@ -17,7 +17,6 @@
 #include "board.h"
 #include "globals.h"
 
-
 void SPI_IRQ_HANDLER(uint32_t e);
 void PixyInit(void);
 void PixySetLamp(uint8_t upper, uint8_t lower);
