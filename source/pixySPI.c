@@ -17,7 +17,7 @@ uint8_t masterRxData[TRANSFER_SIZE] = {0};
 uint8_t masterTxData[TRANSFER_SIZE] = {0};
 
 uint8_t masterRxDataVECTORS[TRANSFER_SIZE] = {0};
-uint8_t masterTxDataVECTORS[TRANSFER_SIZE] = {174U, 193U, 48U, 2U, 1U, 1U};
+uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U};
 bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
 
@@ -36,7 +36,13 @@ int16_t offset;
 void PixyZpracujVektory(void)
 {
 	//TODO deklarace pryc z fce
+	for(int i = 0; i < 40; i++)
+	{
+		PRINTF("%u . value %u\r\n", i, masterRxDataVECTORS[i]);
+	}
 	pocet_vektoru = masterRxDataVECTORS[20]/6;
+
+	//Na 20te pozici zacinaji data s informaci o prvnim pixelu
 	offset = 20;
 	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
 
@@ -48,11 +54,12 @@ void PixyZpracujVektory(void)
 		x1 = masterRxDataVECTORS[offset+3];
 		y1 = masterRxDataVECTORS[offset+4];
 		vector_index = masterRxDataVECTORS[offset+5];
-		PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      vector_index  %u \r\n",x0,y0,x1,y1,vector_index);
+		//PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      vector_index  %u \r\n",x0,y0,x1,y1,vector_index);
+		PRINTF("[%u,%u] [%u,%u] index  %u \r\n",x0,y0,x1,y1,vector_index);
 		delka = y0 -y1;
 		smer = x1 - x0;
-		if(smer < 0) PRINTF("ZAPORNO");
-		PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
+		//if(smer < 0) PRINTF("ZAPORNO");
+		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
 		pocet_vektoru--;
 		offset = offset + 6;
 	}
@@ -62,17 +69,7 @@ void PixyZpracujVektory(void)
 
 
 }
-/*
-void SetTxForVectors()
-{
-	masterTxDataVECTORS[0] = 174U;
-	masterTxDataVECTORS[1] = 193U;
-	masterTxDataVECTORS[2] = 48U;
-	masterTxDataVECTORS[3] = 2U;
-	masterTxDataVECTORS[4] = 1U;
-	masterTxDataVECTORS[5] = 1U;
-}
-*/
+
 void PixyStart(void)
 {
     PixyInit();
@@ -121,10 +118,19 @@ void PixyGetVectors(void)
 
 	//CO TU TECH 32, mozna potreba vic pro vic vektoru?
 	DRIVER_MASTER_SPI.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
+
 	/*
+	DRIVER_MASTER_SPI.Send(masterTxDataVECTORS,6);
+
 	while (!SPI_Finished)
 		{}
-	 */
+	SPI_Finished = false;
+
+	DRIVER_MASTER_SPI.Receive(masterRxDataVECTORS,64);
+	while (!SPI_Finished)
+			{}
+			*/
+
 }
 
 
