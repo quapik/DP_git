@@ -250,7 +250,7 @@
 								<option id="com.crt.advproject.link.cpp.nonsecureobject.813488119" name="Secure Gateway Import Library" superClass="com.crt.advproject.link.cpp.nonsecureobject"/>
 								<option id="com.crt.advproject.link.cpp.inimplib.1124847155" name="Input Secure Gateway Import Library" superClass="com.crt.advproject.link.cpp.inimplib"/>
 							</tool>
-							<tool id="com.crt.advproject.link.exe.debug.276956058" name="MCU Linker" superClass="com.crt.advproject.link.exe.debug">
+							<tool command="arm-none-eabi-gcc" id="com.crt.advproject.link.exe.debug.276956058" name="MCU Linker" superClass="com.crt.advproject.link.exe.debug">
 								<option id="com.crt.advproject.link.gcc.multicore.slave.356206238" name="Multicore configuration" superClass="com.crt.advproject.link.gcc.multicore.slave"/>
 								<option id="com.crt.advproject.link.gcc.multicore.master.1219504850" name="Multicore master" superClass="com.crt.advproject.link.gcc.multicore.master"/>
 								<option id="com.crt.advproject.link.gcc.hdrlib.1106457853" name="Library" superClass="com.crt.advproject.link.gcc.hdrlib" value="com.crt.advproject.gcc.link.hdrlib.newlib.semihost" valueType="enumerated"/>

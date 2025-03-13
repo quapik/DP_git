@@ -26,5 +26,6 @@ void PixySetServos(uint16_t s1, uint16_t s2);
 void PixyGetVectors(void);
 void PixyZpracujVektory(void);
 void PixyStart(void);
+void KontrolaVektoru(void);
 
 #endif /* PIXYSPI_H_ */

@@ -221,7 +221,7 @@ instance:
       - spi_mode_user: 'ARM_SPI_MODE_INACTIVE'
       - clockSource: 'BusInterfaceClock'
       - clockSourceFreq: 'ClocksTool_DefaultInit'
-      - clock_polarity: 'ARM_SPI_CPOL0_CPHA0'
+      - clock_polarity: 'ARM_SPI_CPOL1_CPHA1'
       - power_state: 'ARM_POWER_FULL'
       - signalEventFunctionId: 'SPI0_SignalEvent'
       - enableGetFreqFnCustomName: 'false'
@@ -230,7 +230,6 @@ instance:
       - initPinFunctionCustomID: 'SPI0_InitPins'
       - enableDeinitPinsFnCustomName: 'false'
       - deinitPinFunctionCustomID: 'SPI0_DeinitPins'
-    - quick_selection: 'default'
   - fsl_spi:
     - interrupt:
       - IRQn: 'SPI0_IRQn'

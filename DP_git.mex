@@ -577,12 +577,12 @@
                      </config_set>
                   </instance>
                   <instance name="SPI0" uuid="e4f96387-bf6f-47f4-b749-fb4dc5fa2115" type="spi_cmsis" type_id="spi_cmsis_e8bff168b683c1ed1cf11a11d8939dbf" mode="interrupt" peripheral="SPI0" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="general" quick_selection="default">
+                     <config_set name="general">
                         <struct name="main_config">
                            <setting name="spi_mode_user" value="ARM_SPI_MODE_INACTIVE"/>
                            <setting name="clockSource" value="BusInterfaceClock"/>
                            <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
-                           <setting name="clock_polarity" value="ARM_SPI_CPOL0_CPHA0"/>
+                           <setting name="clock_polarity" value="ARM_SPI_CPOL1_CPHA1"/>
                            <setting name="power_state" value="ARM_POWER_FULL"/>
                            <setting name="signalEventFunctionId" value="SPI0_SignalEvent"/>
                            <setting name="enableGetFreqFnCustomName" value="false"/>
