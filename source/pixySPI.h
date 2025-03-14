@@ -16,6 +16,7 @@
 #include "clock_config.h"
 #include "board.h"
 #include "globals.h"
+#include "math.h"
 
 void SPI_IRQ_HANDLER(uint32_t e);
 void PixyInit(void);

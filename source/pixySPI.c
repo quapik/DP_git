@@ -22,17 +22,15 @@ bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
 
 uint8_t vector_index;
-uint8_t x0;
-uint8_t x1;
-uint8_t y0;
-uint8_t y1;
+uint8_t x_0;
+uint8_t x_1;
+uint8_t y_0;
+uint8_t y_1;
 uint8_t pocet_vektoru;
 uint8_t pocet_vektoru_i;
 
 uint8_t x_podstatny;
 uint8_t y_podstatny;
-
-
 uint8_t x_pocatecni;
 uint8_t x_koncove;
 
@@ -44,14 +42,98 @@ bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
 uint8_t horizontal_line_counter = 0;
 
+bool aspon_jedna_kolma_dvojice = false;
+
+typedef struct {
+    uint8_t index;
+    uint8_t x_0, y_0;
+    uint8_t x_1, y_1;
+    int16_t pomer;
+    uint8_t i;
+} VectorStruct;
+
+#define MAX_VECTORS 20
+VectorStruct vektory[MAX_VECTORS];
+
+void UlozVektor(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1, int16_t pomer) {
+    if (pocet_vektoru < MAX_VECTORS) {
+        vektory[pocet_vektoru_i].index = index;
+        vektory[pocet_vektoru_i].x_0 = x_0;
+        vektory[pocet_vektoru_i].y_0 = y_0;
+        vektory[pocet_vektoru_i].x_1 = x_1;
+        vektory[pocet_vektoru_i].y_1 = y_1;
+        vektory[pocet_vektoru_i].pomer = pomer;
+        vektory[pocet_vektoru_i].i = pocet_vektoru_i;
+
+    }
+}
+
+int16_t JsouVektoryKolme(uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1,
+                      uint8_t x2, uint8_t y2, uint8_t x3, uint8_t y3)
+{
+    int16_t Ax = x_1 - x_0;
+    int16_t Ay = y_1 - y_0;
+    int16_t Bx = x3 - x2;
+    int16_t By = y3 - y2;
+
+    int16_t skalarni_soucin = (Ax * Bx + Ay * By);
+    // Výpočet délky vektorů
+	float delka_A = sqrt(Ax * Ax + Ay * Ay);
+	float delka_B = sqrt(Bx * Bx + By * By);
+
+	// Výpočet kosinu úhlu mezi vektory
+	float cos_theta = (float)skalarni_soucin / (delka_A * delka_B);
+	int16_t cos_theta_D = (float)skalarni_soucin / (delka_A * delka_B)*1000;
+
+
+	// Výpis hodnot pro kontrolu
+	PRINTF("AX %d AY %d BX %d BY %d\r\n", Ax, Ay, Bx, By);
+	PRINTF("Skalarni soucin: %d\r\n", skalarni_soucin);
+	PRINTF("Kosinus uhlu mezi vektory: %d\r\n", cos_theta_D);
+
+	//priblizne kolme vektory, je ptoreba nejak pracovat s tim prahem
+	if (cos_theta > -0.2 && cos_theta < 0.2) {
+		PRINTF("Vektory jsou cca kolme.\r\n");
+		aspon_jedna_kolma_dvojice = true;
+		return 1;  // Vektory jsou přibližně kolmé
+	} else {
+		PRINTF("Vektory nejsou kolme.\r\n");
+		return 0;  // Vektory nejsou kolmé
+	}
+}
+
+void VykstujiSeKolmeVektory(void)
+{
+	for(int i = 1; i < pocet_vektoru+1; i++)
+	{
+		//projdi vsechny vektory
+		for(int j = 1; j < pocet_vektoru+1; j++)
+		{
+			if(j != i)
+			{
+				int16_t kolmost = JsouVektoryKolme(vektory[i].x_0,vektory[i].y_0, vektory[i].x_1,
+						vektory[i].y_1, vektory[j].x_0,vektory[j].y_0, vektory[j].x_1,
+						vektory[j].y_1);
+				//PRINTF("KOLMOST %d  ", kolmost);
+
+			}
+
+		}
+
+	}
+
+}
+
 void KontrolaVektoru(void)
 {
-	delka = abs(y0 -y1); //vzdalenost v ose Y
-	smer = abs(x0 - x1); //vzdalenost v ose X
+	delka = abs(y_0 -y_1); //vzdalenost v ose Y
+	smer = abs(x_0 - x_1); //vzdalenost v ose X
 
 	//vyssi y znamena ze je bod blize modelu (kamere), tudiz je pocatecni
-	x_pocatecni = (y0 >= y1) ? x0 : x1;
-	x_koncove = (y0 >= y1) ? x1 : x0;
+	x_pocatecni = (y_0 >= y_1) ? x_0 : x_1;
+	x_koncove = (y_0 >= y_1) ? x_1 : x_0;
+
+	UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
 
 
 	if(delka == 0) pomer = 0; //rovna horizontalni cara
@@ -63,7 +145,7 @@ void KontrolaVektoru(void)
 	}
 	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
 	{
-		if((y0+y1)/2 > 40)
+		if((y_0+y_1)/2 > 40)
 		{
 			PRINTF("HORIZONTAL CARA  BLIZKO  ");
 			finish_line_detected_blizka = true;
@@ -77,7 +159,7 @@ void KontrolaVektoru(void)
 	//FULL STRAIGHT a jdou videt obe cary (model smeruje cca rovne a je mezi carama)
 	if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru > 1)
 	{
-		if((x0+x1)/2 < 39) //LEFT
+		if((x_0+x_1)/2 < 39) //LEFT
 		{
 			if(pomer > 300)
 			{
@@ -85,7 +167,7 @@ void KontrolaVektoru(void)
 			}
 			else
 			{
-				x_podstatny = (x0 <= x1) ? x0 : x1; //leva cast, chci levejsi index (je na pocatku a pozdeji se presouva doprava)
+				x_podstatny = (x_0 <= x_1) ? x_0 : x_1; //leva cast, chci levejsi index (je na pocatku a pozdeji se presouva doprava)
 				PRINTF("LEFT STRAIGHT %u ", x_podstatny);
 			}
 
@@ -99,7 +181,7 @@ void KontrolaVektoru(void)
 			}
 			else
 			{
-				x_podstatny = (x0 >= x1) ? x0 : x1;
+				x_podstatny = (x_0 >= x_1) ? x_0 : x_1;
 							PRINTF("RIGHT STRAIGHT %u ", x_podstatny);
 			}
 
@@ -124,9 +206,7 @@ void KontrolaVektoru(void)
 
 	}
 
-
-
-	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x0,y0,x1,y1, delka, smer,  pomer, vector_index);
+	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
 }
 
 void PixyZpracujVektory(void)
@@ -147,18 +227,22 @@ void PixyZpracujVektory(void)
 
 	while(pocet_vektoru_i>0)
 	{
-		x0 = masterRxDataVECTORS[offset+1];
-		y0 = masterRxDataVECTORS[offset+2];
-		x1 = masterRxDataVECTORS[offset+3];
-		y1 = masterRxDataVECTORS[offset+4];
+		x_0 = masterRxDataVECTORS[offset+1];
+		y_0 = masterRxDataVECTORS[offset+2];
+		x_1 = masterRxDataVECTORS[offset+3];
+		y_1 = masterRxDataVECTORS[offset+4];
 		vector_index = masterRxDataVECTORS[offset+5];
 		KontrolaVektoru();
-		//PRINTF("[x0,y0]-[%u,%u]      [x1,y1]-[%u,%u]      vector_index  %u \r\n",x0,y0,x1,y1,vector_index);
+		//PRINTF("[x_0,y_0]-[%u,%u]      [x_1,y_1]-[%u,%u]      vector_index  %u \r\n",x_0,y_0,x_1,y_1,vector_index);
 		//if(smer < 0) PRINTF("ZAPORNO");
 		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
 		pocet_vektoru_i--;
 		offset = offset + 6;
 	}
+	VykstujiSeKolmeVektory();
+
+	if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
+	aspon_jedna_kolma_dvojice = false;
 	PixyGetVectors();
 
 	PRINTF("------------------------------------\r\n");
@@ -212,21 +296,7 @@ void PixyGetVectors(void)
 	//PRINTF("SPI VECTORS SEND \r\n");
 	actual_tranfser_size = 10;
 	SPI_Finished = false;
-
-	//CO TU TECH 32, mozna potreba vic pro vic vektoru?
 	DRIVER_MASTER_SPI.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
-
-	/*
-	DRIVER_MASTER_SPI.Send(masterTxDataVECTORS,6);
-
-	while (!SPI_Finished)
-		{}
-	SPI_Finished = false;
-
-	DRIVER_MASTER_SPI.Receive(masterRxDataVECTORS,64);
-	while (!SPI_Finished)
-			{}
-			*/
 
 }
 
