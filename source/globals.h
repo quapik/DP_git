@@ -21,6 +21,8 @@
 #include "fsl_port.h"
 #include "fsl_clock.h"
 #include "fsl_lptmr.h"
+#include "fsl_uart.h"
+
 
 #include "delay.h"
 #include "drive_control.h"
@@ -29,6 +31,7 @@
 #include <timers.h>
 #include "led_button.h"
 #include "interrupts.h"
+#include "uart_control.h"
 
 
 extern bool jedouMotory;

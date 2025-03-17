@@ -16,7 +16,8 @@ C_SRCS += \
 ../source/pixySPI.c \
 ../source/semihost_hardfault.c \
 ../source/sonic_color.c \
-../source/timers.c 
+../source/timers.c \
+../source/uart_control.c 
 
 C_DEPS += \
 ./source/delay.d \
@@ -31,7 +32,8 @@ C_DEPS += \
 ./source/pixySPI.d \
 ./source/semihost_hardfault.d \
 ./source/sonic_color.d \
-./source/timers.d 
+./source/timers.d \
+./source/uart_control.d 
 
 OBJS += \
 ./source/delay.o \
@@ -46,7 +48,8 @@ OBJS += \
 ./source/pixySPI.o \
 ./source/semihost_hardfault.o \
 ./source/sonic_color.o \
-./source/timers.o 
+./source/timers.o \
+./source/uart_control.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -61,7 +64,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/globals.d ./source/globals.o ./source/interrupts.d ./source/interrupts.o ./source/ir_sensors.d ./source/ir_sensors.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixy.d ./source/pixy.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sonic_color.d ./source/sonic_color.o ./source/timers.d ./source/timers.o
+	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/globals.d ./source/globals.o ./source/interrupts.d ./source/interrupts.o ./source/ir_sensors.d ./source/ir_sensors.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixy.d ./source/pixy.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sonic_color.d ./source/sonic_color.o ./source/timers.d ./source/timers.o ./source/uart_control.d ./source/uart_control.o
 
 .PHONY: clean-source
 

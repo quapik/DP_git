@@ -24,7 +24,7 @@ pin_labels:
 - {pin_num: '63', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, label: 'J2[18]/J24[1]/D14-I2C1_SDA', identifier: ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX}
 - {pin_num: '64', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, label: 'J2[20]/J23[1]/D15-I2C1_SCL', identifier: ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT}
 - {pin_num: '8', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, label: 'J4[2]/A0-ADC0_SE1', identifier: ADC0_SE1;IR_sensor}
-- {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor}
+- {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor;IR_sensor}
 - {pin_num: '9', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, label: 'J4[6]/A2-ADC0_SE0', identifier: ADC0_SE0;SERVO_PWM}
 - {pin_num: '41', pin_signal: PTB18/TPM2_CH0, label: 'J2[11]/D11[1]/LED_RED', identifier: LED_RED;MOTOR_PWM;MOTOR_PWM1}
 - {pin_num: '42', pin_signal: PTB19/TPM2_CH1, label: 'J2[13]/D11[4]/LED_GREEN', identifier: LED_GREEN;MOTOR_PWM2}
@@ -90,7 +90,10 @@ BOARD_InitPins:
   - {pin_num: '57', peripheral: GPIOD, signal: 'GPIO, 0', pin_signal: PTD0/SPI0_PCS0/TPM0_CH0/FXIO0_D0, identifier: tracker6, direction: INPUT, gpio_interrupt: kPORT_InterruptEitherEdge}
   - {pin_num: '20', peripheral: TPM0, signal: 'CH, 0', pin_signal: PTE24/TPM0_CH0/I2C0_SCL, identifier: TPM0_CH0, direction: INPUT}
   - {pin_num: '21', peripheral: TPM0, signal: 'CH, 1', pin_signal: PTE25/TPM0_CH1/I2C0_SDA, identifier: TPM0_CH1, direction: INPUT}
-  - {pin_num: '8', peripheral: ADC0, signal: 'SE, 1', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, identifier: IR_sensor}
+  - {pin_num: '1', peripheral: LPUART1, signal: TX, pin_signal: PTE0/CLKOUT32K/SPI1_MISO/LPUART1_TX/RTC_CLKOUT/CMP0_OUT/I2C1_SDA, identifier: ''}
+  - {pin_num: '2', peripheral: LPUART1, signal: RX, pin_signal: PTE1/SPI1_MOSI/LPUART1_RX/SPI1_MISO/I2C1_SCL}
+  - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: IR_sensor}
+  - {pin_num: '8', peripheral: UART2, signal: TX, pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -238,6 +241,9 @@ void BOARD_InitPins(void)
     /* PORTB3 (pin 38) is configured as TPM2_CH1 */
     PORT_SetPinMux(BOARD_INITPINS_MOTOR_PWM1_PORT, BOARD_INITPINS_MOTOR_PWM1_PIN, kPORT_MuxAlt3);
 
+    /* PORTC0 (pin 43) is configured as ADC0_SE14 */
+    PORT_SetPinMux(BOARD_INITPINS_IR_sensor_PORT, BOARD_INITPINS_IR_sensor_PIN, kPORT_PinDisabledOrAnalog);
+
     /* PORTC1 (pin 44) is configured as PTC1 */
     PORT_SetPinMux(BOARD_INITPINS_SW3_PORT, BOARD_INITPINS_SW3_PIN, kPORT_MuxAsGpio);
 
@@ -298,8 +304,14 @@ void BOARD_InitPins(void)
     /* Interrupt configuration on PORTD5 (pin 62): Interrupt on either edge */
     PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker1_PORT, BOARD_INITPINS_tracker1_PIN, kPORT_InterruptEitherEdge);
 
-    /* PORTE16 (pin 8) is configured as ADC0_SE1 */
-    PORT_SetPinMux(BOARD_INITPINS_IR_sensor_PORT, BOARD_INITPINS_IR_sensor_PIN, kPORT_PinDisabledOrAnalog);
+    /* PORTE0 (pin 1) is configured as LPUART1_TX */
+    PORT_SetPinMux(PORTE, 0U, kPORT_MuxAlt3);
+
+    /* PORTE1 (pin 2) is configured as LPUART1_RX */
+    PORT_SetPinMux(PORTE, 1U, kPORT_MuxAlt3);
+
+    /* PORTE16 (pin 8) is configured as UART2_TX */
+    PORT_SetPinMux(PORTE, 16U, kPORT_MuxAlt3);
 
     /* PORTE24 (pin 20) is configured as TPM0_CH0 */
     PORT_SetPinMux(BOARD_INITPINS_TPM0_CH0_PORT, BOARD_INITPINS_TPM0_CH0_PIN, kPORT_MuxAlt3);
@@ -320,15 +332,22 @@ void BOARD_InitPins(void)
                   /* TPM2 Channel 0 Input Capture Source Select: TPM2_CH0 signal. */
                   | SIM_SOPT4_TPM2CH0SRC(SOPT4_TPM2CH0SRC_TPM2_CH0));
 
-    SIM->SOPT5 = ((SIM->SOPT5 &
-                   /* Mask bits to zero which are setting */
-                   (~(SIM_SOPT5_LPUART0TXSRC_MASK | SIM_SOPT5_LPUART0RXSRC_MASK)))
+    SIM->SOPT5 =
+        ((SIM->SOPT5 &
+          /* Mask bits to zero which are setting */
+          (~(SIM_SOPT5_LPUART0TXSRC_MASK | SIM_SOPT5_LPUART0RXSRC_MASK | SIM_SOPT5_LPUART1TXSRC_MASK | SIM_SOPT5_LPUART1RXSRC_MASK)))
 
-                  /* LPUART0 Transmit Data Source Select: LPUART0_TX pin. */
-                  | SIM_SOPT5_LPUART0TXSRC(SOPT5_LPUART0TXSRC_LPUART_TX)
+         /* LPUART0 Transmit Data Source Select: LPUART0_TX pin. */
+         | SIM_SOPT5_LPUART0TXSRC(SOPT5_LPUART0TXSRC_LPUART_TX)
 
-                  /* LPUART0 Receive Data Source Select: LPUART_RX pin. */
-                  | SIM_SOPT5_LPUART0RXSRC(SOPT5_LPUART0RXSRC_LPUART_RX));
+         /* LPUART0 Receive Data Source Select: LPUART_RX pin. */
+         | SIM_SOPT5_LPUART0RXSRC(SOPT5_LPUART0RXSRC_LPUART_RX)
+
+         /* LPUART1 Transmit Data Source Select: LPUART1_TX pin. */
+         | SIM_SOPT5_LPUART1TXSRC(SOPT5_LPUART1TXSRC_LPUART_TX)
+
+         /* LPUART1 Receive Data Source Select: LPUART1_RX pin. */
+         | SIM_SOPT5_LPUART1RXSRC(SOPT5_LPUART1RXSRC_LPUART_RX));
 }
 /***********************************************************************************************************************
  * EOF

@@ -4,6 +4,9 @@
 uint16_t dc = 0;
 uint16_t pct = 0;
 
+uint8_t g_tipString[] =
+    "Uart functional API non-blocking example\r\nBoard sends characters\r\n";
+
 
 
 int main(void)
@@ -28,10 +31,20 @@ int main(void)
 
     //irsensor_init();
     PixyStart();
+    uart_comm_init();
+
+
+
+        /* Send g_tipString out non-blocking */
+        UART_WriteBlocking(UART2, g_tipString, sizeof(g_tipString) / sizeof(g_tipString[0]));
+
 
 
 
  	while (1){
+
+ 	 	SDK_DelayAtLeastUs(1000*100, 4800000);
+ 	        UART_WriteBlocking(UART2, "a", 1);
 		//processColorSensorValue();
 		//irsensor_mesure();
 

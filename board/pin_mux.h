@@ -29,6 +29,8 @@ void BOARD_InitBootPins(void);
 #define SOPT4_TPM2CH0SRC_TPM2_CH0 0x00u    /*!<@brief TPM2 Channel 0 Input Capture Source Select: TPM2_CH0 signal */
 #define SOPT5_LPUART0RXSRC_LPUART_RX 0x00u /*!<@brief LPUART0 Receive Data Source Select: LPUART_RX pin */
 #define SOPT5_LPUART0TXSRC_LPUART_TX 0x00u /*!<@brief LPUART0 Transmit Data Source Select: LPUART0_TX pin */
+#define SOPT5_LPUART1RXSRC_LPUART_RX 0x00u /*!<@brief LPUART1 Receive Data Source Select: LPUART1_RX pin */
+#define SOPT5_LPUART1TXSRC_LPUART_TX 0x00u /*!<@brief LPUART1 Transmit Data Source Select: LPUART1_TX pin */
 
 /*! @name PORTA1 (number 23), J1[2]/J25[1]/D0-UART0_RX
   @{ */
@@ -293,14 +295,14 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_TPM0_CH1_PIN_MASK (1U << 25U)      /*!<@brief PORT pin mask */
                                                           /* @} */
 
-/*! @name PORTE16 (number 8), J4[2]/A0-ADC0_SE1
+/*! @name PORTC0 (number 43), J4[4]/A1-ADC0_SE14
   @{ */
 
 /* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_IR_sensor_PORT PORTE                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_IR_sensor_PIN 16U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_IR_sensor_PIN_MASK (1U << 16U)      /*!<@brief PORT pin mask */
-                                                           /* @} */
+#define BOARD_INITPINS_IR_sensor_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_IR_sensor_PIN 0U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_IR_sensor_PIN_MASK (1U << 0U)      /*!<@brief PORT pin mask */
+                                                          /* @} */
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
