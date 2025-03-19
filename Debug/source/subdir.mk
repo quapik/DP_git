@@ -8,11 +8,11 @@ C_SRCS += \
 ../source/dp_main.c \
 ../source/drive_control.c \
 ../source/globals.c \
+../source/hall_sensors.c \
 ../source/interrupts.c \
 ../source/ir_sensors.c \
 ../source/led_button.c \
 ../source/mtb.c \
-../source/pixy.c \
 ../source/pixySPI.c \
 ../source/semihost_hardfault.c \
 ../source/sonic_color.c \
@@ -24,11 +24,11 @@ C_DEPS += \
 ./source/dp_main.d \
 ./source/drive_control.d \
 ./source/globals.d \
+./source/hall_sensors.d \
 ./source/interrupts.d \
 ./source/ir_sensors.d \
 ./source/led_button.d \
 ./source/mtb.d \
-./source/pixy.d \
 ./source/pixySPI.d \
 ./source/semihost_hardfault.d \
 ./source/sonic_color.d \
@@ -40,11 +40,11 @@ OBJS += \
 ./source/dp_main.o \
 ./source/drive_control.o \
 ./source/globals.o \
+./source/hall_sensors.o \
 ./source/interrupts.o \
 ./source/ir_sensors.o \
 ./source/led_button.o \
 ./source/mtb.o \
-./source/pixy.o \
 ./source/pixySPI.o \
 ./source/semihost_hardfault.o \
 ./source/sonic_color.o \
@@ -64,7 +64,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/globals.d ./source/globals.o ./source/interrupts.d ./source/interrupts.o ./source/ir_sensors.d ./source/ir_sensors.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixy.d ./source/pixy.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sonic_color.d ./source/sonic_color.o ./source/timers.d ./source/timers.o ./source/uart_control.d ./source/uart_control.o
+	-$(RM) ./source/delay.d ./source/delay.o ./source/dp_main.d ./source/dp_main.o ./source/drive_control.d ./source/drive_control.o ./source/globals.d ./source/globals.o ./source/hall_sensors.d ./source/hall_sensors.o ./source/interrupts.d ./source/interrupts.o ./source/ir_sensors.d ./source/ir_sensors.o ./source/led_button.d ./source/led_button.o ./source/mtb.d ./source/mtb.o ./source/pixySPI.d ./source/pixySPI.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o ./source/sonic_color.d ./source/sonic_color.o ./source/timers.d ./source/timers.o ./source/uart_control.d ./source/uart_control.o
 
 .PHONY: clean-source
 

@@ -133,7 +133,7 @@ void KontrolaVektoru(void)
 	x_pocatecni = (y_0 >= y_1) ? x_0 : x_1;
 	x_koncove = (y_0 >= y_1) ? x_1 : x_0;
 
-	UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
+	//UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
 
 
 	if(delka == 0) pomer = 0; //rovna horizontalni cara

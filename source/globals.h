@@ -32,6 +32,7 @@
 #include "led_button.h"
 #include "interrupts.h"
 #include "uart_control.h"
+#include "hall_sensors.h"
 
 
 extern bool jedouMotory;

@@ -34,6 +34,7 @@ pin_labels:
 - {pin_num: '60', pin_signal: PTD3/SPI0_MISO/UART2_TX/TPM0_CH3/SPI0_MOSI/FXIO0_D3, label: 'J1[7]', identifier: tracker3}
 - {pin_num: '61', pin_signal: PTD4/LLWU_P14/SPI1_PCS0/UART2_RX/TPM0_CH4/FXIO0_D4, label: 'J1[9]/SDA_LED', identifier: SDA_LED;tracker2}
 - {pin_num: '62', pin_signal: ADC0_SE6b/PTD5/SPI1_SCK/UART2_TX/TPM0_CH5/FXIO0_D5, label: 'J1[11]/J3[2]/SDA_PTD5', identifier: tracker1}
+- {pin_num: '55', pin_signal: PTC10/I2C1_SCL, label: 'J2[1]/I2C1_SCL', identifier: I2C1_SCL;HALL1}
 - {pin_num: '46', pin_signal: PTC3/LLWU_P7/SPI1_SCK/LPUART1_RX/TPM0_CH2/CLKOUT, label: 'J2[15]/U10[11]/J28[1]/INT1_ACCEL', identifier: INT1_ACCEL;BUTTON1}
 - {pin_num: '38', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/TPM2_CH1, label: 'J1[13]', identifier: SDA;MOTOR_PWM1}
 - {pin_num: '37', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/TPM2_CH0, label: 'J1[15]', identifier: SCL;MOTOR_PWM2}
@@ -94,6 +95,7 @@ BOARD_InitPins:
   - {pin_num: '2', peripheral: LPUART1, signal: RX, pin_signal: PTE1/SPI1_MOSI/LPUART1_RX/SPI1_MISO/I2C1_SCL}
   - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: IR_sensor}
   - {pin_num: '8', peripheral: UART2, signal: TX, pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
+  - {pin_num: '55', peripheral: GPIOC, signal: 'GPIO, 10', pin_signal: PTC10/I2C1_SCL, identifier: HALL1, direction: INPUT, gpio_interrupt: kPORT_InterruptRisingEdge}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -165,6 +167,13 @@ void BOARD_InitPins(void)
     };
     /* Initialize GPIO functionality on pin PTC8 (pin 53)  */
     GPIO_PinInit(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, &SRF05_trigger1_config);
+
+    gpio_pin_config_t HALL1_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTC10 (pin 55)  */
+    GPIO_PinInit(BOARD_INITPINS_HALL1_GPIO, BOARD_INITPINS_HALL1_PIN, &HALL1_config);
 
     gpio_pin_config_t tracker6_config = {
         .pinDirection = kGPIO_DigitalInput,
@@ -249,6 +258,12 @@ void BOARD_InitPins(void)
 
     /* Interrupt configuration on PORTC1 (pin 44): Interrupt on falling edge */
     PORT_SetPinInterruptConfig(BOARD_INITPINS_SW3_PORT, BOARD_INITPINS_SW3_PIN, kPORT_InterruptFallingEdge);
+
+    /* PORTC10 (pin 55) is configured as PTC10 */
+    PORT_SetPinMux(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTC10 (pin 55): Interrupt on rising edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_InterruptRisingEdge);
 
     /* PORTC4 (pin 49) is configured as SPI0_PCS0 */
     PORT_SetPinMux(BOARD_INITPINS_SPI0_CS0_PORT, BOARD_INITPINS_SPI0_CS0_PIN, kPORT_MuxAlt2);

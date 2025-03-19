@@ -30,22 +30,17 @@ int main(void)
     tmp0_init();
 
     //irsensor_init();
-    PixyStart();
-    uart_comm_init();
-
-
+    //PixyStart();
+    //uart_comm_init();
 
         /* Send g_tipString out non-blocking */
-        UART_WriteBlocking(UART2, g_tipString, sizeof(g_tipString) / sizeof(g_tipString[0]));
-
-
-
+        //ART_WriteBlocking(UART2, g_tipString, sizeof(g_tipString) / sizeof(g_tipString[0]));
 
  	while (1){
 
- 	 	SDK_DelayAtLeastUs(1000*100, 4800000);
- 	        UART_WriteBlocking(UART2, "a", 1);
-		//processColorSensorValue();
+ 	 	//SDK_DelayAtLeastUs(1000*100, 4800000);
+ 	    // UART_WriteBlocking(UART2, "a", 1);
+		//processColorSensorValue(); //TODO TOHLE ASI NEKAM PRESUNOUT, DO TIMERU MISTO PIXY
 		//irsensor_mesure();
 
 

@@ -44,6 +44,8 @@ void LPTMR_timer_start(void)
 
 void LPTMR_IRQ_HANDLER(void)
 {
+
+	//PRINTF("TRIGGER OF \r\n");
     LPTMR_ClearStatusFlags(LPTMR_BASE, kLPTMR_TimerCompareFlag);
 
     LPTMR_timer_finished = true;

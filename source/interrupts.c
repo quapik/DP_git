@@ -66,5 +66,12 @@ void PORTB_PORTC_PORTD_PORTE_IRQHandler(void)
     	updateTrackerValues(6);
         PORT_ClearPinsInterruptFlags(BOARD_INITPINS_tracker6_PORT, (1 << BOARD_INITPINS_tracker6_PIN));
     }
+    /*
+    if (PORT_GetPinsInterruptFlags(BOARD_INITPINS_HALL1_PORT) & (1 << BOARD_INITPINS_HALL1_PIN))
+    {
+    	ZmenaHranyHall();
+        PORT_ClearPinsInterruptFlags(BOARD_INITPINS_HALL1_PORT, (1 << BOARD_INITPINS_HALL1_PIN));
+    }
+    */
 }
 

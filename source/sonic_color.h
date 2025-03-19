@@ -57,6 +57,7 @@ uint32_t pulseWidthToUs(uint32_t PW);
 void checkColorSensorValue(uint32_t PW_US, uint8_t i);
 void processColorSensorValue();
 void tmp0_reset(void);
+void sonic_reset(void);
 
 extern volatile bool color_event_flag;
 extern volatile uint32_t last_color_pw;

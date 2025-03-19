@@ -40,7 +40,7 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace_reinstall\DP\source/delay.h \
  D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h \
  D:\Skola\DP\workspace_reinstall\DP\source/timers.h \
- ../source/uart_control.h
+ ../source/uart_control.h ../source/hall_sensors.h
 ../source/globals.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_common.h:
@@ -87,3 +87,4 @@ D:\Skola\DP\workspace_reinstall\DP\source/delay.h:
 D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\source/timers.h:
 ../source/uart_control.h:
+../source/hall_sensors.h:

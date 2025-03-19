@@ -57,7 +57,11 @@ volatile uint8_t last_color_index = 0;
 #define POCET_MERENI 10
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
-bool prumerovani = false;
+
+
+bool prumerovani = true;
+
+
 uint32_t counter = 0;
 
 tpm_config_t tmp0info;
@@ -80,7 +84,19 @@ void tmp0_reset(void)
 	   TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
 	   //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
 	   TriggerPulse1();
-	   TriggerPulse2();
+	   //TriggerPulse2();
+}
+
+void sonic_reset(void)
+{
+	overflowCount1 = 0;
+	overflowCount2 = 0;
+	  TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
+		   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
+		   risigneEdgeCaptured1 = false;
+		   	   risigneEdgeCaptured2 = false;
+		   	TriggerPulse1();
+
 }
 
 //Funkce na inicializace TMP0 - obsluhuje senzory na ruznych channelech
@@ -114,7 +130,10 @@ void tmp0_init(void)
    TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
    //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
    TriggerPulse1();
+
+   //SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
    //TriggerPulse2();
+
    PRINTF("TMP0 INIT FINISHED\r\n");
 }
 
@@ -122,21 +141,28 @@ void tmp0_init(void)
 //Funkce, která vyšle na GPIO pinu 10s dlouhý signál, kdy SRF05 senzor vysílá ultrazuvkový signál
 void TriggerPulse1(void)
 {	isTriggerTriggering = true;
+
+	//risigneEdgeCaptured1 = false;
+	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
+
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 1);
-	//SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-	//GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
-	actualTrigger = 1;
-	LPTMR_timer_start();
+	SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
+	//actualTrigger = 1;
+	//LPTMR_timer_start();
 }
 
 void TriggerPulse2(void)
 {
 	isTriggerTriggering = true;
+	//risigneEdgeCaptured2 = false;
+	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
+
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 1);
-    //SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-    //GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
-	actualTrigger = 2;
-	LPTMR_timer_start();
+	SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
+	//actualTrigger = 2;
+	//LPTMR_timer_start();
 }
 
 //Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru
@@ -189,25 +215,28 @@ void processColorSensorValue()
 	// S2 H
 	// S3 L  for clear (no filter)
 
-	if(1) //driving
+	if(driving) //driving
 	{
 		if(color_event_flag)
 			{
 				color_event_flag = false;
-				/*// BILA
+				// BILA
 				uint16_t color_treshold1_WHITE = 500;
 				uint16_t color_treshold1_BLACK = 1000;
 				uint16_t color_treshold2_WHITE = 1500;
 				uint16_t color_treshold2_BLACK = 5000;
-				*/
+
+				/*
 				//karton
 				uint16_t color_treshold1_WHITE = 550;
 				uint16_t color_treshold1_BLACK = 1000;
 				uint16_t color_treshold2_WHITE = 2000;
 				uint16_t color_treshold2_BLACK = 5000;
+				*/
 				if(last_color_index == 1)
 				{
 					COLOR1_value_global = last_color_pw;
+					//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
 					//PRINTF("COLOR1 value = %u \r\n", PW_US);
 					if(probihaZmena == false)
 					{
@@ -215,7 +244,7 @@ void processColorSensorValue()
 						{
 							if(COLOR1_value_global > color_treshold1_WHITE)
 								{
-									PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
+
 									probihaZmena = true;
 
 									steer_left(50);
@@ -224,18 +253,18 @@ void processColorSensorValue()
 								}
 						}
 					}
-
 				}
 				else
 				{
 					COLOR2_value_global = last_color_pw;
+					//PRINTF("C2 %u  (c1 %u) \r\n", COLOR2_value_global,COLOR1_value_global);
 					if(probihaZmena == false)
 					{
 						if(COLOR2_value_global < color_treshold2_BLACK)
 						{
 							if(COLOR2_value_global > color_treshold2_WHITE)
 							{
-								PRINTF("C2 %u  (c1 %u) \r\n", COLOR2_value_global,COLOR1_value_global);
+
 								probihaZmena = true;
 								steer_right(50);
 								PIT_timer1_start();
@@ -246,11 +275,8 @@ void processColorSensorValue()
 					}
 				}
 			}
-
 	}
-
 	EnableIRQ(TPM0_INTERRUPT_NUMBER);
-
 }
 
 
@@ -265,11 +291,15 @@ void TMP0_INTERRUPT_HANDLER(void)
     {
         overflowCount1++;
         overflowCount2++;
+
+        //PRINTF("OF %u OF2 %u\r\n", overflowCount1,overflowCount2);
+        if( overflowCount1==2 || overflowCount2==2  ) sonic_reset();
+
         overflowCountColor1++;
         overflowCountColor2++;
         TPM_ClearStatusFlags(TPM0_BASEADDR, kTPM_TimeOverflowFlag);
     }
-
+//-------------------SRF----------------------------------------------------------------------------------
     if (tmp0_interrupt_status & SRF05_1_CHANNEL_FLAG)
     {
     	timerVal1 = TPM0_BASEADDR->CONTROLS[SRF05_1_channel].CnV;
@@ -295,6 +325,9 @@ void TMP0_INTERRUPT_HANDLER(void)
             pulseWidth1 = pulseWidthLength(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
             distance1 = distanceCountF(pulseWidth1);
 
+            //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
+            //if(distance1 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
             //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
             if(prumerovani)
             {
@@ -318,12 +351,13 @@ void TMP0_INTERRUPT_HANDLER(void)
             else
             {
             	SRF_distance1_global = distance1;
-            	//PRINTF("Distance1 = %u cm (%u) \r\n",distance1, distance2);
+            	PRINTF("Distance1 = %u cm \r\n",distance1);
             	isObstacle(SRF_distance1_global,SRF_distance2_global);
             }
 
 			//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 			TriggerPulse2();
+			//TriggerPulse1();
         }
         TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_1_CHANNEL_FLAG);
     }
@@ -353,6 +387,11 @@ void TMP0_INTERRUPT_HANDLER(void)
 
                 distance2 = distanceCountF(pulseWidth2);
 
+                //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
+                //if(distance2 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+
+
                 //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
                 if(prumerovani)
                 {
@@ -365,7 +404,7 @@ void TMP0_INTERRUPT_HANDLER(void)
                 	{
                 		distance2_sum += distance2;
                 		SRF_distance2_global = distance2_sum / POCET_MERENI;
-                		PRINTF("AVG Distance2 = %u cm\r\n",SRF_distance2_global);
+                		//PRINTF("		AVG Distance2 = %u cm\r\n",SRF_distance2_global);
                 		pocet_mereni2 = 1;
                 		distance2_sum = 0;
                 		isObstacle(SRF_distance1_global,SRF_distance2_global);
@@ -374,15 +413,16 @@ void TMP0_INTERRUPT_HANDLER(void)
                 else
                 {
                 	SRF_distance2_global = distance2;
-                	//PRINTF("Distance2 = %u cm (%u) \r\n",distance2, distance1);
+                	PRINTF("			Distance2 = %u cm \r\n",distance2);
                 	isObstacle(SRF_distance1_global,SRF_distance2_global);
                 }
-    			//SDK_DelayAtLeastUs(100000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    			//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     			TriggerPulse1();
+    			//TriggerPulse2();
             }
             TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_2_CHANNEL_FLAG);
         }
-
+//-------------------COLORS----------------------------------------------------------------------------------
     if (tmp0_interrupt_status & COLOR_1_CHANNEL_FLAG)
        {
        	timerValColor1 = TPM0_BASEADDR->CONTROLS[COLOR_1_channel].CnV;
@@ -445,16 +485,18 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
+	//PRINTF("%d %d\r\n", d1,d2);
 	if(driving)
 	{
-		uint16_t hranice = 20;
+		uint16_t hranice = 30;
+
 		if(d1 < hranice | d2 < hranice)
 		{
 		led_R();
 		//Vypnuti motoru a nastaveni pro
 		motor_set_speed(0);
 		steer_straight();
-		PRINTF("OBSTACLE DETECTED \r\n");
+		PRINTF("OBSTACLE DETECTED %d %d\r\n", d1,d2);
 		startMotorsButtonPressed = false;
 		isObstacleDetected = true;
 		driving = false;

@@ -45,6 +45,7 @@ source/drive_control.o source/drive_control.d: ../source/drive_control.c \
  D:\Skola\DP\workspace_reinstall\DP\source/led_button.h \
  D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h \
  D:\Skola\DP\workspace_reinstall\DP\source/uart_control.h \
+ D:\Skola\DP\workspace_reinstall\DP\source/hall_sensors.h \
  ../source/globals.h
 ../source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\utilities/fsl_debug_console.h:
@@ -93,4 +94,5 @@ D:\Skola\DP\workspace_reinstall\DP\source/timers.h:
 D:\Skola\DP\workspace_reinstall\DP\source/led_button.h:
 D:\Skola\DP\workspace_reinstall\DP\source/interrupts.h:
 D:\Skola\DP\workspace_reinstall\DP\source/uart_control.h:
+D:\Skola\DP\workspace_reinstall\DP\source/hall_sensors.h:
 ../source/globals.h:

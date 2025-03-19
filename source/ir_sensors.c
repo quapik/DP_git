@@ -113,6 +113,7 @@ void  getTrackersValuesCount (void)
 	{
 		if(ir_trackers[i] == true) cnt++;
 	}
+
 	PRINTF("TRUE COUNT %u \r\n", cnt);
 
 	if(cnt > 2)
@@ -123,6 +124,7 @@ void  getTrackersValuesCount (void)
 		startMotorsButtonPressed = false;
 		driving = false;
 	}
+
 
 	//return cnt;
 }

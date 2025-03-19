@@ -36,7 +36,7 @@ void SW1_pressed(void)
 	{
 		startMotorsButtonPressed=true;
 	    led_G();
-	    motor_set_speed(23);
+	    motor_set_speed(30);
 	    driving = true;
 	}
 	else if(startMotorsButtonPressed==true)
