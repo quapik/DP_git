@@ -13,31 +13,31 @@ volatile bool probehloUspesneMereniSRF05_2 = false;
 volatile bool probehloUspesneMereniColor_1 = false;
 volatile bool probehloUspesneMereniColor_2 = false;
 
-volatile uint32_t risingEdgeTime1 = 0;
-volatile uint32_t fallingEdgeTime1 = 0;
-volatile uint32_t risingEdgeTime2 = 0;
-volatile uint32_t fallingEdgeTime2 = 0;
+volatile uint16_t risingEdgeTime1 = 0;
+volatile uint16_t fallingEdgeTime1 = 0;
+volatile uint16_t risingEdgeTime2 = 0;
+volatile uint16_t fallingEdgeTime2 = 0;
 
-volatile uint32_t risingEdgeTimeColor1 = 0;
-volatile uint32_t fallingEdgeTimeColor1 = 0;
-volatile uint32_t risingEdgeTimeColor2 = 0;
-volatile uint32_t fallingEdgeTimeColor2 = 0;
+volatile uint16_t risingEdgeTimeColor1 = 0;
+volatile uint16_t fallingEdgeTimeColor1 = 0;
+volatile uint16_t risingEdgeTimeColor2 = 0;
+volatile uint16_t fallingEdgeTimeColor2 = 0;
 
 volatile bool risigneEdgeCaptured1 = false;
 volatile bool risigneEdgeCaptured2 = false;
 volatile bool risigneEdgeCapturedColor1 = false;
 volatile bool risigneEdgeCapturedColor2 = false;
 
-volatile uint32_t overflowCount1 = 0;
-volatile uint32_t overflowCount2 = 0;
-volatile uint32_t overflowCountColor1 = 0;
-volatile uint32_t overflowCountColor2 = 0;
+volatile uint16_t overflowCount1 = 0;
+volatile uint16_t overflowCount2 = 0;
+volatile uint16_t overflowCountColor1 = 0;
+volatile uint16_t overflowCountColor2 = 0;
 
 
-volatile uint32_t timerVal1;
-volatile uint32_t timerVal2;
-volatile uint32_t timerValColor1;
-volatile uint32_t timerValColor2;
+volatile uint16_t timerVal1;
+volatile uint16_t timerVal2;
+volatile uint16_t timerValColor1;
+volatile uint16_t timerValColor2;
 
 volatile uint32_t pulseWidth1 = 0;
 volatile uint32_t pulseWidth2 = 0;
@@ -57,14 +57,23 @@ volatile uint8_t last_color_index = 0;
 #define POCET_MERENI 10
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
-
+uint32_t counter = 0;
+tpm_config_t tmp0info;
 
 bool prumerovani = true;
 
 
-uint32_t counter = 0;
+bool SONIC1_ocekavano = false;
+bool SONIC2_ocekavano = false;
 
-tpm_config_t tmp0info;
+bool COLOR1_ocekavano = false;
+bool COLOR2_ocekavano = false;
+
+volatile uint32_t COLOR1_PW = 0;
+volatile uint32_t COLOR2_PW = 0;
+
+
+
 
 void tmp0_reset(void)
 {
@@ -95,7 +104,9 @@ void sonic_reset(void)
 		   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 		   risigneEdgeCaptured1 = false;
 		   	   risigneEdgeCaptured2 = false;
-		   	TriggerPulse1();
+		   	 TriggerPulse1();
+
+		   	   //TriggerPulse2();
 
 }
 
@@ -130,10 +141,11 @@ void tmp0_init(void)
    TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
    //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
    TriggerPulse1();
+   //TriggerPulse2();
 
    //SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
    //TriggerPulse2();
-
+   COLOR1_ocekavano = true;
    PRINTF("TMP0 INIT FINISHED\r\n");
 }
 
@@ -150,6 +162,9 @@ void TriggerPulse1(void)
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
 	//actualTrigger = 1;
 	//LPTMR_timer_start();
+
+   	SONIC1_ocekavano = true;
+	SONIC2_ocekavano = false;
 }
 
 void TriggerPulse2(void)
@@ -163,6 +178,9 @@ void TriggerPulse2(void)
     GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
 	//actualTrigger = 2;
 	//LPTMR_timer_start();
+
+   	SONIC1_ocekavano = false;
+	SONIC2_ocekavano = true;
 }
 
 //Pokud je zmerena vzdalenost delsi nez 450, zmeni se na maximalni meritelnou hodnotu senzoru
@@ -200,13 +218,18 @@ void checkColorSensorValue(uint32_t PW_US, uint8_t i)
 	 last_color_pw = PW_US;
 	 last_color_index = i;
 	 color_event_flag = true;
+	 if (i == 1)
+	 {
+		 COLOR1_PW = PW_US;
+	 }
+	 else COLOR2_PW = PW_US;
 }
 
 //Funkce ktera  zpracovava periodicky ulozene hodnoty v promenych a kontroluje barvu
 //Volaana z mainu
 void processColorSensorValue()
 {
-	//TODO pridat sem veci z preruseni
+	//TODO pridat sem veci z preruseni!!!!!!!!!!!
 	DisableIRQ(TPM0_INTERRUPT_NUMBER);
 	//Zaznamenae merici honoty, pirmo na ledky, NIC je pohled do prazdna na zem cca metr
 	//100% S0 S1 H H | NIC - cca 53, BILA 26-23, CERNA PASKA 16, FIXA 18
@@ -217,6 +240,47 @@ void processColorSensorValue()
 
 	if(driving) //driving
 	{
+
+		COLOR1_value_global  = COLOR1_PW;
+		COLOR2_value_global  = COLOR2_PW;
+		// BILA
+		uint16_t color_treshold1_WHITE = 500;
+		uint16_t color_treshold1_BLACK = 1000;
+		uint16_t color_treshold2_WHITE = 1500;
+		uint16_t color_treshold2_BLACK = 5000;
+
+		if(probihaZmena == false)
+		{
+			//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
+			if(COLOR1_value_global < color_treshold1_BLACK)
+			{
+				if(COLOR1_value_global > color_treshold1_WHITE)
+					{
+						PRINTF("COLOR 1 ZATACENI\r\n");
+						probihaZmena = true;
+						steer_left(50);
+						LPTMR_timer_start();
+						led_B();
+					}
+			}
+			if(COLOR2_value_global < color_treshold2_BLACK)
+				{
+					if(COLOR2_value_global > color_treshold2_WHITE)
+					{
+						PRINTF("COLOR 2 ZATACENI\r\n");
+						probihaZmena = true;
+						steer_right(50);
+						LPTMR_timer_start();
+						led_B();
+
+					}
+				}
+		}
+
+
+
+	}
+		/*
 		if(color_event_flag)
 			{
 				color_event_flag = false;
@@ -226,18 +290,18 @@ void processColorSensorValue()
 				uint16_t color_treshold2_WHITE = 1500;
 				uint16_t color_treshold2_BLACK = 5000;
 
-				/*
+
 				//karton
-				uint16_t color_treshold1_WHITE = 550;
-				uint16_t color_treshold1_BLACK = 1000;
-				uint16_t color_treshold2_WHITE = 2000;
-				uint16_t color_treshold2_BLACK = 5000;
-				*/
+				//uint16_t color_treshold1_WHITE = 550;
+				//uint16_t color_treshold1_BLACK = 1000;
+				//uint16_t color_treshold2_WHITE = 2000;
+				//uint16_t color_treshold2_BLACK = 5000;
+
 				if(last_color_index == 1)
 				{
 					COLOR1_value_global = last_color_pw;
 					//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
-					//PRINTF("COLOR1 value = %u \r\n", PW_US);
+					PRINTF("COLOR1 value = %u \r\n", last_color_pw);
 					if(probihaZmena == false)
 					{
 						if(COLOR1_value_global < color_treshold1_BLACK)
@@ -246,9 +310,8 @@ void processColorSensorValue()
 								{
 
 									probihaZmena = true;
-
 									steer_left(50);
-									PIT_timer1_start();
+									LPTMR_timer_start();
 									led_B();
 								}
 						}
@@ -258,6 +321,7 @@ void processColorSensorValue()
 				{
 					COLOR2_value_global = last_color_pw;
 					//PRINTF("C2 %u  (c1 %u) \r\n", COLOR2_value_global,COLOR1_value_global);
+					PRINTF("COLOR2 value = %u \r\n", last_color_pw);
 					if(probihaZmena == false)
 					{
 						if(COLOR2_value_global < color_treshold2_BLACK)
@@ -267,7 +331,7 @@ void processColorSensorValue()
 
 								probihaZmena = true;
 								steer_right(50);
-								PIT_timer1_start();
+								LPTMR_timer_start();
 								led_B();
 
 							}
@@ -276,6 +340,7 @@ void processColorSensorValue()
 				}
 			}
 	}
+	*/
 	EnableIRQ(TPM0_INTERRUPT_NUMBER);
 }
 
@@ -292,8 +357,15 @@ void TMP0_INTERRUPT_HANDLER(void)
         overflowCount1++;
         overflowCount2++;
 
-        //PRINTF("OF %u OF2 %u\r\n", overflowCount1,overflowCount2);
-        if( overflowCount1==2 || overflowCount2==2  ) sonic_reset();
+
+        if( overflowCount1==2 || overflowCount2==2  )
+        	{
+        	if(SONIC1_ocekavano) PRINTF("SONIC1      TRUE");
+        	if(SONIC2_ocekavano) PRINTF("SONIC2      TRUE");
+        	PRINTF("OF %u OF2 %u\r\n", overflowCount1,overflowCount2);
+
+        	sonic_reset();
+        	}
 
         overflowCountColor1++;
         overflowCountColor2++;
@@ -302,179 +374,196 @@ void TMP0_INTERRUPT_HANDLER(void)
 //-------------------SRF----------------------------------------------------------------------------------
     if (tmp0_interrupt_status & SRF05_1_CHANNEL_FLAG)
     {
-    	timerVal1 = TPM0_BASEADDR->CONTROLS[SRF05_1_channel].CnV;
-    	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-        if (!risigneEdgeCaptured1)
-        {
-        	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-            risingEdgeTime1 = timerVal1;
-            risigneEdgeCaptured1 = true;
-            overflowCount1 = 0;
-            //Zmena zachycavani na sestupnou hranu
-            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_FallingEdge);
-        }
-        else
-        {
-        	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-            fallingEdgeTime1 = timerVal1;
-            probehloUspesneMereniSRF05_1 = true;
-            risigneEdgeCaptured1 = false;
-            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
+    	if(SONIC1_ocekavano)
+    	{
+    		timerVal1 = TPM0_BASEADDR->CONTROLS[SRF05_1_channel].CnV;
+    		    	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
+    		        if (!risigneEdgeCaptured1)
+    		        {
+    		        	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
+    		            risingEdgeTime1 = timerVal1;
+    		            risigneEdgeCaptured1 = true;
+    		            overflowCount1 = 0;
+    		            //Zmena zachycavani na sestupnou hranu
+    		            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_FallingEdge);
+    		        }
+    		        else
+    		        {
+    		        	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
+    		            fallingEdgeTime1 = timerVal1;
+    		            probehloUspesneMereniSRF05_1 = true;
+    		            risigneEdgeCaptured1 = false;
+    		            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 
-            //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-            pulseWidth1 = pulseWidthLength(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
-            distance1 = distanceCountF(pulseWidth1);
+    		            //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
+    		            pulseWidth1 = pulseWidthLength(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
+    		            distance1 = distanceCountF(pulseWidth1);
 
-            //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
-            //if(distance1 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    		            //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
+    		            //if(distance1 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
-            //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
-            if(prumerovani)
-            {
-            	if(pocet_mereni1 <  POCET_MERENI)
-            	{
-            		distance1_sum += distance1;
-            		pocet_mereni1++;
-            	}
-            	else
-            	{
-            		distance1_sum += distance1;
-            		SRF_distance1_global = distance1_sum / POCET_MERENI;
-            		//PRINTF("AVG Distance1 = %u cm\r\n",SRF_distance1_global);
-            		pocet_mereni1 = 1;
-            		distance1_sum = 0;
-            		isObstacle(SRF_distance1_global,SRF_distance2_global);
+    		            //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
+    		            if(prumerovani)
+    		            {
+    		            	if(pocet_mereni1 <  POCET_MERENI)
+    		            	{
+    		            		distance1_sum += distance1;
+    		            		pocet_mereni1++;
+    		            	}
+    		            	else
+    		            	{
+    		            		distance1_sum += distance1;
+    		            		SRF_distance1_global = distance1_sum / POCET_MERENI;
+    		            		//PRINTF("AVG Distance1 = %u cm\r\n",SRF_distance1_global);
+    		            		pocet_mereni1 = 1;
+    		            		distance1_sum = 0;
+    		            		isObstacle(SRF_distance1_global,SRF_distance2_global);
 
-            	}
-            }
+    		            	}
+    		            }
 
-            else
-            {
-            	SRF_distance1_global = distance1;
-            	PRINTF("Distance1 = %u cm \r\n",distance1);
-            	isObstacle(SRF_distance1_global,SRF_distance2_global);
-            }
+    		            else
+    		            {
+    		            	SRF_distance1_global = distance1;
+    		            	PRINTF("Distance1 = %u cm \r\n",distance1);
+    		            	isObstacle(SRF_distance1_global,SRF_distance2_global);
+    		            }
 
-			//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-			TriggerPulse2();
-			//TriggerPulse1();
-        }
+    					//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    					TriggerPulse2();
+    					//TriggerPulse1();
+    		        }
+
+    	}
         TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_1_CHANNEL_FLAG);
     }
     if (tmp0_interrupt_status & SRF05_2_CHANNEL_FLAG)
         {
-        	timerVal2 = TPM0_BASEADDR->CONTROLS[SRF05_2_channel].CnV;
-        	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-            if (!risigneEdgeCaptured2)
-            {
-            	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-                risingEdgeTime2 = timerVal2;
-                risigneEdgeCaptured2 = true;
-                overflowCount2 = 0;
-                //Zmena zachycavani na sestupnou hranu
-                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_FallingEdge);
-            }
-            else
-            {
-            	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-                fallingEdgeTime2 = timerVal2;
-                probehloUspesneMereniSRF05_2 = true;
-                risigneEdgeCaptured2 = false;
-                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
+        	if(SONIC2_ocekavano)
+        	{
+        		timerVal2 = TPM0_BASEADDR->CONTROLS[SRF05_2_channel].CnV;
+        		        	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
+        		            if (!risigneEdgeCaptured2)
+        		            {
+        		            	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
+        		                risingEdgeTime2 = timerVal2;
+        		                risigneEdgeCaptured2 = true;
+        		                overflowCount2 = 0;
+        		                //Zmena zachycavani na sestupnou hranu
+        		                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_FallingEdge);
+        		            }
+        		            else
+        		            {
+        		            	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
+        		                fallingEdgeTime2 = timerVal2;
+        		                probehloUspesneMereniSRF05_2 = true;
+        		                risigneEdgeCaptured2 = false;
+        		                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 
-                //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-                pulseWidth2 = pulseWidthLength(risingEdgeTime2,fallingEdgeTime2,overflowCount2);
+        		                //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
+        		                pulseWidth2 = pulseWidthLength(risingEdgeTime2,fallingEdgeTime2,overflowCount2);
 
-                distance2 = distanceCountF(pulseWidth2);
+        		                distance2 = distanceCountF(pulseWidth2);
 
-                //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
-                //if(distance2 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        		                //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
+        		                //if(distance2 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
 
 
-                //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
-                if(prumerovani)
-                {
-                	if(pocet_mereni2 <  POCET_MERENI)
-                	{
-                		distance2_sum += distance2;
-                		pocet_mereni2++;
-                	}
-                	else
-                	{
-                		distance2_sum += distance2;
-                		SRF_distance2_global = distance2_sum / POCET_MERENI;
-                		//PRINTF("		AVG Distance2 = %u cm\r\n",SRF_distance2_global);
-                		pocet_mereni2 = 1;
-                		distance2_sum = 0;
-                		isObstacle(SRF_distance1_global,SRF_distance2_global);
-                	}
-                }
-                else
-                {
-                	SRF_distance2_global = distance2;
-                	PRINTF("			Distance2 = %u cm \r\n",distance2);
-                	isObstacle(SRF_distance1_global,SRF_distance2_global);
-                }
-    			//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-    			TriggerPulse1();
-    			//TriggerPulse2();
-            }
+        		                //Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
+        		                if(prumerovani)
+        		                {
+        		                	if(pocet_mereni2 <  POCET_MERENI)
+        		                	{
+        		                		distance2_sum += distance2;
+        		                		pocet_mereni2++;
+        		                	}
+        		                	else
+        		                	{
+        		                		distance2_sum += distance2;
+        		                		SRF_distance2_global = distance2_sum / POCET_MERENI;
+        		                		//PRINTF("		AVG Distance2 = %u cm\r\n",SRF_distance2_global);
+        		                		pocet_mereni2 = 1;
+        		                		distance2_sum = 0;
+        		                		isObstacle(SRF_distance1_global,SRF_distance2_global);
+        		                	}
+        		                }
+        		                else
+        		                {
+        		                	SRF_distance2_global = distance2;
+        		                	PRINTF("			Distance2 = %u cm \r\n",distance2);
+        		                	isObstacle(SRF_distance1_global,SRF_distance2_global);
+        		                }
+        		    			//SDK_DelayAtLeastUs(1000U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        		    			TriggerPulse1();
+        		    			//TriggerPulse2();
+        		            }
+        	}
             TPM_ClearStatusFlags(TPM0_BASEADDR, SRF05_2_CHANNEL_FLAG);
         }
 //-------------------COLORS----------------------------------------------------------------------------------
     if (tmp0_interrupt_status & COLOR_1_CHANNEL_FLAG)
        {
-       	timerValColor1 = TPM0_BASEADDR->CONTROLS[COLOR_1_channel].CnV;
-       	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-           if (!risigneEdgeCapturedColor1)
-           {
-        	   risingEdgeTimeColor1 = timerValColor1;
-               risigneEdgeCapturedColor1 = true;
-               overflowCountColor1 = 0;
-               //Zmena zachycavani na sestupnou hranu
-               TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_FallingEdge);
-           }
-           else
-           {
-               fallingEdgeTimeColor1 = timerValColor1;
-               probehloUspesneMereniColor_1 = true;
-               risigneEdgeCapturedColor1 = false;
-               TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
-               //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
+    		//TODO TOTO MOZNA ODENDAVAT!
+    		if(COLOR1_ocekavano)
+    		{
+    			timerValColor1 = TPM0_BASEADDR->CONTROLS[COLOR_1_channel].CnV;
+    			       	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
+    			           if (!risigneEdgeCapturedColor1)
+    			           {
+    			        	   risingEdgeTimeColor1 = timerValColor1;
+    			               risigneEdgeCapturedColor1 = true;
+    			               overflowCountColor1 = 0;
+    			               //Zmena zachycavani na sestupnou hranu
+    			               TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_FallingEdge);
+    			           }
+    			           else
+    			           {
+    			               fallingEdgeTimeColor1 = timerValColor1;
+    			               probehloUspesneMereniColor_1 = true;
+    			               risigneEdgeCapturedColor1 = false;
+    			               TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
+    			               //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
 
-               pulseWidthColor1 = pulseWidthLength(risingEdgeTimeColor1,fallingEdgeTimeColor1,overflowCountColor1);
-               checkColorSensorValue(pulseWidthToUs(pulseWidthColor1),1);
-
-           }
+    			               pulseWidthColor1 = pulseWidthLength(risingEdgeTimeColor1,fallingEdgeTimeColor1,overflowCountColor1);
+    			               checkColorSensorValue(pulseWidthToUs(pulseWidthColor1),1);
+    			               COLOR1_ocekavano = false;
+    			               COLOR2_ocekavano = true;
+    			           }
+    		}
            TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_1_CHANNEL_FLAG);
        }
     if (tmp0_interrupt_status & COLOR_2_CHANNEL_FLAG)
            {
-           	timerValColor2 = TPM0_BASEADDR->CONTROLS[COLOR_2_channel].CnV;
-           	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-               if (!risigneEdgeCapturedColor2)
-               {
-               	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-                   risingEdgeTimeColor2 = timerValColor2;
-                   risigneEdgeCapturedColor2 = true;
-                   overflowCountColor2 = 0;
-                   //Zmena zachycavani na sestupnou hranu
-                   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_FallingEdge);
-               }
-               else
-               {
-               	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-                   fallingEdgeTimeColor2 = timerValColor2;
-                   probehloUspesneMereniColor_2 = true;
-                   risigneEdgeCapturedColor2 = false;
-                   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);
+           		if(COLOR2_ocekavano)
+           		{
+           			timerValColor2 = TPM0_BASEADDR->CONTROLS[COLOR_2_channel].CnV;
+					//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
+				   if (!risigneEdgeCapturedColor2)
+				   {
+					//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
+					   risingEdgeTimeColor2 = timerValColor2;
+					   risigneEdgeCapturedColor2 = true;
+					   overflowCountColor2 = 0;
+					   //Zmena zachycavani na sestupnou hranu
+					   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_FallingEdge);
+				   }
+				   else
+				   {
+					//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
+					   fallingEdgeTimeColor2 = timerValColor2;
+					   probehloUspesneMereniColor_2 = true;
+					   risigneEdgeCapturedColor2 = false;
+					   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);
 
-                   //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-                   pulseWidthColor2 = pulseWidthLength(risingEdgeTimeColor2,fallingEdgeTimeColor2,overflowCountColor2);
-                   checkColorSensorValue(pulseWidthToUs(pulseWidthColor2),2);
+					   //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
+					   pulseWidthColor2 = pulseWidthLength(risingEdgeTimeColor2,fallingEdgeTimeColor2,overflowCountColor2);
+					   checkColorSensorValue(pulseWidthToUs(pulseWidthColor2),2);
+					   COLOR1_ocekavano = true;
+					   COLOR2_ocekavano = false;
 
-               }
+				   }
+           		 }
                TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_2_CHANNEL_FLAG);
 
            }
@@ -485,10 +574,12 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
-	//PRINTF("%d %d\r\n", d1,d2);
+	PRINTF("%d %d\r\n", d1,d2);
+
+	/*
 	if(driving)
 	{
-		uint16_t hranice = 30;
+		uint16_t hranice = 15;
 
 		if(d1 < hranice | d2 < hranice)
 		{
@@ -502,6 +593,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		driving = false;
 		}
 	}
+	*/
 	/*
 	else if(d1 < 100 | d2 < 100)
 	{

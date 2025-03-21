@@ -26,11 +26,11 @@ int main(void)
     motors_init();
 
     PIT_Timer_Init();
-    LPTMR_Timer_Init();
     tmp0_init();
-
+    LPTMR_Timer_Init();
+    PIT_timer1_start();
     //irsensor_init();
-    //PixyStart();
+    PixyStart();
     //uart_comm_init();
 
         /* Send g_tipString out non-blocking */
@@ -40,7 +40,7 @@ int main(void)
 
  	 	//SDK_DelayAtLeastUs(1000*100, 4800000);
  	    // UART_WriteBlocking(UART2, "a", 1);
-		//processColorSensorValue(); //TODO TOHLE ASI NEKAM PRESUNOUT, DO TIMERU MISTO PIXY
+
 		//irsensor_mesure();
 
 
@@ -73,7 +73,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-/*
+ 		/*
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -84,7 +84,8 @@ int main(void)
     		PRINTF("%d \r\n", (int)(pct));
     		motor_set_speed(pct);
     	}
-*/
+    	*/
+
 
     }
 }

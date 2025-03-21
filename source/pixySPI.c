@@ -239,11 +239,11 @@ void PixyZpracujVektory(void)
 		pocet_vektoru_i--;
 		offset = offset + 6;
 	}
-	VykstujiSeKolmeVektory();
+	//VykstujiSeKolmeVektory();
 
-	if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
-	aspon_jedna_kolma_dvojice = false;
-	PixyGetVectors();
+	//if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
+	//aspon_jedna_kolma_dvojice = false;
+	//PixyGetVectors();
 
 	PRINTF("------------------------------------\r\n");
 

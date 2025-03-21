@@ -57,8 +57,6 @@ void motors_init(void)
 
     //motor_set_check();
     //servo_check();
-
-
 }
 
 
@@ -133,8 +131,8 @@ void motor_set_speed(int8_t pct)
 {	float speed = MOTOR_MIN + (MOTOR_MAX-MOTOR_MIN)* (pct*0.01);
 
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
-	if(pct == 0) speed = MOTOR_MIN;
-	if(pct == 100) speed = MOTOR_MAX;
+	if(pct <= 0) speed = MOTOR_MIN;
+	if(pct >= 100) speed = MOTOR_MAX;
 
 	//PRINTF("%i\r\n", (int)speed);
 

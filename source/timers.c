@@ -8,46 +8,61 @@
 #define LPTMR_BASE   LPTMR0
 #define LPTMR_IRQn   LPTMR0_IRQn
 #define LPTMR_IRQ_HANDLER LPTMR0_IRQHandler
-#define LPTMR_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgInternalRefClk)
+#define LPTMR_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_LpoClk)
 
 
 volatile bool PIT_timer1_finished = false;
 volatile bool PIT_timer0_finished = false;
 volatile bool LPTMR_timer_finished = false;
 
+uint32_t  c = 0;
+
+bool LPTMR_first = true;
+
 
 void LPTMR_Timer_Init(void)
 {
-	/*
-	uint32_t clockFreq = LPTMR_SOURCE_CLOCK;
-	PRINTF("LPTMR Source Clock: %u Hz\r\n", clockFreq);
-	*/
-
-	uint32_t currentCounter = 0U;
 	lptmr_config_t lptmrConfig;
     LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR_BASE, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(10U, LPTMR_SOURCE_CLOCK));
+    //NASTAVENI JAK DLOUHO BUDE BLOKOVANO nez budou provedeny zmeny - mozna operativně měnit podle toho jak velka bude změna směru?
+    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(2000000U, LPTMR_SOURCE_CLOCK));
     LPTMR_EnableInterrupts(LPTMR_BASE, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR_IRQn);
 
     PRINTF("LPTMR timer init finished\r\n");
-    //LPTMR_StartTimer(LPTMR_BASE);
 }
 
 void LPTMR_timer_start(void)
 {
 	LPTMR_timer_finished = false;
+	LPTMR_first = true;
 	LPTMR_StartTimer(LPTMR_BASE);
+
 }
 
-
+//přerušení, které je vyvoálno po tom co uběhne doba timeru po spuštění
+//během tohoto vykonávání, což je zatáčení, nemůže být zatáčení znovu spuštěno
 void LPTMR_IRQ_HANDLER(void)
 {
-
-	//PRINTF("TRIGGER OF \r\n");
     LPTMR_ClearStatusFlags(LPTMR_BASE, kLPTMR_TimerCompareFlag);
-
+    //Pokud timer doběhl poprvé, bylo dokončeno zatáčení a je potřeba opět srovnat
+	if(LPTMR_first)
+	{
+		PRINTF("STRAOGHT \r\n");
+		steer_straight();
+		LPTMR_first = false;
+		LPTMR_StopTimer(LPTMR_BASE);
+		LPTMR_StartTimer(LPTMR_BASE);
+	}
+	//podruhé již jsme se dostali do straight pozice, tudíž ukončujeme změnu a opět může být vyvolána
+	else
+	{
+		LPTMR_first = true;
+		probihaZmena = false;
+		LPTMR_StopTimer(LPTMR_BASE);
+	}
+    /*
     LPTMR_timer_finished = true;
 
     		if(isTriggerTriggering)
@@ -66,6 +81,8 @@ void LPTMR_IRQ_HANDLER(void)
 
 
     LPTMR_StopTimer(LPTMR_BASE);
+
+    */
     __DSB();
     __ISB();
 }
@@ -73,14 +90,15 @@ void LPTMR_IRQ_HANDLER(void)
 
 void PIT_IRQ_HANDLER(void)
 {
-	//PRINTF("PIT IQR\r\n");
 	//PIT TIMER CHANNEL 0
 	if((PIT_GetStatusFlags(PIT_BASEADDR, kPIT_Chnl_0)) == 1)
 	{
 		//PRINTF("\r\n Channel No.0 interrupt is occurred !");
+
 		PIT_timer0_finished = true;
 		PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_0, kPIT_TimerFlag);
-		PixyZpracujVektory();
+		//PixyZpracujVektory();
+
 
 		//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	}
@@ -90,10 +108,9 @@ void PIT_IRQ_HANDLER(void)
 	{
 	//PRINTF("\r\n Channel No.1 interrupt is occurred !");
 	PIT_timer1_finished = true;
-	probihaZmena = false;
 	PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_1, kPIT_TimerFlag);
-	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
-	steer_straight();
+	processColorSensorValue();
+	//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 
 	}
 
@@ -110,7 +127,6 @@ void PIT_timer0_start(void)
 void PIT_timer1_start(void)
 {
 	PIT_timer1_finished = false;
-	probihaZmena = true;
 	PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_1);
 }
 
