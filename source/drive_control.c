@@ -55,8 +55,8 @@ void motors_init(void)
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
-    //motor_set_check();
-    //servo_check();
+    motor_set_check();
+    servo_check();
 }
 
 
@@ -79,23 +79,23 @@ void servo_check(void)
 {
 	led_M();
 	steer_straight();
-	SysTick_DelayTicks(200U*1000);
+	SysTick_DelayTicks(500U*1000);
 	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_right(i*10);
-		SysTick_DelayTicks(100U*1000);
+		SysTick_DelayTicks(200U*1000);
 	}
 	SysTick_DelayTicks(500U*1000);
 	steer_straight();
-	SysTick_DelayTicks(500U*1000);
+	SysTick_DelayTicks(1000U*1000);
 	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_left(i*10);
-		SysTick_DelayTicks(100U*1000);
+		SysTick_DelayTicks(200U*1000);
 	}
 	SysTick_DelayTicks(500U*1000);
 	steer_straight();
-	SysTick_DelayTicks(200U*1000);
+	SysTick_DelayTicks(500U*1000);
 	PRINTF("SET SERVO DONE\r\n");
 	led_off();
 
@@ -113,8 +113,8 @@ void steer_left(uint8_t pct)
 {
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
-	else if(pct > 100) set_steer = SERVO_L_MAX;
-			else set_steer = SERVO_MIDDLE + pct*0.036;
+	else if(pct > 100) set_steer = SERVO_MAX;
+			else set_steer = SERVO_MIDDLE + pct*0.02;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
@@ -122,8 +122,8 @@ void steer_right(uint8_t pct)
 {
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
-	else if(pct > 100) set_steer = SERVO_R_MAX;
-			else set_steer = SERVO_MIDDLE - pct*0.036;
+	else if(pct > 100) set_steer = MOTOR_MIN;
+			else set_steer = SERVO_MIDDLE - pct*0.02;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 

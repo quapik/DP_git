@@ -90,20 +90,21 @@ void irsensor_mesure(void)
 
 
 void updateTrackerValues(uint8_t index)
-{
+{	/*
 	index = index - 1;
 	if(ir_trackers[index] == false)
 	{
 		ir_trackers[index] = true;
 		PRINTF("TRACKER %u TRUE \r\n", index);
-		getTrackersValuesCount();
+		//getTrackersValuesCount();
 	}
 	else
 	{
 		ir_trackers[index] = false;
 		//PRINTF("TRACKER %u FALSE \r\n", index);
-		getTrackersValuesCount();
+		//getTrackersValuesCount();
 	}
+	*/
 }
 
 void getTrackersValuesCount (void)
@@ -119,12 +120,16 @@ void getTrackersValuesCount (void)
 	if(cnt > 2)
 	{
 		led_R();
-		//motor_set_speed(0);
-		//steer_straight();
+		motor_set_speed(0);
+		steer_straight();
 		PRINTF("LINE DETECTED \r\n");
 		startMotorsButtonPressed = false;
 		driving = false;
 	}
+
+
+
+
 }
 
 

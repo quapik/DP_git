@@ -10,8 +10,10 @@
 
 #include "globals.h"
 
-void ZmenaHranyHall(void);
+void ZmenaHranyHallRight(void);
+void ZmenaHranyHallLeft(void);
+void HallResetValues(void);
 
-
+#define VZDALENOST_CTVRTKA_OTOCKY 5.25
 
 #endif /* HALL_SENSORS_H_ */

@@ -237,6 +237,7 @@ void processColorSensorValue()
 	//20%  S0 S1 H L | NIC - cca 280, BILA 13, CERNA PASKA 60-100, FIXA cca 90
 	// S2 H
 	// S3 L  for clear (no filter)
+	//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
 
 	if(driving) //driving
 	{
@@ -244,21 +245,21 @@ void processColorSensorValue()
 		COLOR1_value_global  = COLOR1_PW;
 		COLOR2_value_global  = COLOR2_PW;
 		// BILA
-		uint16_t color_treshold1_WHITE = 500;
+		uint16_t color_treshold1_WHITE = 150;
 		uint16_t color_treshold1_BLACK = 1000;
-		uint16_t color_treshold2_WHITE = 1500;
+		uint16_t color_treshold2_WHITE = 600;
 		uint16_t color_treshold2_BLACK = 5000;
 
 		if(probihaZmena == false)
 		{
-			//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
+			PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
 			if(COLOR1_value_global < color_treshold1_BLACK)
 			{
 				if(COLOR1_value_global > color_treshold1_WHITE)
 					{
-						PRINTF("COLOR 1 ZATACENI\r\n");
+						//PRINTF("COLOR 1 ZATACENI\r\n");
 						probihaZmena = true;
-						steer_left(50);
+						steer_left(25);
 						LPTMR_timer_start();
 						led_B();
 					}
@@ -267,9 +268,9 @@ void processColorSensorValue()
 				{
 					if(COLOR2_value_global > color_treshold2_WHITE)
 					{
-						PRINTF("COLOR 2 ZATACENI\r\n");
+						//PRINTF("COLOR 2 ZATACENI\r\n");
 						probihaZmena = true;
-						steer_right(50);
+						steer_right(25);
 						LPTMR_timer_start();
 						led_B();
 
@@ -279,7 +280,9 @@ void processColorSensorValue()
 
 
 
+
 	}
+
 		/*
 		if(color_event_flag)
 			{
@@ -572,9 +575,15 @@ void TMP0_INTERRUPT_HANDLER(void)
 }
 
 void isObstacle(uint32_t d1, uint32_t d2)
-{
+{	uint16_t hranice = 15;
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
-	PRINTF("%d %d\r\n", d1,d2);
+	//PRINTF("%d %d\r\n", d1,d2);
+	/*
+	if(d1 < hranice | d2 < hranice)
+	{
+		led_R();
+	}
+	*/
 
 	/*
 	if(driving)
@@ -593,7 +602,8 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		driving = false;
 		}
 	}
-	*/
+	/*
+
 	/*
 	else if(d1 < 100 | d2 < 100)
 	{

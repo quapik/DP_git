@@ -60,14 +60,14 @@ void steer_straight(void);
 #define SERVO_R3 5.0
 #define SERVO_R2 6.0
 #define SERVO_R1 7.0
-#define SERVO_MIDDLE 7.9 //8.1
+#define SERVO_MIDDLE 7.9//
 #define SERVO_L1 9.0
 #define SERVO_L2 10.0
 #define SERVO_L3 11.0
 #define SERVO_L_MAX 11.7
 
-#define SERVO_MAX 11.7
-#define SERVO_MIN 5.9
+#define SERVO_MAX 9.9 //11,7 bez osazeni na aute
+#define SERVO_MIN 5.9 //4,9
 
 #define MOTOR_MAX 9.9 //10% ==  2ms 5% = 1ms
 #define MOTOR_MIN 5.8 //5.0

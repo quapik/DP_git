@@ -282,14 +282,7 @@ void SPI_IRQ_HANDLER(uint32_t e)
 	    {
 	        SPI_Finished = true;
 	    }
-	/*
-	if(pixyInitFinished)
-		{
-		uint8_t pocet_vektoruSS = masterRxDataVECTORS[20]/6;
-		PRINTF("POCET VEKTORUSS %u  \r\n", pocet_vektoruSS);
-		PixyGetVectors();
-		}
-	*/
+
 }
 void PixyGetVectors(void)
 {

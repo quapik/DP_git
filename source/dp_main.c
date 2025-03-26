@@ -16,30 +16,33 @@ int main(void)
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
+    TriggerPulse2();
 
     PRINTF("APP START\r\n");
 
 
     SysTick_Init();
-
+    HallResetValues();
     enableInterruptsOnPorts();
     motors_init();
 
-    PIT_Timer_Init();
-    tmp0_init();
-    LPTMR_Timer_Init();
-    PIT_timer1_start();
+    //PIT_Timer_Init();
+    //tmp0_init();
+    //LPTMR_Timer_Init();
+    //PIT_timer1_start();
+   // PIT_timer0_start();
     //irsensor_init();
-    PixyStart();
-    //uart_comm_init();
+    //PixyStart();
+    uart_comm_init();
+
 
         /* Send g_tipString out non-blocking */
         //ART_WriteBlocking(UART2, g_tipString, sizeof(g_tipString) / sizeof(g_tipString[0]));
-
+    dutyCycle = SERVO_MIDDLE;
  	while (1){
 
  	 	//SDK_DelayAtLeastUs(1000*100, 4800000);
- 	    // UART_WriteBlocking(UART2, "a", 1);
+ 	     //UART_WriteBlocking(UART2, "a", 1);
 
 		//irsensor_mesure();
 
@@ -61,15 +64,32 @@ int main(void)
 
 
 
-/*
-		getCharValue = GETCHAR()  - 0x30U;
 
+		getCharValue = GETCHAR()  - 0x30U;
+		if (getCharValue == 3) dutyCycle = SERVO_MIDDLE;
 		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
 		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
 		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
 		if (dutyCycle > SERVO_MAX) dutyCycle  = SERVO_MAX;
 		if (dutyCycle < SERVO_MIN) dutyCycle  = SERVO_MIN;
-*/
+
+		if (getCharValue == 6 ) pct = 0;
+		if (getCharValue == 4)  pct = pct -1;
+		if (getCharValue == 5) pct = pct +1;
+		if(getCharValue == 6 || getCharValue == 5 || getCharValue == 4)
+		{
+			PRINTF("MOTOR %d \r\n", (int)(pct));
+			motor_set_speed(pct);
+		}
+		else
+		{
+			PRINTF("SERVO %d \r\n", (int)(dutyCycle*100));
+		}
+
+
+
+
+
 
 
     	// LEVY TADBU 6.5 a 12.9 max

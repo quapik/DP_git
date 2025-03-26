@@ -26,7 +26,7 @@ void LPTMR_Timer_Init(void)
     LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR_BASE, &lptmrConfig);
     //NASTAVENI JAK DLOUHO BUDE BLOKOVANO nez budou provedeny zmeny - mozna operativně měnit podle toho jak velka bude změna směru?
-    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(2000000U, LPTMR_SOURCE_CLOCK));
+    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(250000U, LPTMR_SOURCE_CLOCK));
     LPTMR_EnableInterrupts(LPTMR_BASE, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR_IRQn);
 
@@ -97,7 +97,7 @@ void PIT_IRQ_HANDLER(void)
 
 		PIT_timer0_finished = true;
 		PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_0, kPIT_TimerFlag);
-		//PixyZpracujVektory();
+		PixyZpracujVektory();
 
 
 		//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
