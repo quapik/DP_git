@@ -255,16 +255,16 @@ void PixyStart(void)
     PixyInit();
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     PixySetLamp(0,0);
-    PixySetLamp(1,1);
+    //PixySetLamp(1,1);
     PixySetServos(0, 400);
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     pixyInitFinished = true;
-    PIT_timer0_start();
+    //PIT_timer0_start();
 
     //TADY MAS PROBLEM, tohle kdyz zavolas tak se ti to zacykli
     //je potreba to vyresit aby se to neseklo
-	PixyGetVectors();
+	//PixyGetVectors();
 }
 
 void PixyInit(void)

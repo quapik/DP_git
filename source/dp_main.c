@@ -24,16 +24,16 @@ int main(void)
     SysTick_Init();
     HallResetValues();
     enableInterruptsOnPorts();
-    motors_init();
+    //motors_init();
 
-    //PIT_Timer_Init();
-    //tmp0_init();
+    PIT_Timer_Init();
+    tmp0_init();
     //LPTMR_Timer_Init();
-    //PIT_timer1_start();
-   // PIT_timer0_start();
-    //irsensor_init();
+    PIT_timer1_start();
+    //PIT_timer0_start();
+    irsensor_init();
     //PixyStart();
-    uart_comm_init();
+    //uart_comm_init();
 
 
         /* Send g_tipString out non-blocking */
@@ -41,7 +41,6 @@ int main(void)
     dutyCycle = SERVO_MIDDLE;
  	while (1){
 
- 	 	//SDK_DelayAtLeastUs(1000*100, 4800000);
  	     //UART_WriteBlocking(UART2, "a", 1);
 
 		//irsensor_mesure();
@@ -64,7 +63,7 @@ int main(void)
 
 
 
-
+ 		/*
 		getCharValue = GETCHAR()  - 0x30U;
 		if (getCharValue == 3) dutyCycle = SERVO_MIDDLE;
 		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
@@ -74,9 +73,10 @@ int main(void)
 		if (dutyCycle < SERVO_MIN) dutyCycle  = SERVO_MIN;
 
 		if (getCharValue == 6 ) pct = 0;
+		if (getCharValue == 9 ) pct = 100;
 		if (getCharValue == 4)  pct = pct -1;
 		if (getCharValue == 5) pct = pct +1;
-		if(getCharValue == 6 || getCharValue == 5 || getCharValue == 4)
+		if(getCharValue == 6 || getCharValue == 5 || getCharValue == 4 || getCharValue == 9)
 		{
 			PRINTF("MOTOR %d \r\n", (int)(pct));
 			motor_set_speed(pct);
@@ -85,6 +85,8 @@ int main(void)
 		{
 			PRINTF("SERVO %d \r\n", (int)(dutyCycle*100));
 		}
+		*/
+
 
 
 

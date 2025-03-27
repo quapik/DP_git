@@ -7,22 +7,7 @@
 
 #include <ir_sensors.h>
 
-#define IR_ADC_BASE          ADC0
-#define IR_ADC_CHANNEL_GROUP 0U
-#define IR_ADC_CHANNEL  1U /* PTE16, A0-ADC0_SE1, J4-2 on FRDM-KL27Z. */
 
-#define IR_ADC_IRQ             ADC0_IRQn
-#define IR_ADC_IRQ_HANDLER ADC0_IRQHandler
-
-/*******************************************************************************
- * Prototypes
- ******************************************************************************/
-
-/*******************************************************************************
- * Variables
- ******************************************************************************/
-volatile bool IR_mesure_done = false;
-const uint32_t IR_ADC_range = 4096U;
 
 adc16_config_t IR_ADC_config_struct;
 adc16_channel_config_t IR_ADC_channel_config_struct;
@@ -33,26 +18,25 @@ void IR_ADC_IRQ_HANDLER(void)
 {
 	IR_mesure_done = true;
 	IR_sensor_raw = ADC16_GetChannelConversionValue(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP);
-	//ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
 	SDK_ISR_EXIT_BARRIER;
 }
 
 //Prevod ADC digital value na centimetry
 void irsensor_convert(uint32_t ir_orig)
 {
-	IR_sensor_cm = 6 + ((4095.0 - ir_orig)/4095.0) * 27;
+	IR_sensor_cm = 6 + ((4095.0 - ir_orig)/4095.0) * 26;
 }
 
 void irsensor_init(void)
 {
 
 	EnableIRQ(IR_ADC_IRQ);
-	    ADC16_GetDefaultConfig(&IR_ADC_config_struct);
+	ADC16_GetDefaultConfig(&IR_ADC_config_struct);
 	#ifdef BOARD_ADC_USE_ALT_VREF
 	    IR_ADC_config_struct.referenceVoltageSource = kADC16_ReferenceVoltageSourceValt;
 	#endif
 	    ADC16_Init(IR_ADC_BASE, &IR_ADC_config_struct);
-	    ADC16_EnableHardwareTrigger(IR_ADC_BASE, false); /* Make sure the software trigger is used. */
+	    ADC16_EnableHardwareTrigger(IR_ADC_BASE, false);
 	#if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
 	    /*
 	    if (kStatus_Success == ADC16_DoAutoCalibration(IR_ADC_BASE))
@@ -64,28 +48,29 @@ void irsensor_init(void)
 	        PRINTF("ADC16_DoAutoCalibration() Failed.\r\n");
 	    }
 	    */
-	#endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
+	#endif
 
 	    IR_ADC_channel_config_struct.channelNumber                        = IR_ADC_CHANNEL;
-	    IR_ADC_channel_config_struct.enableInterruptOnConversionCompleted = true; /* Enable the interrupt. */
+	    IR_ADC_channel_config_struct.enableInterruptOnConversionCompleted = true;
 	#if defined(FSL_FEATURE_ADC16_HAS_DIFF_MODE) && FSL_FEATURE_ADC16_HAS_DIFF_MODE
 	    IR_ADC_channel_config_struct.enableDifferentialConversion = false;
-	#endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
-
-	    ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
+	#endif
+	ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
 }
 
+//Funkce, kdy pokud bylo dokončeno měření, je hodnota převedena na CM a je opět zavoláno měření
+void irsensor_check(void)
+{  /*
+	if(IR_mesure_done)
+		{	if(IR_sensor_raw > 2300) PRINTF ("STOOOOOOOOOOOOP\r\n");
+			irsensor_convert(IR_sensor_raw);
+			IR_mesure_done = false;
+			ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
+			PRINTF("ADC Value: %d and CM value %d\r\n", IR_sensor_raw,IR_sensor_cm);
 
-void irsensor_mesure(void)
-{
-	//SDK_DelayAtLeastUs(100000, 48000000);
-	IR_mesure_done = false;
-	ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
-	while (!IR_mesure_done)
-	{
-	}
-	irsensor_convert(IR_sensor_raw);
-	PRINTF("ADC Value: %d\r\n", IR_sensor_raw);
+
+		}
+		*/
 }
 
 

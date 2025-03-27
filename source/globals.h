@@ -44,6 +44,7 @@ extern bool startMotorsButtonPressed;
 extern bool ir_trackers[6];
 extern uint16_t IR_sensor_cm;
 extern uint32_t IR_sensor_raw;
+extern bool IR_mesure_done;
 
 extern bool driving;
 

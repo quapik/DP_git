@@ -114,7 +114,7 @@ void steer_left(uint8_t pct)
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
 	else if(pct > 100) set_steer = SERVO_MAX;
-			else set_steer = SERVO_MIDDLE + pct*0.02;
+			else set_steer = SERVO_MIDDLE + pct*0.023;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
@@ -123,7 +123,7 @@ void steer_right(uint8_t pct)
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
 	else if(pct > 100) set_steer = MOTOR_MIN;
-			else set_steer = SERVO_MIDDLE - pct*0.02;
+			else set_steer = SERVO_MIDDLE - pct*0.023;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 

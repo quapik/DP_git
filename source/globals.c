@@ -17,10 +17,11 @@ int8_t pctServo = 0;
 bool isObstacleDetected = false;
 bool startMotorsButtonPressed = false;
 
-//IR TRACKERY
+//IR TRACKERY a SENZOR
 bool ir_trackers[6] = {false,false,false,false,false,false};
 uint16_t IR_sensor_cm = 0;
 uint32_t IR_sensor_raw = 0;
+bool IR_mesure_done = false;
 
 //SENZORY BARVY¨
 uint16_t COLOR1_value_global = 0;

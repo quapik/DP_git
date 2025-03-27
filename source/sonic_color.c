@@ -363,10 +363,11 @@ void TMP0_INTERRUPT_HANDLER(void)
 
         if( overflowCount1==2 || overflowCount2==2  )
         	{
+        	/*
         	if(SONIC1_ocekavano) PRINTF("SONIC1      TRUE");
         	if(SONIC2_ocekavano) PRINTF("SONIC2      TRUE");
         	PRINTF("OF %u OF2 %u\r\n", overflowCount1,overflowCount2);
-
+			*/
         	sonic_reset();
         	}
 
@@ -577,14 +578,15 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {	uint16_t hranice = 15;
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
-	//PRINTF("%d %d\r\n", d1,d2);
-	/*
+
+	PRINTF("%d %d\r\n", d1,d2);
+/*
 	if(d1 < hranice | d2 < hranice)
 	{
 		led_R();
 	}
-	*/
 
+	*/
 	/*
 	if(driving)
 	{

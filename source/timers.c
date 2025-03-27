@@ -38,7 +38,6 @@ void LPTMR_timer_start(void)
 	LPTMR_timer_finished = false;
 	LPTMR_first = true;
 	LPTMR_StartTimer(LPTMR_BASE);
-
 }
 
 //přerušení, které je vyvoálno po tom co uběhne doba timeru po spuštění
@@ -109,7 +108,10 @@ void PIT_IRQ_HANDLER(void)
 	//PRINTF("\r\n Channel No.1 interrupt is occurred !");
 	PIT_timer1_finished = true;
 	PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_1, kPIT_TimerFlag);
-	processColorSensorValue();
+
+	//MERENI IR SENZORZ
+	irsensor_check();
+	//processColorSensorValue();
 	//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 
 	}
