@@ -34,6 +34,8 @@ bool probihaZmena = false;
 uint8_t actualTrigger = 1;
 bool isTriggerTriggering = false;
 
+bool jedePixy = false;
+
 
 
 

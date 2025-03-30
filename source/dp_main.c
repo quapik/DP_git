@@ -9,6 +9,22 @@ uint8_t g_tipString[] =
 
 
 
+
+void sendTextCharByChar(UART_Type *base, const char *text)
+{
+    size_t len = strlen(text);
+    for (size_t i = 0; i < len; i++)
+    {
+        /* Odeslání jednoho znaku, velikost 1 bajt */
+        UART_WriteBlocking(base, (const uint8_t *)&text[i], 1);
+    }
+}
+void sendMessage(UART_Type *base, const char *message)
+{
+    UART_WriteBlocking(base, (uint8_t *)message, strlen(message));
+}
+
+
 int main(void)
 {
 
@@ -16,32 +32,43 @@ int main(void)
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
-    TriggerPulse2();
 
-    PRINTF("APP START\r\n");
+    PRINTF("NXP CUP & VOJTECH SIMA MASTER DEGREE THESIS APP, WELCOME \r\n");
 
 
     SysTick_Init();
     HallResetValues();
     enableInterruptsOnPorts();
-    //motors_init();
+    motors_init();
+
+
+
+    //COLOR SENSORY A  ULTRASONIC
+    tmp0_init();
 
     PIT_Timer_Init();
-    tmp0_init();
     //LPTMR_Timer_Init();
     PIT_timer1_start();
     //PIT_timer0_start();
-    irsensor_init();
-    //PixyStart();
-    //uart_comm_init();
+    //irsensor_init();
 
+
+    PixyStart();
+
+    /*
+    uart_comm_init();
+    const char *myText = "Tento text bude odeslan znak po znaku";
+    */
 
         /* Send g_tipString out non-blocking */
         //ART_WriteBlocking(UART2, g_tipString, sizeof(g_tipString) / sizeof(g_tipString[0]));
     dutyCycle = SERVO_MIDDLE;
  	while (1){
 
- 	     //UART_WriteBlocking(UART2, "a", 1);
+ 		/*
+ 		sendMessage(UART2, myText);
+ 	    SDK_DelayAtLeastUs(1000U*1000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+ 	    */
 
 		//irsensor_mesure();
 

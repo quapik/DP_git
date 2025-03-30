@@ -26,7 +26,7 @@ void led_C(void);
 void led_M(void);
 
 void SW1_pressed(void);
-void SW3_pressed(void);;
+void SW3_pressed(void);
 
 
 

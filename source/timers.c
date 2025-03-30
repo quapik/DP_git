@@ -110,7 +110,7 @@ void PIT_IRQ_HANDLER(void)
 	PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_1, kPIT_TimerFlag);
 
 	//MERENI IR SENZORZ
-	irsensor_check();
+	//irsensor_check();
 	//processColorSensorValue();
 	//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 
@@ -125,11 +125,22 @@ void PIT_timer0_start(void)
 	PIT_timer0_finished = false;
 }
 
+void PIT_timer0_stop(void)
+{
+	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
+	PIT_timer0_finished = true;
+}
 
 void PIT_timer1_start(void)
 {
 	PIT_timer1_finished = false;
 	PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_1);
+}
+
+void PIT_timer1_stop(void)
+{
+	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
+	PIT_timer1_finished = true;
 }
 
 //Funkce na inicializaci timeru
@@ -144,7 +155,7 @@ void PIT_Timer_Init(void)
 
 
 	//SPI VECTOR READING TIMEr
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(1000000, PIT_SOURCE_CLOCK)); //33333 funguje
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(100000, PIT_SOURCE_CLOCK)); //33333 funguje
 
 
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK));

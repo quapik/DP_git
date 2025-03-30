@@ -15,9 +15,7 @@ void uart_comm_init(void)
 	config.baudRate_Bps = BOARD_DEBUG_UART_BAUDRATE; //115200
 	config.enableTx     = true;
 	config.enableRx     = false; //neprijimam zadna data
-
 	UART_Init(UART, &config, UART_CLK_FREQ);
-
 }
 
 

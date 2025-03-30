@@ -13,6 +13,8 @@
 #endif /* PIT_CONTROL_H_ */
 void PIT_Timer_Init(void);
 void PIT_timer0_start(void);
+void PIT_timer0_stop(void);
+void PIT_timer1_stop(void);
 void PIT_timer1_start(void);
 void LPTMR_Timer_Init(void);
 void LPTMR_timer_start(void);

@@ -17,9 +17,11 @@ uint8_t masterRxData[TRANSFER_SIZE] = {0};
 uint8_t masterTxData[TRANSFER_SIZE] = {0};
 
 uint8_t masterRxDataVECTORS[64] = {0};
-uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U};
+//uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U}; // ALL FEATURES
+uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 0U, 1U}; // MAIN FEATURES
 bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
+volatile bool SPI_FinishedBlocking = false;
 
 uint8_t vector_index;
 uint8_t x_0;
@@ -31,8 +33,11 @@ uint8_t pocet_vektoru_i;
 
 uint8_t x_podstatny;
 uint8_t y_podstatny;
+
 uint8_t x_pocatecni;
 uint8_t x_koncove;
+uint8_t y_pocatecni;
+uint8_t y_koncove;
 
 int8_t delka, smer;
 int16_t offset;
@@ -41,6 +46,9 @@ int16_t pomer = 0;
 bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
 uint8_t horizontal_line_counter = 0;
+
+
+bool zaznamenanaKorekce = false;
 
 bool aspon_jedna_kolma_dvojice = false;
 
@@ -66,6 +74,238 @@ void UlozVektor(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_
         vektory[pocet_vektoru_i].i = pocet_vektoru_i;
 
     }
+}
+
+void KontrolaVektoru(void)
+{
+	delka = abs(y_0 -y_1); //vzdalenost v ose Y
+	smer = abs(x_0 - x_1); //vzdalenost v ose X
+
+	//vyssi y znamena ze je bod blize modelu (kamere), tudiz je pocatecni
+	x_pocatecni = (y_0 >= y_1) ? x_0 : x_1;
+	x_koncove = (y_0 >= y_1) ? x_1 : x_0;
+
+	y_pocatecni = (y_0 >= y_1) ? y_0 : y_1;
+	y_koncove = (y_0 >= y_1) ? y_1 : y_0;
+
+	//UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
+
+
+	if(delka == 0) pomer = 0; //rovna horizontalni cara
+	else
+	{
+		//kvuli printu floatu  (hodnota pomeru ja 100x vyssi nez realny pomer)
+		if(smer == 0) smer = 1;
+		pomer = abs((delka*100 / smer*100)/100);
+	}
+
+	/*
+	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
+	{
+		if((y_0+y_1)/2 > 40)
+		{
+			PRINTF("HORIZONTAL CARA  BLIZKO  ");
+			finish_line_detected_blizka = true;
+		}
+		else
+		{
+			PRINTF("HORIZONTAL CARA  DALEKO  ");
+			finish_line_detected_vzdalena = true;
+		}
+	}
+	*/
+
+	/*
+	//FULL STRAIGHT a jdou videt obe cary (model smeruje cca rovne a je mezi carama)
+	//if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru > 1)
+	if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru == 1)
+	{
+		if((x_0+x_1)/2 < 39) //LEFT
+		{
+			if(pomer > 300)
+			{
+				PRINTF("LEFT STRAIGHT correction %u ");
+				steer_right(25);
+				led_Y();
+				zaznamenanaKorekce = true;
+			}
+			else
+			{
+				x_podstatny = (x_0 <= x_1) ? x_0 : x_1; //leva cast, chci levejsi index (je na pocatku a pozdeji se presouva doprava)
+				PRINTF("LEFT STRAIGHT %u ", x_podstatny);
+			}
+
+
+		}
+		else //RIGHT
+		{
+			if(pomer > 300)
+			{
+				PRINTF("RIGHT STRAIGHT correction %u ");
+				steer_left(25);
+				led_Y();
+				zaznamenanaKorekce = true;
+			}
+			else
+			{
+				x_podstatny = (x_0 >= x_1) ? x_0 : x_1;
+							PRINTF("RIGHT STRAIGHT %u ", x_podstatny);
+			}
+
+		}
+	}
+	*/
+	//MAME ROVINKU, JDE VIDET POUZE JEDNA CARA, JE DLOUHOA ALE ROVNA
+	if(pocet_vektoru == 1)
+	{
+		if(smer < 10 && delka > 40)
+		{
+			if(x_pocatecni > 38)
+			{
+				if(x_pocatecni < 60)
+				{
+					PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
+					steer_left(75);
+					led_R();
+					zaznamenanaKorekce = true;
+				}
+				else
+				{
+					PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
+					steer_left(50);
+					led_R();
+					zaznamenanaKorekce = true;
+				}
+			}
+			else
+			{
+				if(x_pocatecni > 18)
+				{
+					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");					steer_right(50);
+					steer_right(75);
+					led_R();
+					zaznamenanaKorekce = true;
+				}
+				else
+				{
+					PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");					steer_right(50);
+					steer_right(50);
+
+				}
+			}
+		}
+	}
+
+	//pouze jeden vektor, model je lehce natocen a smeruje ven z drahy pres caru
+	if(pocet_vektoru == 1 && delka > 20 && smer>10)
+	{
+		//vektor smeruje do leva, je treba udelat korekci
+		if(x_pocatecni >= x_koncove)
+		{
+			if(x_pocatecni < 70)
+			{
+				if(smer > 40)
+				{
+					PRINTF("PRAVA, HODNE SIKMA, 75 LEFT");
+					steer_left(75);
+					led_R();
+					zaznamenanaKorekce = true;
+				}
+				else
+				{
+					PRINTF("RAVA, SIKMA, 50 LEFT");
+					steer_left(50);
+					led_R();
+					zaznamenanaKorekce = true;
+				}
+
+			}
+
+
+		}
+		//vektor smeruje doprava treba udelat korekci
+		else
+		{
+			if(x_pocatecni > 10)
+			{
+				if(smer > 40)
+			{
+				PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
+				steer_right(75);
+				led_R();
+				zaznamenanaKorekce = true;
+			}
+			else
+			{
+				PRINTF("LEVA,  SIKMA, 50 RIGHT");
+				steer_right(50);
+				led_R();
+				zaznamenanaKorekce = true;
+			}
+
+			}
+
+		}
+	}
+	//DETEKCE VICEMENE HORIZONTALNI CARY, CO ZNACI VRCHOL ZATACKY
+	//je treba zjistit smer a podle toho zatacet
+	if(smer > 30 && delka > 10)
+	{
+		//PRINTF("x_pocatecni %u x_koncove %u\r\n", x_pocatecni, x_koncove);
+		if(x_pocatecni > x_koncove)
+		{
+			PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
+			steer_left(75);
+		}
+		else
+		{
+			PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
+						steer_right(75);
+		}
+		zaznamenanaKorekce = true;
+	}
+
+	PRINTF("\r\n[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
+}
+
+void PixyZpracujVektory(void)
+{
+
+	zaznamenanaKorekce = false;
+
+	pocet_vektoru = masterRxDataVECTORS[20]/6;
+
+	//Na 20te pozici zacinaji data s informaci o prvnim pixelu
+	offset = 20;
+	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
+	pocet_vektoru_i = pocet_vektoru;
+
+	while(pocet_vektoru_i>0)
+	{
+		x_0 = masterRxDataVECTORS[offset+1];
+		y_0 = masterRxDataVECTORS[offset+2];
+		x_1 = masterRxDataVECTORS[offset+3];
+		y_1 = masterRxDataVECTORS[offset+4];
+		vector_index = masterRxDataVECTORS[offset+5];
+		KontrolaVektoru();
+		//PRINTF("[x_0,y_0]-[%u,%u]      [x_1,y_1]-[%u,%u]      vector_index  %u \r\n",x_0,y_0,x_1,y_1,vector_index);
+		//if(smer < 0) PRINTF("ZAPORNO");
+		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
+		pocet_vektoru_i--;
+		offset = offset + 6;
+	}
+
+	//VykstujiSeKolmeVektory();
+	//if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
+	//aspon_jedna_kolma_dvojice = false;
+	if(!zaznamenanaKorekce && pocet_vektoru > 0)
+	{
+		steer_straight();
+		led_G();
+	}
+	PixyGetVectors();
+
+	PRINTF("------------------------------------\r\n");
 }
 
 int16_t JsouVektoryKolme(uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1,
@@ -124,142 +364,19 @@ void VykstujiSeKolmeVektory(void)
 
 }
 
-void KontrolaVektoru(void)
-{
-	delka = abs(y_0 -y_1); //vzdalenost v ose Y
-	smer = abs(x_0 - x_1); //vzdalenost v ose X
-
-	//vyssi y znamena ze je bod blize modelu (kamere), tudiz je pocatecni
-	x_pocatecni = (y_0 >= y_1) ? x_0 : x_1;
-	x_koncove = (y_0 >= y_1) ? x_1 : x_0;
-
-	//UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
-
-
-	if(delka == 0) pomer = 0; //rovna horizontalni cara
-	else
-	{
-		//kvuli printu floatu  (hodnota pomeru ja 100x vyssi nez realny pomer)
-		if(smer == 0) smer = 1;
-		pomer = abs((delka*100 / smer*100)/100);
-	}
-	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
-	{
-		if((y_0+y_1)/2 > 40)
-		{
-			PRINTF("HORIZONTAL CARA  BLIZKO  ");
-			finish_line_detected_blizka = true;
-		}
-		else
-		{
-			PRINTF("HORIZONTAL CARA  DALEKO  ");
-			finish_line_detected_vzdalena = true;
-		}
-	}
-	//FULL STRAIGHT a jdou videt obe cary (model smeruje cca rovne a je mezi carama)
-	if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru > 1)
-	{
-		if((x_0+x_1)/2 < 39) //LEFT
-		{
-			if(pomer > 300)
-			{
-				PRINTF("LEFT STRAIGHT correction %u ");
-			}
-			else
-			{
-				x_podstatny = (x_0 <= x_1) ? x_0 : x_1; //leva cast, chci levejsi index (je na pocatku a pozdeji se presouva doprava)
-				PRINTF("LEFT STRAIGHT %u ", x_podstatny);
-			}
-
-
-		}
-		else //RIGHT
-		{
-			if(pomer > 300)
-			{
-				PRINTF("RIGHT STRAIGHT correction %u ");
-			}
-			else
-			{
-				x_podstatny = (x_0 >= x_1) ? x_0 : x_1;
-							PRINTF("RIGHT STRAIGHT %u ", x_podstatny);
-			}
-
-		}
-	}
-
-	//pouze jeden vektor, model je lehce natocen a smeruje ven z drahy pres caru
-	//bude treba udelat vetsi korekci
-	if(pocet_vektoru == 1 && delka > 20 && smer>10)
-	{
-		//vektor smeruje do leva, je treba udelat korekci
-		if(x_pocatecni >= x_koncove)
-		{
-			PRINTF("RIGHT STRAIGHT, ONE line, bigger correction");
-		}
-		//vektor smeruje doprava treba udelat korekci
-		else
-		{
-			PRINTF("LEFT STRAIGHT, ONE line, bigger correction");
-		}
-
-
-	}
-
-	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
-}
-
-void PixyZpracujVektory(void)
-{
-	//TODO deklarace pryc z fce
-	/*
-	for(int i = 0; i < 64; i++)
-	{
-		PRINTF("%u . value %u\r\n", i, masterRxDataVECTORS[i]);
-	}
-	*/
-	pocet_vektoru = masterRxDataVECTORS[20]/6;
-
-	//Na 20te pozici zacinaji data s informaci o prvnim pixelu
-	offset = 20;
-	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
-	pocet_vektoru_i = pocet_vektoru;
-
-	while(pocet_vektoru_i>0)
-	{
-		x_0 = masterRxDataVECTORS[offset+1];
-		y_0 = masterRxDataVECTORS[offset+2];
-		x_1 = masterRxDataVECTORS[offset+3];
-		y_1 = masterRxDataVECTORS[offset+4];
-		vector_index = masterRxDataVECTORS[offset+5];
-		KontrolaVektoru();
-		//PRINTF("[x_0,y_0]-[%u,%u]      [x_1,y_1]-[%u,%u]      vector_index  %u \r\n",x_0,y_0,x_1,y_1,vector_index);
-		//if(smer < 0) PRINTF("ZAPORNO");
-		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
-		pocet_vektoru_i--;
-		offset = offset + 6;
-	}
-	//VykstujiSeKolmeVektory();
-
-	//if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
-	//aspon_jedna_kolma_dvojice = false;
-	//PixyGetVectors();
-
-	PRINTF("------------------------------------\r\n");
-
-
-}
-
 void PixyStart(void)
 {
     PixyInit();
+    jedePixy = false;
     SDK_DelayAtLeastUs(100*1000, MHZ48);
-    PixySetLamp(0,0);
-    //PixySetLamp(1,1);
-    PixySetServos(0, 400);
+    //PixySetLamp(0,0);
+    PixySetLamp(1,1);
+    PixySetServos(0, 300); //360
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     pixyInitFinished = true;
+
+    PRINTF("Pixy2 Start Finished\r\n");
     //PIT_timer0_start();
 
     //TADY MAS PROBLEM, tohle kdyz zavolas tak se ti to zacykli
@@ -277,7 +394,6 @@ void PixyInit(void)
 
 void SPI_IRQ_HANDLER(uint32_t e)
 {
-	//PRINTF("SPI IRQ\r\n");
 	if (e & ARM_SPI_EVENT_TRANSFER_COMPLETE)
 	    {
 	        SPI_Finished = true;
@@ -286,7 +402,6 @@ void SPI_IRQ_HANDLER(uint32_t e)
 }
 void PixyGetVectors(void)
 {
-	//PRINTF("SPI VECTORS SEND \r\n");
 	actual_tranfser_size = 10;
 	SPI_Finished = false;
 	DRIVER_MASTER_SPI.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);

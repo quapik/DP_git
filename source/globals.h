@@ -33,6 +33,7 @@
 #include "interrupts.h"
 #include "uart_control.h"
 #include "hall_sensors.h"
+#include <string.h>
 
 
 extern bool jedouMotory;
@@ -57,6 +58,8 @@ extern uint16_t SRF_distance2_global;
 extern bool probihaZmena;
 extern uint8_t actualTrigger;
 extern bool isTriggerTriggering;
+
+extern bool jedePixy;
 
 #define MHZ48 48000000U
 

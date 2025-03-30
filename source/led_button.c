@@ -36,7 +36,7 @@ void SW1_pressed(void)
 	{
 		startMotorsButtonPressed=true;
 	    led_G();
-	    motor_set_speed(50);
+	    motor_set_speed(20);
 	    driving = true;
 	}
 	else if(startMotorsButtonPressed==true)
@@ -52,7 +52,23 @@ void SW1_pressed(void)
 
 void SW3_pressed(void)
 {
-	PRINTF("S3 stisknuto!\r\n");
+	if(!jedePixy)
+	{
+		PRINTF("Pixy2 detekce spustena\r\n");
+		jedePixy = true;
+		PIT_timer0_start();
+		PixyGetVectors();
+
+	}
+	else
+	{
+		PRINTF("Pixy2 detekce vypnuta\r\n");
+		jedePixy = false;
+		PIT_timer0_stop();
+	}
+
+	//motor_set_check();
+	//servo_check();
 
 }
 

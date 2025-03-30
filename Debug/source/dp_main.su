@@ -1,1 +1,3 @@
-../source/dp_main.c:12:5:main	8	static
+../source/dp_main.c:13:6:sendTextCharByChar	24	static
+../source/dp_main.c:22:6:sendMessage	16	static
+../source/dp_main.c:28:5:main	8	static

@@ -33,8 +33,8 @@ void ZmenaHranyHallRight(void)
 	{
 		ctvrtkyRight = 0;
 		otackyRight++;
-		PRINTF("OTOCENI %u\r\n", otackyRight);
-		PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
+		//PRINTF("OTOCENI %u\r\n", otackyRight);
+		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
 	}
 
 }
@@ -46,8 +46,8 @@ void ZmenaHranyHallLeft(void)
 	{
 		ctvrtkyLeft = 0;
 		otackyLeft++;
-		PRINTF("OTOCENI %u\r\n", otackyLeft);
-		PRINTF("vzdalenost %u\r\n", (int)vzdalenostLeft*100);
+		//PRINTF("OTOCENI %u\r\n", otackyLeft);
+		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostLeft*100);
 	}
 
 }

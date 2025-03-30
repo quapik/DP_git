@@ -587,11 +587,9 @@ void isObstacle(uint32_t d1, uint32_t d2)
 	}
 
 	*/
-	/*
+
 	if(driving)
 	{
-		uint16_t hranice = 15;
-
 		if(d1 < hranice | d2 < hranice)
 		{
 		led_R();
@@ -604,7 +602,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		driving = false;
 		}
 	}
-	/*
+
 
 	/*
 	else if(d1 < 100 | d2 < 100)
