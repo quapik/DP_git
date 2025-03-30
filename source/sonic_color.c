@@ -1,52 +1,64 @@
 /*
- * sonic.c
+ * 	sonic.c
+ *
+ * 	Kod starajici se obsluhu utlrasonickych senzoru vzdalenosti + color sensoru
+ * 	Zachytavani delky hran pro kazdy senzor, vyuzito TMP pinu a timeru
  *
  *  Created on: 14. 2. 2025
- *      Author: xsimav01
+ *  Author: xsimav01
  */
 
 #include <sonic_color.h>
+
 volatile uint32_t tmp0_interrupt_status;
 
-volatile bool probehloUspesneMereniSRF05_1 = false;
-volatile bool probehloUspesneMereniSRF05_2 = false;
+//Promenne uchovavajici hodnotu zda bylo provedeno uspesne mereni
+volatile bool probehloUspesneMereniSonic1 = false;
+volatile bool probehloUspesneMereniSonic2 = false;
 volatile bool probehloUspesneMereniColor_1 = false;
 volatile bool probehloUspesneMereniColor_2 = false;
 
-volatile uint16_t risingEdgeTime1 = 0;
-volatile uint16_t fallingEdgeTime1 = 0;
-volatile uint16_t risingEdgeTime2 = 0;
-volatile uint16_t fallingEdgeTime2 = 0;
+//Promenne uchovavajici casy rising/falling hrran pro ulstrasonic senzory
+volatile uint16_t risingEdgeTimeSonic1 = 0;
+volatile uint16_t fallingEdgeTimeSonic1 = 0;
+volatile uint16_t risingEdgeTimeSonic2 = 0;
+volatile uint16_t fallingEdgeTimeSonic2 = 0;
 
+//Promenne uchovavajici casy rising/falling hrran pro color sensory
 volatile uint16_t risingEdgeTimeColor1 = 0;
 volatile uint16_t fallingEdgeTimeColor1 = 0;
 volatile uint16_t risingEdgeTimeColor2 = 0;
 volatile uint16_t fallingEdgeTimeColor2 = 0;
 
-volatile bool risigneEdgeCaptured1 = false;
-volatile bool risigneEdgeCaptured2 = false;
+//Bool promnne uchovavajici zda byly zachyceny nastupne hrany (po nich se meri delka pulzu)
+volatile bool risigneEdgeCapturedSonic1 = false;
+volatile bool risigneEdgeCapturedSonic2 = false;
 volatile bool risigneEdgeCapturedColor1 = false;
 volatile bool risigneEdgeCapturedColor2 = false;
 
-volatile uint16_t overflowCount1 = 0;
-volatile uint16_t overflowCount2 = 0;
+
+//Promenne uchovavajici pocet preteceni timeru pro jednotlive senzory (dulezita informace pro spravne vypocitani delky pulzu)
+volatile uint16_t overflowCountSonic1 = 0;
+volatile uint16_t overflowCountSonic2 = 0;
 volatile uint16_t overflowCountColor1 = 0;
 volatile uint16_t overflowCountColor2 = 0;
 
+//Promenne pro ulozeni aktualnich hodnot casovace pro jednotlive channel
+volatile uint16_t aktualniHodnotaCasovaceSonic1;
+volatile uint16_t aktualniHodnotaCasovaceSonic2;
+volatile uint16_t aktualniHodnotaCasovaceColor1;
+volatile uint16_t aktualniHodnotaCasovaceColor2;
 
-volatile uint16_t timerVal1;
-volatile uint16_t timerVal2;
-volatile uint16_t timerValColor1;
-volatile uint16_t timerValColor2;
-
-volatile uint32_t pulseWidth1 = 0;
-volatile uint32_t pulseWidth2 = 0;
+//Promenne pro ulozeni delky pulzu senzoru
+volatile uint32_t pulseWidthSonic1 = 0;
+volatile uint32_t pulseWidthSonic2 = 0;
 volatile uint32_t pulseWidthColor1 = 0;
 volatile uint32_t pulseWidthColor2 = 0;
 
+
+//Promenne pro vypoctenou vzdalenost a pro akumulovanou vzdalenost pri prumerovani
 uint32_t distance1 = 450;
 uint32_t distance2 = 450;
-
 uint32_t distance1_sum;
 uint32_t distance2_sum;
 
@@ -74,40 +86,38 @@ volatile uint32_t COLOR2_PW = 0;
 
 
 
-
+//Funkce pro znovuzapnutí TMP, nevyužito, zanecháno pro případ potřeby
 void tmp0_reset(void)
 {
 	   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 	   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 	   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
 	   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);
-	   overflowCount1 = 0;
-	   overflowCount2 = 0;
+	   overflowCountSonic1 = 0;
+	   overflowCountSonic2 = 0;
 	   overflowCountColor1 = 0;
 	   overflowCountColor2 = 0;
-	   risigneEdgeCaptured1 = false;
-	   risigneEdgeCaptured2 = false;
+	   risigneEdgeCapturedSonic1 = false;
+	   risigneEdgeCapturedSonic2 = false;
 	   risigneEdgeCapturedColor1 = false;
 	   risigneEdgeCapturedColor2 = false;
 	   EnableIRQ(TPM0_INTERRUPT_NUMBER);
 	   TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
 	   //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
-	   TriggerPulse1();
+	   //TriggerPulse1();
 	   //TriggerPulse2();
 }
-
+//Funkce pro resetování pouze SRF senzorů a jejich měření, využití dle potřeby
 void sonic_reset(void)
 {
-	overflowCount1 = 0;
-	overflowCount2 = 0;
-	  TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
-		   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
-		   risigneEdgeCaptured1 = false;
-		   	   risigneEdgeCaptured2 = false;
-		   	 TriggerPulse1();
-
-		   	   //TriggerPulse2();
-
+	overflowCountSonic1 = 0;
+	overflowCountSonic2 = 0;
+	TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
+	TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
+	risigneEdgeCapturedSonic1 = false;
+	risigneEdgeCapturedSonic2 = false;
+	TriggerPulse1();
+	//TriggerPulse2();
 }
 
 //Funkce na inicializace TMP0 - obsluhuje senzory na ruznych channelech
@@ -143,8 +153,6 @@ void tmp0_init(void)
    TriggerPulse1();
    //TriggerPulse2();
 
-   //SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-   //TriggerPulse2();
    COLOR1_ocekavano = true;
    PRINTF("TMP0 INIT FINISHED\r\n");
 }
@@ -154,7 +162,7 @@ void tmp0_init(void)
 void TriggerPulse1(void)
 {	isTriggerTriggering = true;
 
-	//risigneEdgeCaptured1 = false;
+	//risigneEdgeCapturedSonic1 = false;
 	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 1);
@@ -170,7 +178,7 @@ void TriggerPulse1(void)
 void TriggerPulse2(void)
 {
 	isTriggerTriggering = true;
-	//risigneEdgeCaptured2 = false;
+	//risigneEdgeCapturedSonic2 = false;
 	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 1);
@@ -277,10 +285,6 @@ void processColorSensorValue()
 					}
 				}
 		}
-
-
-
-
 	}
 
 		/*
@@ -347,7 +351,7 @@ void processColorSensorValue()
 	EnableIRQ(TPM0_INTERRUPT_NUMBER);
 }
 
-
+//Funkce která ja automaticky volána když je přerušení vyvoláno (nástupné a sesupn0 hranz senzoru]
 void TMP0_INTERRUPT_HANDLER(void)
 {
 
@@ -357,51 +361,52 @@ void TMP0_INTERRUPT_HANDLER(void)
     //Overflow kdyz pretece counter, je potreba pocitat abyc se pak zaznemanl spravne delka mezi prerusenimi
     if (tmp0_interrupt_status & kTPM_TimeOverflowFlag)
     {
-        overflowCount1++;
-        overflowCount2++;
 
+        overflowCountSonic1++;
+        overflowCountSonic2++;
+        overflowCountColor1++;
+        overflowCountColor2++;
 
-        if( overflowCount1==2 || overflowCount2==2  )
+        if( overflowCountSonic1==2 || overflowCountSonic2==2  )
         	{
         	/*
         	if(SONIC1_ocekavano) PRINTF("SONIC1      TRUE");
         	if(SONIC2_ocekavano) PRINTF("SONIC2      TRUE");
-        	PRINTF("OF %u OF2 %u\r\n", overflowCount1,overflowCount2);
-			*/
+        	*/
+        	PRINTF("OF %u OF2 %u\r\n", overflowCountSonic1,overflowCountSonic2);
         	sonic_reset();
         	}
 
-        overflowCountColor1++;
-        overflowCountColor2++;
+
         TPM_ClearStatusFlags(TPM0_BASEADDR, kTPM_TimeOverflowFlag);
     }
-//-------------------SRF----------------------------------------------------------------------------------
+//-------------------SRF ULTRASONIC 2x----------------------------------------------------------------------------------
     if (tmp0_interrupt_status & SRF05_1_CHANNEL_FLAG)
     {
     	if(SONIC1_ocekavano)
     	{
-    		timerVal1 = TPM0_BASEADDR->CONTROLS[SRF05_1_channel].CnV;
+    		aktualniHodnotaCasovaceSonic1 = TPM0_BASEADDR->CONTROLS[SRF05_1_channel].CnV;
     		    	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-    		        if (!risigneEdgeCaptured1)
+    		        if (!risigneEdgeCapturedSonic1)
     		        {
     		        	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-    		            risingEdgeTime1 = timerVal1;
-    		            risigneEdgeCaptured1 = true;
-    		            overflowCount1 = 0;
+    		            risingEdgeTimeSonic1 = aktualniHodnotaCasovaceSonic1;
+    		            risigneEdgeCapturedSonic1 = true;
+    		            overflowCountSonic1 = 0;
     		            //Zmena zachycavani na sestupnou hranu
     		            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_FallingEdge);
     		        }
     		        else
     		        {
     		        	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-    		            fallingEdgeTime1 = timerVal1;
-    		            probehloUspesneMereniSRF05_1 = true;
-    		            risigneEdgeCaptured1 = false;
+    		            fallingEdgeTimeSonic1 = aktualniHodnotaCasovaceSonic1;
+    		            probehloUspesneMereniSonic1 = true;
+    		            risigneEdgeCapturedSonic1 = false;
     		            TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 
     		            //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-    		            pulseWidth1 = pulseWidthLength(risingEdgeTime1,fallingEdgeTime1,overflowCount1);
-    		            distance1 = distanceCountF(pulseWidth1);
+    		            pulseWidthSonic1 = pulseWidthLength(risingEdgeTimeSonic1,fallingEdgeTimeSonic1,overflowCountSonic1);
+    		            distance1 = distanceCountF(pulseWidthSonic1);
 
     		            //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
     		            //if(distance1 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
@@ -445,29 +450,29 @@ void TMP0_INTERRUPT_HANDLER(void)
         {
         	if(SONIC2_ocekavano)
         	{
-        		timerVal2 = TPM0_BASEADDR->CONTROLS[SRF05_2_channel].CnV;
+        		aktualniHodnotaCasovaceSonic2 = TPM0_BASEADDR->CONTROLS[SRF05_2_channel].CnV;
         		        	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
-        		            if (!risigneEdgeCaptured2)
+        		            if (!risigneEdgeCapturedSonic2)
         		            {
         		            	//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-        		                risingEdgeTime2 = timerVal2;
-        		                risigneEdgeCaptured2 = true;
-        		                overflowCount2 = 0;
+        		                risingEdgeTimeSonic2 = aktualniHodnotaCasovaceSonic2;
+        		                risigneEdgeCapturedSonic2 = true;
+        		                overflowCountSonic2 = 0;
         		                //Zmena zachycavani na sestupnou hranu
         		                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_FallingEdge);
         		            }
         		            else
         		            {
         		            	//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-        		                fallingEdgeTime2 = timerVal2;
-        		                probehloUspesneMereniSRF05_2 = true;
-        		                risigneEdgeCaptured2 = false;
+        		                fallingEdgeTimeSonic2 = aktualniHodnotaCasovaceSonic2;
+        		                probehloUspesneMereniSonic2 = true;
+        		                risigneEdgeCapturedSonic2 = false;
         		                TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 
         		                //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
-        		                pulseWidth2 = pulseWidthLength(risingEdgeTime2,fallingEdgeTime2,overflowCount2);
+        		                pulseWidthSonic2 = pulseWidthLength(risingEdgeTimeSonic2,fallingEdgeTimeSonic2,overflowCountSonic2);
 
-        		                distance2 = distanceCountF(pulseWidth2);
+        		                distance2 = distanceCountF(pulseWidthSonic2);
 
         		                //KVuli tomu aby se to nezasekavalo - obcas kdyz se nahodou zmeri 0 tak se to zasekne
         		                //if(distance2 == 0) SDK_DelayAtLeastUs(100U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
@@ -511,11 +516,11 @@ void TMP0_INTERRUPT_HANDLER(void)
     		//TODO TOTO MOZNA ODENDAVAT!
     		if(COLOR1_ocekavano)
     		{
-    			timerValColor1 = TPM0_BASEADDR->CONTROLS[COLOR_1_channel].CnV;
+    			aktualniHodnotaCasovaceColor1 = TPM0_BASEADDR->CONTROLS[COLOR_1_channel].CnV;
     			       	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
     			           if (!risigneEdgeCapturedColor1)
     			           {
-    			        	   risingEdgeTimeColor1 = timerValColor1;
+    			        	   risingEdgeTimeColor1 = aktualniHodnotaCasovaceColor1;
     			               risigneEdgeCapturedColor1 = true;
     			               overflowCountColor1 = 0;
     			               //Zmena zachycavani na sestupnou hranu
@@ -523,7 +528,7 @@ void TMP0_INTERRUPT_HANDLER(void)
     			           }
     			           else
     			           {
-    			               fallingEdgeTimeColor1 = timerValColor1;
+    			               fallingEdgeTimeColor1 = aktualniHodnotaCasovaceColor1;
     			               probehloUspesneMereniColor_1 = true;
     			               risigneEdgeCapturedColor1 = false;
     			               TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_1_channel, kTPM_RisingEdge);
@@ -541,12 +546,12 @@ void TMP0_INTERRUPT_HANDLER(void)
            {
            		if(COLOR2_ocekavano)
            		{
-           			timerValColor2 = TPM0_BASEADDR->CONTROLS[COLOR_2_channel].CnV;
+           			aktualniHodnotaCasovaceColor2 = TPM0_BASEADDR->CONTROLS[COLOR_2_channel].CnV;
 					//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
 				   if (!risigneEdgeCapturedColor2)
 				   {
 					//PRINTF("NASTUPNA HRANA SRF05_1\r\n");
-					   risingEdgeTimeColor2 = timerValColor2;
+					   risingEdgeTimeColor2 = aktualniHodnotaCasovaceColor2;
 					   risigneEdgeCapturedColor2 = true;
 					   overflowCountColor2 = 0;
 					   //Zmena zachycavani na sestupnou hranu
@@ -555,7 +560,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 				   else
 				   {
 					//PRINTF("SESTUPNA HRANA SRF05_1\r\n");
-					   fallingEdgeTimeColor2 = timerValColor2;
+					   fallingEdgeTimeColor2 = aktualniHodnotaCasovaceColor2;
 					   probehloUspesneMereniColor_2 = true;
 					   risigneEdgeCapturedColor2 = false;
 					   TPM_SetupInputCapture(TPM0_BASEADDR, COLOR_2_channel, kTPM_RisingEdge);

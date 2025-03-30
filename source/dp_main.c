@@ -8,8 +8,6 @@ uint8_t g_tipString[] =
     "Uart functional API non-blocking example\r\nBoard sends characters\r\n";
 
 
-
-
 void sendTextCharByChar(UART_Type *base, const char *text)
 {
     size_t len = strlen(text);
