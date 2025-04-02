@@ -304,19 +304,33 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_IR_sensor_PIN_MASK (1U << 0U)      /*!<@brief PORT pin mask */
                                                           /* @} */
 
-/*! @name PORTC10 (number 55), J2[1]/I2C1_SCL
+/*! @name PORTD7 (number 64), J2[20]/J23[1]/D15-I2C1_SCL
   @{ */
 
 /* Symbols to be used with GPIO driver */
-#define BOARD_INITPINS_HALL1_FGPIO FGPIOC              /*!<@brief FGPIO peripheral base pointer */
-#define BOARD_INITPINS_HALL1_GPIO GPIOC                /*!<@brief GPIO peripheral base pointer */
-#define BOARD_INITPINS_HALL1_GPIO_PIN_MASK (1U << 10U) /*!<@brief GPIO pin mask */
+#define BOARD_INITPINS_HALL1_FGPIO FGPIOD             /*!<@brief FGPIO peripheral base pointer */
+#define BOARD_INITPINS_HALL1_GPIO GPIOD               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_HALL1_GPIO_PIN_MASK (1U << 7U) /*!<@brief GPIO pin mask */
 
 /* Symbols to be used with PORT driver */
-#define BOARD_INITPINS_HALL1_PORT PORTC                /*!<@brief PORT peripheral base pointer */
-#define BOARD_INITPINS_HALL1_PIN 10U                   /*!<@brief PORT pin number */
-#define BOARD_INITPINS_HALL1_PIN_MASK (1U << 10U)      /*!<@brief PORT pin mask */
-                                                       /* @} */
+#define BOARD_INITPINS_HALL1_PORT PORTD               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_HALL1_PIN 7U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_HALL1_PIN_MASK (1U << 7U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
+
+/*! @name PORTD6 (number 63), J2[18]/J24[1]/D14-I2C1_SDA
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_HALL2_FGPIO FGPIOD             /*!<@brief FGPIO peripheral base pointer */
+#define BOARD_INITPINS_HALL2_GPIO GPIOD               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_HALL2_GPIO_PIN_MASK (1U << 6U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_HALL2_PORT PORTD               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_HALL2_PIN 6U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_HALL2_PIN_MASK (1U << 6U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.

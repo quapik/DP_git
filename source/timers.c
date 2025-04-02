@@ -111,7 +111,7 @@ void PIT_IRQ_HANDLER(void)
 
 	//MERENI IR SENZORZ
 	//irsensor_check();
-	//processColorSensorValue();
+	processColorSensorValue();
 	//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 
 	}

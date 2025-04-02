@@ -166,14 +166,12 @@ void KontrolaVektoru(void)
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
 					steer_left(75);
-					led_R();
 					zaznamenanaKorekce = true;
 				}
 				else
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
 					steer_left(50);
-					led_R();
 					zaznamenanaKorekce = true;
 				}
 			}
@@ -183,7 +181,6 @@ void KontrolaVektoru(void)
 				{
 					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");					steer_right(50);
 					steer_right(75);
-					led_R();
 					zaznamenanaKorekce = true;
 				}
 				else
@@ -208,14 +205,12 @@ void KontrolaVektoru(void)
 				{
 					PRINTF("PRAVA, HODNE SIKMA, 75 LEFT");
 					steer_left(75);
-					led_R();
 					zaznamenanaKorekce = true;
 				}
 				else
 				{
 					PRINTF("RAVA, SIKMA, 50 LEFT");
 					steer_left(50);
-					led_R();
 					zaznamenanaKorekce = true;
 				}
 
@@ -232,14 +227,12 @@ void KontrolaVektoru(void)
 			{
 				PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
 				steer_right(75);
-				led_R();
 				zaznamenanaKorekce = true;
 			}
 			else
 			{
 				PRINTF("LEVA,  SIKMA, 50 RIGHT");
 				steer_right(50);
-				led_R();
 				zaznamenanaKorekce = true;
 			}
 
@@ -301,7 +294,6 @@ void PixyZpracujVektory(void)
 	if(!zaznamenanaKorekce && pocet_vektoru > 0)
 	{
 		steer_straight();
-		led_G();
 	}
 	PixyGetVectors();
 

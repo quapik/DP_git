@@ -19,8 +19,7 @@
 #include "delay.h"
 #include "drive_control.h"
 
-#define RYCHLOST_ZVUKU 0.034
-//#define COUNTER_TO_US 0.02083 // prescaler1
+#define RYCHLOST_ZVUKU 0.0343
 #define COUNTER_TO_US 2.67 // prescaler128
 #define COUNTER_MAX 0xFFFF
 

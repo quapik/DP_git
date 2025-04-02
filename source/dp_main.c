@@ -25,7 +25,6 @@ void sendMessage(UART_Type *base, const char *message)
 
 int main(void)
 {
-
 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
@@ -42,16 +41,16 @@ int main(void)
 
 
     //COLOR SENSORY A  ULTRASONIC
-    tmp0_init();
+   // tmp0_init();
 
     PIT_Timer_Init();
     //LPTMR_Timer_Init();
-    PIT_timer1_start();
+   // PIT_timer1_start();
     //PIT_timer0_start();
     //irsensor_init();
 
 
-    PixyStart();
+   PixyStart();
 
     /*
     uart_comm_init();
@@ -131,7 +130,7 @@ int main(void)
     		PRINTF("%d \r\n", (int)(pct));
     		motor_set_speed(pct);
     	}
-    	*/
+	*/
 
 
     }

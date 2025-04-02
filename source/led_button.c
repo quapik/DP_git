@@ -36,7 +36,7 @@ void SW1_pressed(void)
 	{
 		startMotorsButtonPressed=true;
 	    led_G();
-	    motor_set_speed(20);
+	    motor_set_speed(3);
 	    driving = true;
 	}
 	else if(startMotorsButtonPressed==true)
@@ -54,6 +54,7 @@ void SW3_pressed(void)
 {
 	if(!jedePixy)
 	{
+		 led_M();
 		PRINTF("Pixy2 detekce spustena\r\n");
 		jedePixy = true;
 		PIT_timer0_start();
@@ -62,6 +63,7 @@ void SW3_pressed(void)
 	}
 	else
 	{
+		 led_R();
 		PRINTF("Pixy2 detekce vypnuta\r\n");
 		jedePixy = false;
 		PIT_timer0_stop();

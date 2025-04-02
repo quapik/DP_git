@@ -80,7 +80,7 @@ void updateTrackerValues(uint8_t index)
 	if(ir_trackers[index] == false)
 	{
 		ir_trackers[index] = true;
-		PRINTF("TRACKER %u TRUE \r\n", index);
+		PRINTF("TRACKER %u TRUE \r\n", index+1);
 		getTrackersValuesCount();
 	}
 	else

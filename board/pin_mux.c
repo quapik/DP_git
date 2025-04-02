@@ -21,8 +21,8 @@ pin_labels:
 - {pin_num: '54', pin_signal: CMP0_IN3/PTC9/I2C0_SDA/TPM0_CH5, label: 'J1[14]/D6-TPM0_CH5/CMP0_IN3', identifier: TPM0_CH5;SRF05_echo}
 - {pin_num: '53', pin_signal: CMP0_IN2/PTC8/I2C0_SCL/TPM0_CH4, label: 'J1[16]/D7-TPM0_CH4/CMP0_IN2', identifier: CMP0_IN2;SRF05_trigger;SRF05_trigger1}
 - {pin_num: '27', pin_signal: PTA5/USB_CLKIN/TPM0_CH2, label: 'J2[4]/D9-TPM0_CH2', identifier: TPM0_CH2;SRF05_trigger2}
-- {pin_num: '63', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, label: 'J2[18]/J24[1]/D14-I2C1_SDA', identifier: ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX}
-- {pin_num: '64', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, label: 'J2[20]/J23[1]/D15-I2C1_SCL', identifier: ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT}
+- {pin_num: '63', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, label: 'J2[18]/J24[1]/D14-I2C1_SDA', identifier: ACCEL_I2C1_SDA;MAG_I2C1_SDA;LPUART0_RX;HALL2}
+- {pin_num: '64', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, label: 'J2[20]/J23[1]/D15-I2C1_SCL', identifier: ACCEL_I2C1_SCL;MAG_I2C1_SCL;LPUART0_RT;HALL1}
 - {pin_num: '8', pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0, label: 'J4[2]/A0-ADC0_SE1', identifier: ADC0_SE1;IR_sensor}
 - {pin_num: '43', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, label: 'J4[4]/A1-ADC0_SE14', identifier: USB_SOF_OUT;ir_sensor;IR_sensor}
 - {pin_num: '9', pin_signal: ADC0_DP0/ADC0_SE0/PTE20/TPM1_CH0/LPUART0_TX/FXIO0_D4, label: 'J4[6]/A2-ADC0_SE0', identifier: ADC0_SE0;SERVO_PWM}
@@ -95,7 +95,11 @@ BOARD_InitPins:
   - {pin_num: '2', peripheral: LPUART1, signal: RX, pin_signal: PTE1/SPI1_MOSI/LPUART1_RX/SPI1_MISO/I2C1_SCL}
   - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: IR_sensor}
   - {pin_num: '8', peripheral: UART2, signal: TX, pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
-  - {pin_num: '55', peripheral: GPIOC, signal: 'GPIO, 10', pin_signal: PTC10/I2C1_SCL, identifier: HALL1, direction: INPUT, gpio_interrupt: kPORT_InterruptRisingEdge}
+  - {pin_num: '64', peripheral: GPIOD, signal: 'GPIO, 7', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, identifier: HALL1, direction: INPUT,
+    gpio_interrupt: kPORT_InterruptRisingEdge}
+  - {pin_num: '63', peripheral: GPIOD, signal: 'GPIO, 6', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, identifier: HALL2,
+    direction: INPUT, gpio_interrupt: kPORT_InterruptRisingEdge}
+  - {pin_num: '63', peripheral: LLWU, signal: 'P, 15', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -168,13 +172,6 @@ void BOARD_InitPins(void)
     /* Initialize GPIO functionality on pin PTC8 (pin 53)  */
     GPIO_PinInit(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, &SRF05_trigger1_config);
 
-    gpio_pin_config_t HALL1_config = {
-        .pinDirection = kGPIO_DigitalInput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTC10 (pin 55)  */
-    GPIO_PinInit(BOARD_INITPINS_HALL1_GPIO, BOARD_INITPINS_HALL1_PIN, &HALL1_config);
-
     gpio_pin_config_t tracker6_config = {
         .pinDirection = kGPIO_DigitalInput,
         .outputLogic = 0U
@@ -217,6 +214,20 @@ void BOARD_InitPins(void)
     /* Initialize GPIO functionality on pin PTD5 (pin 62)  */
     GPIO_PinInit(BOARD_INITPINS_tracker1_GPIO, BOARD_INITPINS_tracker1_PIN, &tracker1_config);
 
+    gpio_pin_config_t HALL2_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD6 (pin 63)  */
+    GPIO_PinInit(BOARD_INITPINS_HALL2_GPIO, BOARD_INITPINS_HALL2_PIN, &HALL2_config);
+
+    gpio_pin_config_t HALL1_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD7 (pin 64)  */
+    GPIO_PinInit(BOARD_INITPINS_HALL1_GPIO, BOARD_INITPINS_HALL1_PIN, &HALL1_config);
+
     /* PORTA1 (pin 23) is configured as LPUART0_RX */
     PORT_SetPinMux(BOARD_INITPINS_DEBUG_UART0_RX_PORT, BOARD_INITPINS_DEBUG_UART0_RX_PIN, kPORT_MuxAlt2);
 
@@ -258,12 +269,6 @@ void BOARD_InitPins(void)
 
     /* Interrupt configuration on PORTC1 (pin 44): Interrupt on falling edge */
     PORT_SetPinInterruptConfig(BOARD_INITPINS_SW3_PORT, BOARD_INITPINS_SW3_PIN, kPORT_InterruptFallingEdge);
-
-    /* PORTC10 (pin 55) is configured as PTC10 */
-    PORT_SetPinMux(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_MuxAsGpio);
-
-    /* Interrupt configuration on PORTC10 (pin 55): Interrupt on rising edge */
-    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_InterruptRisingEdge);
 
     /* PORTC4 (pin 49) is configured as SPI0_PCS0 */
     PORT_SetPinMux(BOARD_INITPINS_SPI0_CS0_PORT, BOARD_INITPINS_SPI0_CS0_PIN, kPORT_MuxAlt2);
@@ -318,6 +323,18 @@ void BOARD_InitPins(void)
 
     /* Interrupt configuration on PORTD5 (pin 62): Interrupt on either edge */
     PORT_SetPinInterruptConfig(BOARD_INITPINS_tracker1_PORT, BOARD_INITPINS_tracker1_PIN, kPORT_InterruptEitherEdge);
+
+    /* PORTD6 (pin 63) is configured as PTD6, LLWU_P15 */
+    PORT_SetPinMux(BOARD_INITPINS_HALL2_PORT, BOARD_INITPINS_HALL2_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD6 (pin 63): Interrupt on rising edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL2_PORT, BOARD_INITPINS_HALL2_PIN, kPORT_InterruptRisingEdge);
+
+    /* PORTD7 (pin 64) is configured as PTD7 */
+    PORT_SetPinMux(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_MuxAsGpio);
+
+    /* Interrupt configuration on PORTD7 (pin 64): Interrupt on rising edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_InterruptRisingEdge);
 
     /* PORTE0 (pin 1) is configured as LPUART1_TX */
     PORT_SetPinMux(PORTE, 0U, kPORT_MuxAlt3);
