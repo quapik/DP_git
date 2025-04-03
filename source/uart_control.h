@@ -17,7 +17,10 @@
 #define UART_CLKSRC     UART2_CLK_SRC
 #define UART_CLK_FREQ   CLOCK_GetFreq(UART2_CLK_SRC)
 
-void uart_comm_init(void);
+
+void UART2_Init(void);
+void UART_Callback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData);
+void UART2_SendToHC05(void);
 
 
 

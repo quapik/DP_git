@@ -7,11 +7,9 @@
 #include "hall_sensors.h"
 
 uint8_t ctvrtkyRight;
-uint32_t otackyRight;
 float vzdalenostRight;
 
 uint8_t ctvrtkyLeft;
-uint32_t otackyLeft;
 float vzdalenostLeft;
 
 

@@ -23,7 +23,7 @@ uint16_t IR_sensor_cm = 0;
 uint32_t IR_sensor_raw = 0;
 bool IR_mesure_done = false;
 
-//SENZORY BARVY¨
+//SENZORY BARVY
 uint16_t COLOR1_value_global = 0;
 uint16_t COLOR2_value_global = 0;
 
@@ -35,6 +35,10 @@ uint8_t actualTrigger = 1;
 bool isTriggerTriggering = false;
 
 bool jedePixy = false;
+
+//HALL SENSORY
+uint16_t otackyRight =  0;
+uint16_t otackyLeft = 0;
 
 
 

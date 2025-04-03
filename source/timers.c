@@ -45,6 +45,9 @@ void LPTMR_timer_start(void)
 void LPTMR_IRQ_HANDLER(void)
 {
     LPTMR_ClearStatusFlags(LPTMR_BASE, kLPTMR_TimerCompareFlag);
+    UART2_SendToHC05();
+
+    /*
     //Pokud timer doběhl poprvé, bylo dokončeno zatáčení a je potřeba opět srovnat
 	if(LPTMR_first)
 	{
@@ -61,6 +64,7 @@ void LPTMR_IRQ_HANDLER(void)
 		probihaZmena = false;
 		LPTMR_StopTimer(LPTMR_BASE);
 	}
+	*/
     /*
     LPTMR_timer_finished = true;
 
