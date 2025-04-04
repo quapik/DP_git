@@ -24,7 +24,6 @@
 #include "fsl_uart.h"
 
 
-#include "delay.h"
 #include "drive_control.h"
 #include "pixySPI.h"
 #include <sonic_color.h>
@@ -38,7 +37,10 @@
 
 extern bool jedouMotory;
 extern uint8_t pctMotory;
-extern int8_t pctServo;
+extern int8_t pctServoR;
+extern int8_t pctServoL;
+
+
 extern bool isObstacleDetected;
 extern bool startMotorsButtonPressed;
 

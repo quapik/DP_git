@@ -65,9 +65,9 @@ void motor_set_check(void)
     // INICIALIZACE MOTORU
 	led_C();
    	motor_set_speed(100);
-   	SysTick_DelayTicks(2000U*1000);
+   	SDK_DelayAtLeastUs(2000U*1000,MHZ48);
    	motor_set_speed(0);
-   	SysTick_DelayTicks(1000U*1000);
+   	SDK_DelayAtLeastUs(1000U*1000,MHZ48);
    	PRINTF("SET MOTOR DONE\r\n");
    	led_off();
 
@@ -79,23 +79,23 @@ void servo_check(void)
 {
 	led_M();
 	steer_straight();
-	SysTick_DelayTicks(500U*1000);
+	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_right(i*10);
-		SysTick_DelayTicks(200U*1000);
+		SDK_DelayAtLeastUs(200U*1000,MHZ48);
 	}
-	SysTick_DelayTicks(500U*1000);
+	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	steer_straight();
-	SysTick_DelayTicks(1000U*1000);
+	SDK_DelayAtLeastUs(000U*1000,MHZ48);
 	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_left(i*10);
-		SysTick_DelayTicks(200U*1000);
+		SDK_DelayAtLeastUs(200U*1000,MHZ48);
 	}
-	SysTick_DelayTicks(500U*1000);
+	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	steer_straight();
-	SysTick_DelayTicks(500U*1000);
+	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	PRINTF("SET SERVO DONE\r\n");
 	led_off();
 
@@ -111,6 +111,7 @@ void steer_straight(void)
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vlevo)
 void steer_left(uint8_t pct)
 {
+	pctServoL = pct;
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
 	else if(pct > 100) set_steer = SERVO_MAX;
@@ -120,24 +121,35 @@ void steer_left(uint8_t pct)
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
 void steer_right(uint8_t pct)
 {
+	pctServoR = pct;
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
-	else if(pct > 100) set_steer = MOTOR_MIN;
+	else if(pct > 100) set_steer = SERVO_MIN;
 			else set_steer = SERVO_MIDDLE - pct*0.023;
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 
 void motor_set_speed(int8_t pct)
-{	float speed = MOTOR_MIN + (MOTOR_MAX-MOTOR_MIN)* (pct*0.01);
+{
+	float speed1 = MOTOR1_MIN + (MOTOR1_MAX-MOTOR1_MIN)* (pct*0.01);
+	float speed2 = MOTOR2_MIN + (MOTOR2_MAX-MOTOR2_MIN)* (pct*0.01);
 
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
-	if(pct <= 0) speed = MOTOR_MIN;
-	if(pct >= 100) speed = MOTOR_MAX;
+	if(pct <= 0)
+		{
+		speed1 = MOTOR2_MIN;
+		speed2 = MOTOR2_MIN;
+		}
+	if(pct >= 100)
+		{
+		speed1 = MOTOR1_MAX;
+		speed2 = MOTOR2_MAX;
+		}
 
 	//PRINTF("%i\r\n", (int)speed);
 
-	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_EdgeAlignedPwm, speed);
-	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_EdgeAlignedPwm, speed);
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_EdgeAlignedPwm, speed1);
+	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_EdgeAlignedPwm, speed2);
 
 }
 

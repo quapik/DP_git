@@ -1,5 +1,2 @@
-D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h:424:20:CLOCK_EnableClock	24	static
-D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:346:20:PORT_SetPinMux	24	static
-D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:416:20:PORT_SetPinInterruptConfig	24	static
+../board/pin_mux.c:113:6:BOARD_InitPins	88	static
 ../board/pin_mux.c:56:6:BOARD_InitBootPins	8	static
-../board/pin_mux.c:113:6:BOARD_InitPins	72	static

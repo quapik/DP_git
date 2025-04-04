@@ -5,11 +5,12 @@
  *      Author: xsimav01
  */
 #include "uart_control.h"
-volatile bool txOnGoing                = false;
+volatile bool txOnGoing = false;
 uart_handle_t g_uartHandle;
 uart_config_t config;
 uart_transfer_t transfer;
 
+//Funkce na inicializaci UARTu pro komunikaci
 void UART2_Init(void)
 {
 	 UART_GetDefaultConfig(&config);
@@ -20,26 +21,33 @@ void UART2_Init(void)
 	UART_TransferCreateHandle(UART, &g_uartHandle, UART_Callback, NULL);
 
 }
-
+//Funkce pro odesliani pres UART na HC05
 void UART2_SendToHC05(void)
 {
-	char buffer[20];
-	 sprintf(buffer, "HR%d; HL%d\r\n", otackyRight,otackyLeft); // Převod čísla na řetězec
 
-	transfer.data     = buffer;
-	transfer.dataSize = sizeof(buffer);
-	txOnGoing     = true;
+	char buffer[200];
+
+	// Formátování do textu
+	snprintf(buffer, sizeof(buffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S1%d;M%d;LEFT%d,RIGHT%d;\r\n",
+			otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR);
+
+
+	transfer.data = (uint8_t *)buffer;
+	transfer.dataSize = strlen(buffer);
+
+	// Poslání dat na UART
+	txOnGoing = true;
 	UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
 
-	/* Wait send finished */
+	/*
 	while (txOnGoing)
 	{
+
 	}
-
-
+	*/
 }
 
-
+//Funkce preruseni pro neblokujici posilani pres UART
 void UART2_FLEXIO_IRQHandler(void)
 {
     UART_TransferHandleIRQ(UART2, &g_uartHandle);

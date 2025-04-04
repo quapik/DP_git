@@ -16,7 +16,7 @@
 #include "clock_config.h"
 #include "fsl_adc16.h"
 
-#include "delay.h"
+
 #include "drive_control.h"
 
 #define RYCHLOST_ZVUKU 0.0343

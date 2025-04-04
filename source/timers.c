@@ -31,6 +31,7 @@ void LPTMR_Timer_Init(void)
     EnableIRQ(LPTMR_IRQn);
 
     PRINTF("LPTMR timer init finished\r\n");
+    LPTMR_timer_start();
 }
 
 void LPTMR_timer_start(void)
@@ -45,7 +46,7 @@ void LPTMR_timer_start(void)
 void LPTMR_IRQ_HANDLER(void)
 {
     LPTMR_ClearStatusFlags(LPTMR_BASE, kLPTMR_TimerCompareFlag);
-    UART2_SendToHC05();
+    UART2_SendToHC05();;
 
     /*
     //Pokud timer doběhl poprvé, bylo dokončeno zatáčení a je potřeba opět srovnat

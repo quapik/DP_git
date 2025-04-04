@@ -566,7 +566,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 }
 
 void isObstacle(uint32_t d1, uint32_t d2)
-{	uint16_t hranice = 100;
+{	uint16_t hranice = 20;
 	//TODO ZPOMALOVANI PODLE VZDALENOSTI
 
 	//PRINTF("%d %d\r\n", d1,d2);

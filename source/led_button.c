@@ -34,9 +34,10 @@ void SW1_pressed(void)
 
 	if(startMotorsButtonPressed==false)
 	{
+		HallResetValues();
 		startMotorsButtonPressed=true;
 	    led_G();
-	    motor_set_speed(3);
+	    motor_set_speed(5);
 	    driving = true;
 	}
 	else if(startMotorsButtonPressed==true)

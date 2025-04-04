@@ -14,16 +14,15 @@ int main(void)
     PRINTF("NXP CUP & VOJTECH SIMA MASTER DEGREE THESIS APP, WELCOME \r\n");
 
 
-    SysTick_Init();
     HallResetValues();
     enableInterruptsOnPorts();
-    //motors_init();
+    motors_init();
 
 
 
     //COLOR SENSORY A  ULTRASONIC
-   // tmp0_init();
-
+    tmp0_init();
+    UART2_Init();
     PIT_Timer_Init();
     LPTMR_Timer_Init();
    // PIT_timer1_start();
@@ -31,8 +30,8 @@ int main(void)
     //irsensor_init();
 
 
-   //PixyStart();
-    UART2_Init();
+   PixyStart();
+
 
     dutyCycle = SERVO_MIDDLE;
  	while (1){
@@ -91,7 +90,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
- 		/*
+
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -102,7 +101,7 @@ int main(void)
     		PRINTF("%d \r\n", (int)(pct));
     		motor_set_speed(pct);
     	}
-	*/
+
 
 
     }

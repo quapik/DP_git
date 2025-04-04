@@ -24,7 +24,7 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_lptmr.h \
- D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_uart.h ../source/delay.h \
+ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_uart.h \
  ../source/drive_control.h ../source/led_button.h ../source/interrupts.h \
  D:\Skola\DP\workspace_reinstall\DP\source/ir_sensors.h \
  D:\Skola\DP\workspace_reinstall\DP\source/globals.h ../source/pixySPI.h \
@@ -37,7 +37,6 @@ source/dp_main.o source/dp_main.d: ../source/dp_main.c \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h \
  D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h \
  D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h \
- D:\Skola\DP\workspace_reinstall\DP\source/delay.h \
  D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h \
  D:\Skola\DP\workspace_reinstall\DP\source/timers.h \
  ../source/uart_control.h ../source/hall_sensors.h
@@ -67,7 +66,6 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_port.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_clock.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_lptmr.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_uart.h:
-../source/delay.h:
 ../source/drive_control.h:
 ../source/led_button.h:
 ../source/interrupts.h:
@@ -83,7 +81,6 @@ D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_spi_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dma.h:
 D:\Skola\DP\workspace_reinstall\DP\drivers/fsl_dmamux.h:
 D:\Skola\DP\workspace_reinstall\DP\source/sonic_color.h:
-D:\Skola\DP\workspace_reinstall\DP\source/delay.h:
 D:\Skola\DP\workspace_reinstall\DP\source/drive_control.h:
 D:\Skola\DP\workspace_reinstall\DP\source/timers.h:
 ../source/uart_control.h:

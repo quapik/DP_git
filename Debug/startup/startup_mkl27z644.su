@@ -1,11 +1,11 @@
-../startup/startup_mkl27z644.c:247:6:data_init	8	static
-../startup/startup_mkl27z644.c:256:6:bss_init	0	static
-../startup/startup_mkl27z644.c:281:6:ResetISR	8	static
 ../startup/startup_mkl27z644.c:365:14:NMI_Handler	0	static
 ../startup/startup_mkl27z644.c:369:14:HardFault_Handler	0	static
 ../startup/startup_mkl27z644.c:373:14:SVC_Handler	0	static
 ../startup/startup_mkl27z644.c:377:14:PendSV_Handler	0	static
 ../startup/startup_mkl27z644.c:381:14:SysTick_Handler	0	static
+../startup/startup_mkl27z644.c:247:6:data_init	8	static
+../startup/startup_mkl27z644.c:256:6:bss_init	0	static
+../startup/startup_mkl27z644.c:281:6:ResetISR	8	static
 ../startup/startup_mkl27z644.c:389:14:IntDefaultHandler	0	static
 ../startup/startup_mkl27z644.c:399:14:DMA0_IRQHandler	8	static
 ../startup/startup_mkl27z644.c:403:14:DMA1_IRQHandler	8	static

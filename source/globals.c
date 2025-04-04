@@ -11,7 +11,8 @@
 bool jedouMotory = false;
 bool driving = false;
 uint8_t pctMotory = 0;
-int8_t pctServo = 0;
+int8_t pctServoR = 0;
+int8_t pctServoL = 0;
 
 
 bool isObstacleDetected = false;
