@@ -34,7 +34,12 @@
 #include "hall_sensors.h"
 #include <string.h>
 
+extern uint8_t primaryVector[4];
+extern uint8_t primaryVectorIndex;
+extern uint8_t importantVector[4];
+extern uint8_t importantVectorIndex;
 
+extern bool pixyMainFeatures;
 extern bool jedouMotory;
 extern uint8_t pctMotory;
 extern int8_t pctServoR;

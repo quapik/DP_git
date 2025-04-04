@@ -6,7 +6,7 @@
  */
 #include "pixySPI.h"
 
-#define DRIVER_MASTER_SPI Driver_SPI0
+#define SPI_PIXY_DRIVER Driver_SPI0
 #define SPI_IRQN SPI0_IRQn
 
 #define TRANSFER_SIZE     16U     /* Transfer dataSize */
@@ -17,8 +17,8 @@ uint8_t masterRxData[TRANSFER_SIZE] = {0};
 uint8_t masterTxData[TRANSFER_SIZE] = {0};
 
 uint8_t masterRxDataVECTORS[64] = {0};
-//uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U}; // ALL FEATURES
-uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 0U, 1U}; // MAIN FEATURES
+uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U}; // ALL FEATURES
+//uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 0U, 1U}; // MAIN FEATURES
 bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
 volatile bool SPI_FinishedBlocking = false;
@@ -34,6 +34,11 @@ uint8_t pocet_vektoru_i;
 uint8_t x_podstatny;
 uint8_t y_podstatny;
 
+uint8_t aktualniHodnotaKZatoceni;
+bool aktualniHodnotaKZatoceniLEFT = false;
+bool IsPrimaryVector = true;
+bool bylaZmenenaHodnotaRychlosti = false;
+
 uint8_t x_pocatecni;
 uint8_t x_koncove;
 uint8_t y_pocatecni;
@@ -47,9 +52,7 @@ bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
 uint8_t horizontal_line_counter = 0;
 
-
 bool zaznamenanaKorekce = false;
-
 bool aspon_jedna_kolma_dvojice = false;
 
 typedef struct {
@@ -72,10 +75,16 @@ void UlozVektor(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_
         vektory[pocet_vektoru_i].y_1 = y_1;
         vektory[pocet_vektoru_i].pomer = pomer;
         vektory[pocet_vektoru_i].i = pocet_vektoru_i;
-
     }
 }
-
+void SaveImportantVektor(void)
+{
+	importantVectorIndex = vector_index;
+	importantVector[0]=x_pocatecni;
+	importantVector[1]=y_pocatecni;
+	importantVector[2]=x_koncove;
+	importantVector[3]=y_koncove;
+}
 void KontrolaVektoru(void)
 {
 	delka = abs(y_0 -y_1); //vzdalenost v ose Y
@@ -88,8 +97,20 @@ void KontrolaVektoru(void)
 	y_pocatecni = (y_0 >= y_1) ? y_0 : y_1;
 	y_koncove = (y_0 >= y_1) ? y_1 : y_0;
 
-	//UlozVektor(vector_index,x_0,y_0,x_1,y_1,0);
+	if(IsPrimaryVector)
+	{
+		aktualniHodnotaKZatoceni = 0;
+		aktualniHodnotaKZatoceniLEFT = false;
+		primaryVector[0]=x_pocatecni;
+		primaryVector[1]=y_pocatecni;
+		primaryVector[2]=x_koncove;
+		primaryVector[3]=y_koncove;
+		primaryVectorIndex = vector_index;
+		SaveImportantVektor();
+	}
 
+
+	//UlozVektor(vector_index,x_pocatecni,y_pocatecni,x_koncove,y_koncove,0);
 
 	if(delka == 0) pomer = 0; //rovna horizontalni cara
 	else
@@ -99,21 +120,27 @@ void KontrolaVektoru(void)
 		pomer = abs((delka*100 / smer*100)/100);
 	}
 
-	/*
+
 	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
 	{
 		if((y_0+y_1)/2 > 40)
 		{
 			PRINTF("HORIZONTAL CARA  BLIZKO  ");
 			finish_line_detected_blizka = true;
+			SaveImportantVektor();
+			motor_set_speed(0);
+			bylaZmenenaHodnotaRychlosti = true;
 		}
 		else
 		{
 			PRINTF("HORIZONTAL CARA  DALEKO  ");
 			finish_line_detected_vzdalena = true;
+			SaveImportantVektor();
+			motor_set_speed(5);
+			bylaZmenenaHodnotaRychlosti = true;
 		}
 	}
-	*/
+
 
 	/*
 	//FULL STRAIGHT a jdou videt obe cary (model smeruje cca rovne a je mezi carama)
@@ -156,7 +183,7 @@ void KontrolaVektoru(void)
 	}
 	*/
 	//MAME ROVINKU, JDE VIDET POUZE JEDNA CARA, JE DLOUHOA ALE ROVNA
-	if(pocet_vektoru == 1)
+	if(IsPrimaryVector) //if(pocet_vektoru == 1)
 	{
 		if(smer < 10 && delka > 40)
 		{
@@ -165,14 +192,14 @@ void KontrolaVektoru(void)
 				if(x_pocatecni < 60)
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
-					steer_left(75);
-					zaznamenanaKorekce = true;
+					aktualniHodnotaKZatoceni = 75;
+					aktualniHodnotaKZatoceniLEFT = true;
 				}
 				else
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
-					steer_left(50);
-					zaznamenanaKorekce = true;
+					aktualniHodnotaKZatoceni = 75;
+					aktualniHodnotaKZatoceniLEFT = true;
 				}
 			}
 			else
@@ -180,21 +207,20 @@ void KontrolaVektoru(void)
 				if(x_pocatecni > 18)
 				{
 					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");					steer_right(50);
-					steer_right(75);
-					zaznamenanaKorekce = true;
+					aktualniHodnotaKZatoceni = 75;
+					aktualniHodnotaKZatoceniLEFT = false;
 				}
 				else
 				{
 					PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");					steer_right(50);
-					steer_right(50);
-
+					aktualniHodnotaKZatoceni = 50;
+					aktualniHodnotaKZatoceniLEFT = false;
 				}
 			}
 		}
 	}
-
 	//pouze jeden vektor, model je lehce natocen a smeruje ven z drahy pres caru
-	if(pocet_vektoru == 1 && delka > 20 && smer>10)
+	if(IsPrimaryVector && delka > 20 && smer>10) //if(pocet_vektoru == 1 && delka > 20 && smer>10)
 	{
 		//vektor smeruje do leva, je treba udelat korekci
 		if(x_pocatecni >= x_koncove)
@@ -204,19 +230,15 @@ void KontrolaVektoru(void)
 				if(smer > 40)
 				{
 					PRINTF("PRAVA, HODNE SIKMA, 75 LEFT");
-					steer_left(75);
-					zaznamenanaKorekce = true;
+					aktualniHodnotaKZatoceni = 75;
 				}
 				else
 				{
-					PRINTF("RAVA, SIKMA, 50 LEFT");
-					steer_left(50);
-					zaznamenanaKorekce = true;
+					PRINTF("PRAVA, SIKMA, 50 LEFT");
+					aktualniHodnotaKZatoceni = 50;
 				}
-
+				aktualniHodnotaKZatoceniLEFT = true;
 			}
-
-
 		}
 		//vektor smeruje doprava treba udelat korekci
 		else
@@ -224,46 +246,48 @@ void KontrolaVektoru(void)
 			if(x_pocatecni > 10)
 			{
 				if(smer > 40)
-			{
-				PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
-				steer_right(75);
-				zaznamenanaKorekce = true;
+				{
+					PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
+					aktualniHodnotaKZatoceni = 75;
 			}
 			else
 			{
-				PRINTF("LEVA,  SIKMA, 50 RIGHT");
-				steer_right(50);
-				zaznamenanaKorekce = true;
-			}
+					PRINTF("LEVA,  SIKMA, 50 RIGHT");
+					aktualniHodnotaKZatoceni = 50;
 
+				}
 			}
-
+			aktualniHodnotaKZatoceniLEFT = false;
 		}
 	}
-	//DETEKCE VICEMENE HORIZONTALNI CARY, CO ZNACI VRCHOL ZATACKY
+	//DETEKCE VICEMENE HORIZONTALNI CARY, CO ZNACI VRCHOL ZATACKY, zatacka muze byt kriticka, proto je tady
 	//je treba zjistit smer a podle toho zatacet
-	if(smer > 30 && delka > 10)
+	if(IsPrimaryVector)
 	{
-		//PRINTF("x_pocatecni %u x_koncove %u\r\n", x_pocatecni, x_koncove);
-		if(x_pocatecni > x_koncove)
-		{
-			PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
-			steer_left(75);
-		}
-		else
-		{
-			PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
-						steer_right(75);
-		}
-		zaznamenanaKorekce = true;
+		if(smer > 30 && delka > 10)
+			{
+				//PRINTF("x_pocatecni %u x_koncove %u\r\n", x_pocatecni, x_koncove);
+				if(x_pocatecni > x_koncove)
+				{
+					PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
+					aktualniHodnotaKZatoceni = 90;
+					aktualniHodnotaKZatoceniLEFT = true;
+				}
+				else
+				{
+					PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
+					aktualniHodnotaKZatoceniLEFT = false;
+					aktualniHodnotaKZatoceni = 90;
+				}
+			}
 	}
 
-	PRINTF("\r\n[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
+
+	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
 }
 
 void PixyZpracujVektory(void)
 {
-
 	zaznamenanaKorekce = false;
 
 	pocet_vektoru = masterRxDataVECTORS[20]/6;
@@ -272,15 +296,19 @@ void PixyZpracujVektory(void)
 	offset = 20;
 	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
 	pocet_vektoru_i = pocet_vektoru;
+	IsPrimaryVector = true;
+	bylaZmenenaHodnotaRychlosti = false;
 
 	while(pocet_vektoru_i>0)
 	{
+		//Ziskani hodnot z prijateho bufferu  (zacinaji na offsetu ktery se vzdy posune)
 		x_0 = masterRxDataVECTORS[offset+1];
 		y_0 = masterRxDataVECTORS[offset+2];
 		x_1 = masterRxDataVECTORS[offset+3];
 		y_1 = masterRxDataVECTORS[offset+4];
 		vector_index = masterRxDataVECTORS[offset+5];
 		KontrolaVektoru();
+		IsPrimaryVector = false;
 		//PRINTF("[x_0,y_0]-[%u,%u]      [x_1,y_1]-[%u,%u]      vector_index  %u \r\n",x_0,y_0,x_1,y_1,vector_index);
 		//if(smer < 0) PRINTF("ZAPORNO");
 		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
@@ -293,20 +321,36 @@ void PixyZpracujVektory(void)
 	//aspon_jedna_kolma_dvojice = false;
 	if(pocet_vektoru > 0)
 	{
-		if(!zaznamenanaKorekce)
+		if(aktualniHodnotaKZatoceni == 0)
 		{
 			steer_straight();
-			if(driving) motor_set_speed(10);
-
+			if(driving)
+			{
+			 if(!bylaZmenenaHodnotaRychlosti) motor_set_speed(10);
+			}
 		}
 		else
 		{
-			if(driving) motor_set_speed(5);
-		}
+			//ZATOC DOELVA
+			if(aktualniHodnotaKZatoceniLEFT)
+			{
+				steer_left(aktualniHodnotaKZatoceni);
+			}
+			//ZATOC DOPRAVA
+			else
+			{
+				steer_right(aktualniHodnotaKZatoceni);
+			}
+			//Prvne kontrola zda jiz nebyla korekce rychlosti kvuli vyssi priorite (zpomalovani horizontal cara)
+			if(!bylaZmenenaHodnotaRychlosti)
+			{
+				if(driving && aktualniHodnotaKZatoceni > 70) motor_set_speed(5);
+				else if(driving && aktualniHodnotaKZatoceni > 30) motor_set_speed(7);
+			}
 
+		}
 	}
 	PixyGetVectors();
-
 	PRINTF("------------------------------------\r\n");
 }
 
@@ -356,14 +400,10 @@ void VykstujiSeKolmeVektory(void)
 				int16_t kolmost = JsouVektoryKolme(vektory[i].x_0,vektory[i].y_0, vektory[i].x_1,
 						vektory[i].y_1, vektory[j].x_0,vektory[j].y_0, vektory[j].x_1,
 						vektory[j].y_1);
-				//PRINTF("KOLMOST %d  ", kolmost);
-
+				//PRINTF("Kolmost %d  ", kolmost);
 			}
-
 		}
-
 	}
-
 }
 
 void PixyStart(void)
@@ -388,10 +428,10 @@ void PixyStart(void)
 
 void PixyInit(void)
 {
-	 DRIVER_MASTER_SPI.Initialize(SPI_IRQ_HANDLER);
+	 SPI_PIXY_DRIVER.Initialize(SPI_IRQ_HANDLER);
 	 NVIC_SetPriority(SPI_IRQN, 3);
-	 DRIVER_MASTER_SPI.PowerControl(ARM_POWER_FULL);
-	 DRIVER_MASTER_SPI.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT | ARM_SPI_CPOL1_CPHA1, TRANSFER_BAUDRATE);
+	 SPI_PIXY_DRIVER.PowerControl(ARM_POWER_FULL);
+	 SPI_PIXY_DRIVER.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT | ARM_SPI_CPOL1_CPHA1, TRANSFER_BAUDRATE);
 }
 
 void SPI_IRQ_HANDLER(uint32_t e)
@@ -400,14 +440,12 @@ void SPI_IRQ_HANDLER(uint32_t e)
 	    {
 	        SPI_Finished = true;
 	    }
-
 }
 void PixyGetVectors(void)
 {
 	actual_tranfser_size = 10;
 	SPI_Finished = false;
-	DRIVER_MASTER_SPI.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
-
+	SPI_PIXY_DRIVER.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
 }
 
 
@@ -439,7 +477,7 @@ void PixySetServos(uint16_t s1, uint16_t s2)
 
 	SPI_Finished = false;
 
-		DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
+		SPI_PIXY_DRIVER.Transfer(masterTxData, masterRxData, actual_tranfser_size);
 		while (!SPI_Finished)
 			{}
 
@@ -469,7 +507,7 @@ void PixySetLED(uint8_t r, uint8_t g ,uint8_t b)
 
 	SPI_Finished = false;
 
-	DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
+	SPI_PIXY_DRIVER.Transfer(masterTxData, masterRxData, actual_tranfser_size);
 	while (!SPI_Finished)
 		{}
 
@@ -494,7 +532,7 @@ void PixySetLamp(uint8_t upper, uint8_t lower)
 
 	SPI_Finished = false;
 
-	DRIVER_MASTER_SPI.Transfer(masterTxData, masterRxData, actual_tranfser_size);
+	SPI_PIXY_DRIVER.Transfer(masterTxData, masterRxData, actual_tranfser_size);
 	while (!SPI_Finished)
 		{}
 

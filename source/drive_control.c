@@ -1,7 +1,5 @@
 #include "drive_control.h"
 
-volatile uint8_t getCharValue = 0U;
-volatile uint8_t angle = 0U; //Uhel natoceni serva - rozsah 0 - 180 stupnu
 float dutyCycle = 0.0;
 
 #ifndef TPM_MOTOR_ON_LEVEL
@@ -12,7 +10,7 @@ float dutyCycle = 0.0;
 #define TPM_SERVO_ON_LEVEL kTPM_HighTrue
 #endif
 
-
+//Konfig promeenne pro TTMP
 tpm_config_t tpmInfo_motory;
 tpm_chnl_pwm_signal_param_t tpmParam_motory[2];
 
@@ -22,22 +20,17 @@ tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 void motors_init(void)
 {
-
-
 	//SERVO  - defaultne nastaveno na middle hodnotu
 	tpmParam_servo.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO;
 	tpmParam_servo.level            = TPM_SERVO_ON_LEVEL;
 	tpmParam_servo.dutyCyclePercent = SERVO_MIDDLE;
 
-	//MOTORy - nastavit default cycle?
-
+	//MOTORY
 	tpmParam_motory[0].chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0;
 	tpmParam_motory[0].level            = TPM_MOTOR_ON_LEVEL;
 
 	tpmParam_motory[1].chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1;
 	tpmParam_motory[1].level            = TPM_MOTOR_ON_LEVEL;
-
-
 
     CLOCK_SetTpmClock(1U);
 
@@ -111,7 +104,9 @@ void steer_straight(void)
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vlevo)
 void steer_left(uint8_t pct)
 {
+	//Ulozeni do globalnich promennych
 	pctServoL = pct;
+	pctServoR = 0;
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
 	else if(pct > 100) set_steer = SERVO_MAX;
@@ -122,6 +117,7 @@ void steer_left(uint8_t pct)
 void steer_right(uint8_t pct)
 {
 	pctServoR = pct;
+	pctServoL = 0;
 	float set_steer;
 	if(pct < 1) set_steer = SERVO_MIDDLE;
 	else if(pct > 100) set_steer = SERVO_MIN;
@@ -131,7 +127,8 @@ void steer_right(uint8_t pct)
 
 void motor_set_speed(int8_t pct)
 {
-	PRINTF("MOTORS SPEED CHANGE %d\r\n",pct);
+	//PRINTF("Zmena rychlosti motoru na %d\r\n",pct);
+	pctMotory = pct;
 	float speed1 = MOTOR1_MIN + (MOTOR1_MAX-MOTOR1_MIN)* (pct*0.01);
 	float speed2 = MOTOR2_MIN + (MOTOR2_MAX-MOTOR2_MIN)* (pct*0.01);
 
@@ -146,12 +143,8 @@ void motor_set_speed(int8_t pct)
 		speed1 = MOTOR1_MAX;
 		speed2 = MOTOR2_MAX;
 		}
-
-	//PRINTF("%i\r\n", (int)speed);
-
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR0, kTPM_EdgeAlignedPwm, speed1);
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_MOTOR, (tpm_chnl_t)BOARD_TPM_CHANNEL_MOTOR1, kTPM_EdgeAlignedPwm, speed2);
-
 }
 
 

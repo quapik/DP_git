@@ -4,6 +4,8 @@
 uint16_t dc = 0;
 uint16_t pct = 0;
 
+bool pixyMainFeatures = true;
+
 int main(void)
 {
 	BOARD_InitPins();

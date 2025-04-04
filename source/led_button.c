@@ -30,10 +30,12 @@ void led_Y(void){led_set(1,1,0);}
 
 void SW1_pressed(void)
 {
-	PRINTF("SW1 stisknuto!\r\n");
+	//PRINTF("SW1 stisknuto!\r\n");
 
 	if(startMotorsButtonPressed==false)
 	{
+		LPTMR_timer_start();
+		//UART2_SendTextToHC05("START");
 		HallResetValues();
 		startMotorsButtonPressed=true;
 	    led_G();
@@ -42,10 +44,13 @@ void SW1_pressed(void)
 	}
 	else if(startMotorsButtonPressed==true)
 		{
+			LPTMR_timer_stop();
 			startMotorsButtonPressed=false;
 		    led_R();
 		    motor_set_speed(0);
 		    driving = false;
+		    //UART2_SendTextToHC05("STOP ");
+
 		}
 
 

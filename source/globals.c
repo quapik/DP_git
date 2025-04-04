@@ -36,6 +36,10 @@ uint8_t actualTrigger = 1;
 bool isTriggerTriggering = false;
 
 bool jedePixy = false;
+uint8_t importantVector[4] = {0,0,0,0};
+uint8_t importantVectorIndex = 0;
+uint8_t primaryVector[4] = {0,0,0,0};
+uint8_t primaryVectorIndex = 0;
 
 //HALL SENSORY
 uint16_t otackyRight =  0;

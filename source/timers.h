@@ -18,5 +18,6 @@ void PIT_timer1_stop(void);
 void PIT_timer1_start(void);
 void LPTMR_Timer_Init(void);
 void LPTMR_timer_start(void);
+void LPTMR_timer_stop(void);
 
 

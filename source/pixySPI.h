@@ -28,5 +28,7 @@ void PixyGetVectors(void);
 void PixyZpracujVektory(void);
 void PixyStart(void);
 void KontrolaVektoru(void);
+void SaveImportantVektor(void);
+
 
 #endif /* PIXYSPI_H_ */
