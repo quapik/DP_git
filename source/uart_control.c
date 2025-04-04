@@ -25,19 +25,24 @@ void UART2_Init(void)
 void UART2_SendToHC05(void)
 {
 
-	char buffer[200];
+	char buffer[130];
 
 	// Formátování do textu
-	snprintf(buffer, sizeof(buffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S1%d;M%d;LEFT%d,RIGHT%d;\r\n",
+	snprintf(buffer, sizeof(buffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S2%d;M%d;LEFT%d,RIGHT%d;\r\n",
 			otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR);
 
 
 	transfer.data = (uint8_t *)buffer;
 	transfer.dataSize = strlen(buffer);
+	PRINTF("delka %d\r\n",strlen(buffer));
 
 	// Poslání dat na UART
-	txOnGoing = true;
-	UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
+	if(!txOnGoing)
+	{
+		txOnGoing = true;
+		UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
+	}
+
 
 	/*
 	while (txOnGoing)
@@ -59,6 +64,7 @@ void UART_Callback(UART_Type *base, uart_handle_t *handle, status_t status, void
     if (kStatus_UART_TxIdle == status)
     {
         txOnGoing    = false;
+
     }
 
 }

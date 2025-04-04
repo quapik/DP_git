@@ -131,6 +131,7 @@ void steer_right(uint8_t pct)
 
 void motor_set_speed(int8_t pct)
 {
+	PRINTF("MOTORS SPEED CHANGE %d\r\n",pct);
 	float speed1 = MOTOR1_MIN + (MOTOR1_MAX-MOTOR1_MIN)* (pct*0.01);
 	float speed2 = MOTOR2_MIN + (MOTOR2_MAX-MOTOR2_MIN)* (pct*0.01);
 

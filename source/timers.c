@@ -99,9 +99,11 @@ void PIT_IRQ_HANDLER(void)
 	{
 		//PRINTF("\r\n Channel No.0 interrupt is occurred !");
 
-		PIT_timer0_finished = true;
+
 		PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_0, kPIT_TimerFlag);
 		PixyZpracujVektory();
+
+
 
 
 		//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);

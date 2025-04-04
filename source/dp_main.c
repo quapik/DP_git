@@ -21,11 +21,11 @@ int main(void)
 
 
     //COLOR SENSORY A  ULTRASONIC
-    tmp0_init();
+    //tmp0_init();
     UART2_Init();
     PIT_Timer_Init();
     LPTMR_Timer_Init();
-   // PIT_timer1_start();
+   //PIT_timer1_start();
     //PIT_timer0_start();
     //irsensor_init();
 
@@ -90,7 +90,7 @@ int main(void)
 
 
     	// LEVY TADBU 6.5 a 12.9 max
-
+ 		/*
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
@@ -101,7 +101,7 @@ int main(void)
     		PRINTF("%d \r\n", (int)(pct));
     		motor_set_speed(pct);
     	}
-
+		*/
 
 
     }

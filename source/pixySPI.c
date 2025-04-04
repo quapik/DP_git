@@ -291,9 +291,19 @@ void PixyZpracujVektory(void)
 	//VykstujiSeKolmeVektory();
 	//if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
 	//aspon_jedna_kolma_dvojice = false;
-	if(!zaznamenanaKorekce && pocet_vektoru > 0)
+	if(pocet_vektoru > 0)
 	{
-		steer_straight();
+		if(!zaznamenanaKorekce)
+		{
+			steer_straight();
+			if(driving) motor_set_speed(10);
+
+		}
+		else
+		{
+			if(driving) motor_set_speed(5);
+		}
+
 	}
 	PixyGetVectors();
 
@@ -363,7 +373,7 @@ void PixyStart(void)
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     //PixySetLamp(0,0);
     PixySetLamp(1,1);
-    PixySetServos(0, 300); //360
+    PixySetServos(0, 360); //360 //300
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     pixyInitFinished = true;
