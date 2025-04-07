@@ -75,13 +75,18 @@ void irsensor_check(void)
 
 
 void updateTrackerValues(uint8_t index)
-{	/*
+{
+	/*
 	index = index - 1;
 	if(ir_trackers[index] == false)
 	{
 		ir_trackers[index] = true;
-		PRINTF("TRACKER %u TRUE \r\n", index+1);
+		//PRINTF("TRACKER %u TRUE \r\n", index+1);
 		getTrackersValuesCount();
+		if((index)==0||(index)==1)
+		{
+			steer_left(90);
+		}
 	}
 	else
 	{
@@ -89,7 +94,7 @@ void updateTrackerValues(uint8_t index)
 		//PRINTF("TRACKER %u FALSE \r\n", index);
 		getTrackersValuesCount();
 	}
-	*/
+	/*
 }
 
 void getTrackersValuesCount (void)

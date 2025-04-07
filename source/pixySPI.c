@@ -4,6 +4,8 @@
  *  Created on: 17. 1. 2025
  *      Author: xsimav01
  */
+
+
 #include "pixySPI.h"
 
 #define SPI_PIXY_DRIVER Driver_SPI0
@@ -11,6 +13,9 @@
 
 #define TRANSFER_SIZE     16U     /* Transfer dataSize */
 #define TRANSFER_BAUDRATE 2000000U /* Transfer baudrate - 500k */
+
+uint8_t base_value = 20;
+
 
 uint8_t actual_tranfser_size = 0;
 uint8_t masterRxData[TRANSFER_SIZE] = {0};
@@ -48,6 +53,7 @@ int8_t delka, smer;
 int16_t offset;
 
 int16_t pomer = 0;
+uint8_t horizonta_counter = 0;
 bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
 uint8_t horizontal_line_counter = 0;
@@ -108,8 +114,6 @@ void KontrolaVektoru(void)
 		primaryVectorIndex = vector_index;
 		SaveImportantVektor();
 	}
-
-
 	//UlozVektor(vector_index,x_pocatecni,y_pocatecni,x_koncove,y_koncove,0);
 
 	if(delka == 0) pomer = 0; //rovna horizontalni cara
@@ -125,19 +129,61 @@ void KontrolaVektoru(void)
 	{
 		if((y_0+y_1)/2 > 40)
 		{
+			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
+						{
+						//PRINTF("HORIZONTAL CARA  BLIZKO  ");
+						motor_set_speed(0);
+						finish_line_detected_blizka = true;
+						PIT_StopPixyZpracovavatVektory();
+						LPTMR_StopPosilejUART();
+						driving = false;
+						dokoncenoKolo = true;
+						UART2_SendTextToHC05("HOR!");
+						SaveImportantVektor();
+						}
+			/*
+			horizonta_counter++;
 			PRINTF("HORIZONTAL CARA  BLIZKO  ");
 			finish_line_detected_blizka = true;
 			SaveImportantVektor();
-			motor_set_speed(0);
+			motor_set_speed(10);
+			dokoncenoKolo = true;
 			bylaZmenenaHodnotaRychlosti = true;
+			/*
+			 UART2_SendTextToHC05("HORR!");
+			/*
+			//STOP
+			led_R();
+				PRINTF("Pixy2 detekce vypnuta\r\n");
+				startMotorsButtonPressed = false;
+				jedePixy = false;
+				 UART2_SendTextToHC05("HORR!");
+				UART2_SendToHC05();
+
+				PIT_timer0_stop();
+				LPTMR_timer_stop();
+				   driving = false;
+				   */
+
 		}
 		else
 		{
+			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
+			{
+				//PRINTF("FINIIIIIIIIIIIIIIIS\r\n");
+				motor_set_speed(5);
+				UART2_SendTextToHC05("HORrrr!");
+				SaveImportantVektor();
+				bylaZmenenaHodnotaRychlosti = true;
+			}
+			/*
+			horizonta_counter++;
 			PRINTF("HORIZONTAL CARA  DALEKO  ");
 			finish_line_detected_vzdalena = true;
 			SaveImportantVektor();
-			motor_set_speed(5);
+			motor_set_speed(10);
 			bylaZmenenaHodnotaRychlosti = true;
+			*/
 		}
 	}
 
@@ -192,13 +238,13 @@ void KontrolaVektoru(void)
 				if(x_pocatecni < 60)
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
-					aktualniHodnotaKZatoceni = 75;
+					aktualniHodnotaKZatoceni = 65;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
 				else
 				{
 					PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
-					aktualniHodnotaKZatoceni = 75;
+					aktualniHodnotaKZatoceni = 40;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
 			}
@@ -206,14 +252,14 @@ void KontrolaVektoru(void)
 			{
 				if(x_pocatecni > 18)
 				{
-					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");					steer_right(50);
-					aktualniHodnotaKZatoceni = 75;
+					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");
+					aktualniHodnotaKZatoceni = 65;
 					aktualniHodnotaKZatoceniLEFT = false;
 				}
 				else
 				{
-					PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");					steer_right(50);
-					aktualniHodnotaKZatoceni = 50;
+					PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");
+					aktualniHodnotaKZatoceni = 40;
 					aktualniHodnotaKZatoceniLEFT = false;
 				}
 			}
@@ -235,7 +281,7 @@ void KontrolaVektoru(void)
 				else
 				{
 					PRINTF("PRAVA, SIKMA, 50 LEFT");
-					aktualniHodnotaKZatoceni = 50;
+					aktualniHodnotaKZatoceni = 40;
 				}
 				aktualniHodnotaKZatoceniLEFT = true;
 			}
@@ -253,7 +299,7 @@ void KontrolaVektoru(void)
 			else
 			{
 					PRINTF("LEVA,  SIKMA, 50 RIGHT");
-					aktualniHodnotaKZatoceni = 50;
+					aktualniHodnotaKZatoceni = 40;
 
 				}
 			}
@@ -270,14 +316,14 @@ void KontrolaVektoru(void)
 				if(x_pocatecni > x_koncove)
 				{
 					PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
-					aktualniHodnotaKZatoceni = 90;
+					aktualniHodnotaKZatoceni = 60;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
 				else
 				{
 					PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
 					aktualniHodnotaKZatoceniLEFT = false;
-					aktualniHodnotaKZatoceni = 90;
+					aktualniHodnotaKZatoceni = 60;
 				}
 			}
 	}
@@ -326,7 +372,8 @@ void PixyZpracujVektory(void)
 			steer_straight();
 			if(driving)
 			{
-			 if(!bylaZmenenaHodnotaRychlosti) motor_set_speed(10);
+			 if(!bylaZmenenaHodnotaRychlosti && !dokoncenoKolo) motor_set_speed(base_value);
+
 			}
 		}
 		else
@@ -344,10 +391,16 @@ void PixyZpracujVektory(void)
 			//Prvne kontrola zda jiz nebyla korekce rychlosti kvuli vyssi priorite (zpomalovani horizontal cara)
 			if(!bylaZmenenaHodnotaRychlosti)
 			{
-				if(driving && aktualniHodnotaKZatoceni > 70) motor_set_speed(5);
-				else if(driving && aktualniHodnotaKZatoceni > 30) motor_set_speed(7);
+				if(dokoncenoKolo == false)
+				{
+					if(driving)
+					{
+						if(aktualniHodnotaKZatoceni >= 75) motor_set_speed(5);
+						else if(aktualniHodnotaKZatoceni >= 50) motor_set_speed(10);
+						else if(aktualniHodnotaKZatoceni >= 25) motor_set_speed(15);
+					}
+				}
 			}
-
 		}
 	}
 	PixyGetVectors();
@@ -413,7 +466,7 @@ void PixyStart(void)
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     //PixySetLamp(0,0);
     PixySetLamp(1,1);
-    PixySetServos(0, 360); //360 //300
+    PixySetServos(0, 400); //360 //300
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     pixyInitFinished = true;

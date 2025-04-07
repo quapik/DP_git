@@ -12,12 +12,12 @@
 
 #endif /* PIT_CONTROL_H_ */
 void PIT_Timer_Init(void);
-void PIT_timer0_start(void);
-void PIT_timer0_stop(void);
-void PIT_timer1_stop(void);
-void PIT_timer1_start(void);
+void PIT_StartPixyZpracovavatVektory(void);
+void PIT_StopPixyZpracovavatVektory(void);
+void PIT_StopZpracujBarvuIRSensor(void);
+void PIT_StartZpracujBarvuIRSensor(void);
 void LPTMR_Timer_Init(void);
-void LPTMR_timer_start(void);
-void LPTMR_timer_stop(void);
+void LPTMR_StartPosilejUART(void);
+void LPTMR_StopPosilejUART(void);
 
 

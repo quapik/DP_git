@@ -45,6 +45,7 @@ uint8_t primaryVectorIndex = 0;
 uint16_t otackyRight =  0;
 uint16_t otackyLeft = 0;
 
+bool dokoncenoKolo = false;
 
 
 

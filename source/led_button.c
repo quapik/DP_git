@@ -34,21 +34,30 @@ void SW1_pressed(void)
 
 	if(startMotorsButtonPressed==false)
 	{
-		LPTMR_timer_start();
+		LPTMR_StartPosilejUART();
 		//UART2_SendTextToHC05("START");
 		HallResetValues();
 		startMotorsButtonPressed=true;
 	    led_G();
-	    motor_set_speed(10);
+	    motor_set_speed(20);
 	    driving = true;
+	    dokoncenoKolo = false;
+
+
+	    jedePixy = true;
+	    PIT_StartPixyZpracovavatVektory();
+	    PixyGetVectors();
 	}
 	else if(startMotorsButtonPressed==true)
 		{
-			LPTMR_timer_stop();
+			LPTMR_StopPosilejUART();
 			startMotorsButtonPressed=false;
 		    led_R();
 		    motor_set_speed(0);
 		    driving = false;
+
+		    jedePixy = false;
+		    PIT_StopPixyZpracovavatVektory();
 		    //UART2_SendTextToHC05("STOP ");
 
 		}
@@ -60,19 +69,19 @@ void SW3_pressed(void)
 {
 	if(!jedePixy)
 	{
-		 led_M();
+		led_M();
 		PRINTF("Pixy2 detekce spustena\r\n");
 		jedePixy = true;
-		PIT_timer0_start();
+		PIT_StartPixyZpracovavatVektory();
 		PixyGetVectors();
 
 	}
 	else
 	{
-		 led_R();
+		led_R();
 		PRINTF("Pixy2 detekce vypnuta\r\n");
 		jedePixy = false;
-		PIT_timer0_stop();
+		PIT_StopPixyZpracovavatVektory();
 	}
 
 	//motor_set_check();

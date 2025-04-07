@@ -71,6 +71,8 @@ extern bool jedePixy;
 extern uint16_t otackyLeft;
 extern uint16_t otackyRight;
 
+extern bool dokoncenoKolo;
+
 #define MHZ48 48000000U
 
 #endif /* GLOBALS_H_ */

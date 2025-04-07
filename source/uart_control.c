@@ -16,9 +16,9 @@ static char txLONGBuffer[130]; //tohle neni idealni, ale jinak se nepodarilo to 
 //Funkce na inicializaci UARTu pro komunikaci
 void UART2_Init(void)
 {
-	 UART_GetDefaultConfig(&config);
-	 config.baudRate_Bps = 9600; //HC-05 ma 9600
-	 config.enableTx     = true;
+	UART_GetDefaultConfig(&config);
+	config.baudRate_Bps = 115200; //Musí být nastaveno i v HC05
+	config.enableTx     = true;
 
 	UART_Init(UART, &config, UART_CLK_FREQ);
 	UART_TransferCreateHandle(UART, &g_uartHandle, UART_Callback, NULL);
@@ -35,13 +35,19 @@ void UART2_SendToHC05(void)
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR,
 		primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex, importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
-		 */
+		*/
 
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
 		importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 
+		//Jen natoceni kol
+		//snprintf(txLONGBuffer, sizeof(txLONGBuffer), "LEFT %d RIGHT %d\r\n", pctServoL,pctServoR);
 
+		/*
+		//Jen otacky
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;\r\n", otackyRight,otackyLeft);
+		*/
 		transfer.data = (uint8_t *)txLONGBuffer;
 		transfer.dataSize = strlen(txLONGBuffer);
 		//PRINTF("delka %d\r\n",strlen(txLONGBuffer));

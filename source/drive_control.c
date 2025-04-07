@@ -1,3 +1,13 @@
+/*
+ * 	drive_control.c
+ *
+ * Soubor starající se o inicializace motoroů a serva  jejich ovládání
+ *
+ *
+ *  Created on: 14. 1. 2025
+ *  Author: xsimav01
+ */
+
 #include "drive_control.h"
 
 float dutyCycle = 0.0;
@@ -17,7 +27,7 @@ tpm_chnl_pwm_signal_param_t tpmParam_motory[2];
 tpm_config_t tpmInfo_servo;
 tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
-
+//Inicializační funkce pro motory
 void motors_init(void)
 {
 	//SERVO  - defaultne nastaveno na middle hodnotu
@@ -48,11 +58,13 @@ void motors_init(void)
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
+
+    //
     motor_set_check();
     //servo_check();
 }
 
-
+//Funkce, která nastaví ESC regulátoru motorům maximální a minimální hodnoty
 void motor_set_check(void)
 {
     // INICIALIZACE MOTORU
@@ -66,8 +78,7 @@ void motor_set_check(void)
 
 }
 
-//Funkce co projde rozsah serva - stred, max vpravo, stred, max v vlevo, stred
-//Óbcas se krajni hodnoty zasekly, proto potreba vyzkouset pred spustenim na drahu
+//Funkce co projde rozsah serva pro priad ze by se nekde neco zaseklo
 void servo_check(void)
 {
 	led_M();
@@ -105,6 +116,7 @@ void steer_straight(void)
 void steer_left(uint8_t pct)
 {
 	//Ulozeni do globalnich promennych
+	//PRINTF("LEFT %d\r\n",pct);
 	pctServoL = pct;
 	pctServoR = 0;
 	float set_steer;
@@ -116,6 +128,7 @@ void steer_left(uint8_t pct)
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
 void steer_right(uint8_t pct)
 {
+	//PRINTF("RIGHT %d\r\n",pct);
 	pctServoR = pct;
 	pctServoL = 0;
 	float set_steer;
@@ -125,6 +138,9 @@ void steer_right(uint8_t pct)
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 
+
+//Funkce nastaví procentuální hodnotu na jednotlivé PWM channely pro kazdý motor zvlášť
+//Každý motor reaguje jinak, proto jsou různé hodnotykteré jsou nastaveny v hlavičkovém souboru
 void motor_set_speed(int8_t pct)
 {
 	//PRINTF("Zmena rychlosti motoru na %d\r\n",pct);
@@ -135,7 +151,7 @@ void motor_set_speed(int8_t pct)
 	//MINIMALNI A MAXIMALNI HODNOTA (mela by byt rozdila od 0)
 	if(pct <= 0)
 		{
-		speed1 = MOTOR2_MIN;
+		speed1 = MOTOR1_MIN;
 		speed2 = MOTOR2_MIN;
 		}
 	if(pct >= 100)

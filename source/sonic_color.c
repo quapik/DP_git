@@ -228,9 +228,15 @@ void checkColorSensorValue(uint32_t PW_US, uint8_t i)
 	 color_event_flag = true;
 	 if (i == 1)
 	 {
-		 COLOR1_PW = PW_US;
+		 COLOR1_value_global = PW_US;
+		// COLOR1_value_global = PW_US;
 	 }
-	 else COLOR2_PW = PW_US;
+	 else
+		 {
+		 COLOR2_value_global = PW_US;
+		// COLOR2_value_global = PW_US;
+		 //if(COLOR2_PW > 20) {}steer_right(50);
+		 }
 }
 
 //Funkce ktera  zpracovava periodicky ulozene hodnoty v promenych a kontroluje barvu
@@ -244,8 +250,12 @@ void processColorSensorValue()
 	//20%  S0 S1 H L | NIC - cca 280, BILA 13, CERNA PASKA 60-100, FIXA cca 90
 	// S2 H
 	// S3 L  for clear (no filter)
-	PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
+	//if(COLOR2_PW > 20) steer_right(50);
 
+	//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
+
+
+	/*
 	if(1) //driving
 	{
 
@@ -284,8 +294,9 @@ void processColorSensorValue()
 					}
 				}
 		}
-	}
 
+	}
+	*/
 		/*
 		if(color_event_flag)
 			{
@@ -505,7 +516,7 @@ void TMP0_INTERRUPT_HANDLER(void)
     			       	//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
     			           if (!risigneEdgeCapturedColor1)
     			           {
-
+    			        	   //PRINTF("COLOR 1 RISING\r\n");
     			        	   risingEdgeTimeColor1 = aktualniHodnotaCasovaceColor1;
     			               risigneEdgeCapturedColor1 = true;
     			               overflowCountColor1 = 0;
@@ -536,6 +547,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 					//Zachycena nastupna hrana signalu - echo signal senzoru, delka pulza pak znamena vzdalenost
 				   if (!risigneEdgeCapturedColor2)
 				   {
+					   //PRINTF("COLOR 2 RISING\r\n");
 					   risingEdgeTimeColor2 = aktualniHodnotaCasovaceColor2;
 					   risigneEdgeCapturedColor2 = true;
 					   overflowCountColor2 = 0;
@@ -578,7 +590,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 
 	*/
 
-	if(driving)
+	if(driving && dokoncenoKolo)
 	{
 		if(d1 < hranice | d2 < hranice)
 		{
@@ -590,6 +602,16 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		startMotorsButtonPressed = false;
 		isObstacleDetected = true;
 		driving = false;
+
+
+		jedePixy = false;
+		UART2_SendTextToHC05("OBS");
+		UART2_SendToHC05();
+
+		PIT_StopPixyZpracovavatVektory();
+		LPTMR_StopPosilejUART();
+		driving = false;
+
 		}
 	}
 

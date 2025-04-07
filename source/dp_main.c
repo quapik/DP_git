@@ -1,5 +1,5 @@
 #include "globals.h"
-
+volatile uint8_t getCharValue = 0U;
 
 uint16_t dc = 0;
 uint16_t pct = 0;
@@ -23,17 +23,19 @@ int main(void)
 
 
     //COLOR SENSORY A  ULTRASONIC
-    //tmp0_init();
+    tmp0_init();
     UART2_Init();
     PIT_Timer_Init();
     LPTMR_Timer_Init();
-   //PIT_timer1_start();
-    //PIT_timer0_start();
+
+    HallResetValues();
+
+    //PIT_StartPixyZpracovavatVektory();
     //irsensor_init();
 
-
-   PixyStart();
-
+    LPTMR_StartPosilejUART();
+  // PixyStart();
+    PIT_StartZpracujBarvuIRSensor();
 
     dutyCycle = SERVO_MIDDLE;
  	while (1){
@@ -83,28 +85,19 @@ int main(void)
 			PRINTF("SERVO %d \r\n", (int)(dutyCycle*100));
 		}
 		*/
-
-
-
-
-
-
-
-
-    	// LEVY TADBU 6.5 a 12.9 max
  		/*
+    	// LEVY TADBU 6.5 a 12.9 max
     	while(1)
     	{
     		getCharValue = GETCHAR() - 0x30U;
-    		if (getCharValue == 0) pct = 0;
-    		if (getCharValue == 9) pct = 100;
+    		if (getCharValue == 0) {pct = 0; LPTMR_timer_stop(); HallResetValues();}
+    		if (getCharValue == 9) {LPTMR_timer_start(); pct = 100;}
     		if (getCharValue == 1) pct = pct -1;
     		if (getCharValue == 2) pct = pct +1;
     		PRINTF("%d \r\n", (int)(pct));
     		motor_set_speed(pct);
     	}
-		*/
-
+    	*/
 
     }
 }

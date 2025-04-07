@@ -26,7 +26,6 @@ void LPTMR_Timer_Init(void)
 	lptmr_config_t lptmrConfig;
     LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR_BASE, &lptmrConfig);
-    //NASTAVENI JAK DLOUHO BUDE BLOKOVANO nez budou provedeny zmeny - mozna operativně měnit podle toho jak velka bude změna směru?
     LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(200000U, LPTMR_SOURCE_CLOCK));
     LPTMR_EnableInterrupts(LPTMR_BASE, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR_IRQn);
@@ -35,14 +34,14 @@ void LPTMR_Timer_Init(void)
     //LPTMR_timer_start();
 }
 //Funkce pro start a vypnuti lptimeru (lze vyzit dle potreby)
-void LPTMR_timer_start(void)
+void LPTMR_StartPosilejUART(void)
 {
 	LPTMR_timer_finished = false;
 	LPTMR_first = true;
 	LPTMR_StartTimer(LPTMR_BASE);
 }
 
-void LPTMR_timer_stop(void)
+void LPTMR_StopPosilejUART(void)
 {
 	LPTMR_timer_finished = true;
 	LPTMR_first = false;
@@ -77,31 +76,30 @@ void PIT_IRQ_HANDLER(void)
 	//MERENI IR SENZORZ
 	//irsensor_check();
 	processColorSensorValue();
-	//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 	}
 
     __DSB();
 }
 //Funkce pro zastavovani a spousteni timeru, pokud by bylo potreba vyuzit pri neperoidickem vyuzivani PIT timeru
-void PIT_timer0_start(void)
+void PIT_StartPixyZpracovavatVektory(void)
 {
 	PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	PIT_timer0_finished = false;
 }
 
-void PIT_timer0_stop(void)
+void PIT_StopPixyZpracovavatVektory(void)
 {
 	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	PIT_timer0_finished = true;
 }
 
-void PIT_timer1_start(void)
+void PIT_StartZpracujBarvuIRSensor(void)
 {
 	PIT_timer1_finished = false;
 	PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_1);
 }
 
-void PIT_timer1_stop(void)
+void PIT_StopZpracujBarvuIRSensor(void)
 {
 	PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_1);
 	PIT_timer1_finished = true;
@@ -119,7 +117,7 @@ void PIT_Timer_Init(void)
 
 
 	//Jak casto se budou zpracovavat vektory
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK)); //33333 funguje
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(100000, PIT_SOURCE_CLOCK)); //33333 funguje
 
 	//Jak casto se cte hodnota baervny senzoru + IR senzoru
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK));
@@ -130,9 +128,5 @@ void PIT_Timer_Init(void)
 
 	EnableIRQ(PIT_IRQ_ID);
 
-	//Nezapinat timery aby to nebezelo periodicky
-	//PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_0);
-	//PIT_StartTimer(PIT_BASEADDR, kPIT_Chnl_1);
-	//PRINTF("PITtimer inicializace probehla uspesne\r\n");
 }
 
