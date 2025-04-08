@@ -10,6 +10,7 @@
 //MOTORY
 bool jedouMotory = false;
 bool driving = false;
+ bool logujJenomVektory = false;
 uint8_t pctMotory = 0;
 int8_t pctServoR = 0;
 int8_t pctServoL = 0;
@@ -40,12 +41,40 @@ uint8_t importantVector[4] = {0,0,0,0};
 uint8_t importantVectorIndex = 0;
 uint8_t primaryVector[4] = {0,0,0,0};
 uint8_t primaryVectorIndex = 0;
+uint8_t secondaryVector[4] = {0,0,0,0};
+uint8_t secondaryVectorIndex = 0;
+uint8_t pocetVektoruGlobal = 0;
 
 //HALL SENSORY
 uint16_t otackyRight =  0;
 uint16_t otackyLeft = 0;
 
 bool dokoncenoKolo = false;
+
+void ZastavVsechno(void)
+{
+	motor_set_speed(0);
+	steer_straight();
+	PIT_StopPixyZpracovavatVektory();
+	if(!logujJenomVektory)LPTMR_StopPosilejUART();
+	driving = false;
+	startMotorsButtonPressed=false;
+	jedePixy = false;
+}
+
+void SpustVsechno(void)
+{
+	HallResetValues();
+	steer_straight();
+	if(!logujJenomVektory)LPTMR_StartPosilejUART();
+	PIT_StartPixyZpracovavatVektory();
+	PixyGetVectors();
+	motor_set_speed(20);
+	driving = true;
+	startMotorsButtonPressed = true;
+	jedePixy = true;
+
+}
 
 
 

@@ -14,6 +14,9 @@
 #define TRANSFER_SIZE     16U     /* Transfer dataSize */
 #define TRANSFER_BAUDRATE 2000000U /* Transfer baudrate - 500k */
 
+char buffer[256];
+uint8_t offsetBuffer = 0;
+
 uint8_t base_value = 20;
 
 
@@ -103,6 +106,23 @@ void KontrolaVektoru(void)
 	y_pocatecni = (y_0 >= y_1) ? y_0 : y_1;
 	y_koncove = (y_0 >= y_1) ? y_1 : y_0;
 
+	//Pokud se maji logovat jenom vektory, ukladej je a pozdeji budou naraz posleny
+	//Promenna se nastavuje v dp_main.c
+	if(logujJenomVektory)
+	{
+		if(pocet_vektoru_i == 1)
+			{
+				offsetBuffer += snprintf(&buffer[offsetBuffer], sizeof(buffer) - offsetBuffer,
+						                       "%d,%d,%d,%d;%d\r\n", x_pocatecni, y_pocatecni, x_koncove, y_koncove, vector_index);
+			}
+			else
+			{
+				offsetBuffer += snprintf(&buffer[offsetBuffer], sizeof(buffer) - offsetBuffer,
+						                       "%d,%d,%d,%d,%d;", x_pocatecni, y_pocatecni, x_koncove, y_koncove,vector_index);
+			}
+	}
+
+
 	if(IsPrimaryVector)
 	{
 		aktualniHodnotaKZatoceni = 0;
@@ -141,93 +161,8 @@ void KontrolaVektoru(void)
 						UART2_SendTextToHC05("HOR!");
 						SaveImportantVektor();
 						}
-			/*
-			horizonta_counter++;
-			PRINTF("HORIZONTAL CARA  BLIZKO  ");
-			finish_line_detected_blizka = true;
-			SaveImportantVektor();
-			motor_set_speed(10);
-			dokoncenoKolo = true;
-			bylaZmenenaHodnotaRychlosti = true;
-			/*
-			 UART2_SendTextToHC05("HORR!");
-			/*
-			//STOP
-			led_R();
-				PRINTF("Pixy2 detekce vypnuta\r\n");
-				startMotorsButtonPressed = false;
-				jedePixy = false;
-				 UART2_SendTextToHC05("HORR!");
-				UART2_SendToHC05();
-
-				PIT_timer0_stop();
-				LPTMR_timer_stop();
-				   driving = false;
-				   */
-
-		}
-		else
-		{
-			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
-			{
-				//PRINTF("FINIIIIIIIIIIIIIIIS\r\n");
-				motor_set_speed(5);
-				UART2_SendTextToHC05("HORrrr!");
-				SaveImportantVektor();
-				bylaZmenenaHodnotaRychlosti = true;
-			}
-			/*
-			horizonta_counter++;
-			PRINTF("HORIZONTAL CARA  DALEKO  ");
-			finish_line_detected_vzdalena = true;
-			SaveImportantVektor();
-			motor_set_speed(10);
-			bylaZmenenaHodnotaRychlosti = true;
-			*/
 		}
 	}
-
-
-	/*
-	//FULL STRAIGHT a jdou videt obe cary (model smeruje cca rovne a je mezi carama)
-	//if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru > 1)
-	if (delka > 10 && pomer > 100 && pomer < 1000 && pocet_vektoru == 1)
-	{
-		if((x_0+x_1)/2 < 39) //LEFT
-		{
-			if(pomer > 300)
-			{
-				PRINTF("LEFT STRAIGHT correction %u ");
-				steer_right(25);
-				led_Y();
-				zaznamenanaKorekce = true;
-			}
-			else
-			{
-				x_podstatny = (x_0 <= x_1) ? x_0 : x_1; //leva cast, chci levejsi index (je na pocatku a pozdeji se presouva doprava)
-				PRINTF("LEFT STRAIGHT %u ", x_podstatny);
-			}
-
-
-		}
-		else //RIGHT
-		{
-			if(pomer > 300)
-			{
-				PRINTF("RIGHT STRAIGHT correction %u ");
-				steer_left(25);
-				led_Y();
-				zaznamenanaKorekce = true;
-			}
-			else
-			{
-				x_podstatny = (x_0 >= x_1) ? x_0 : x_1;
-							PRINTF("RIGHT STRAIGHT %u ", x_podstatny);
-			}
-
-		}
-	}
-	*/
 	//MAME ROVINKU, JDE VIDET POUZE JEDNA CARA, JE DLOUHOA ALE ROVNA
 	if(IsPrimaryVector) //if(pocet_vektoru == 1)
 	{
@@ -344,7 +279,7 @@ void PixyZpracujVektory(void)
 	pocet_vektoru_i = pocet_vektoru;
 	IsPrimaryVector = true;
 	bylaZmenenaHodnotaRychlosti = false;
-
+	offsetBuffer = 0;
 	while(pocet_vektoru_i>0)
 	{
 		//Ziskani hodnot z prijateho bufferu  (zacinaji na offsetu ktery se vzdy posune)
@@ -367,6 +302,8 @@ void PixyZpracujVektory(void)
 	//aspon_jedna_kolma_dvojice = false;
 	if(pocet_vektoru > 0)
 	{
+		//odeslani vsech zaznamenanych vektoru
+		if(logujJenomVektory) UART2_SendVectorsBuffer(buffer,offsetBuffer);
 		if(aktualniHodnotaKZatoceni == 0)
 		{
 			steer_straight();

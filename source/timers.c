@@ -117,7 +117,7 @@ void PIT_Timer_Init(void)
 
 
 	//Jak casto se budou zpracovavat vektory
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(100000, PIT_SOURCE_CLOCK)); //33333 funguje
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(1000000, PIT_SOURCE_CLOCK)); //33333 funguje
 
 	//Jak casto se cte hodnota baervny senzoru + IR senzoru
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK));

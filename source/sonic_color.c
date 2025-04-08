@@ -379,10 +379,6 @@ void TMP0_INTERRUPT_HANDLER(void)
 
         if( overflowCountSonic1==2 || overflowCountSonic2==2  )
         	{
-        	/*
-        	if(SONIC1_ocekavano) PRINTF("SONIC1      TRUE");
-        	if(SONIC2_ocekavano) PRINTF("SONIC2      TRUE");
-        	*/
         	PRINTF("OF %u OF2 %u\r\n", overflowCountSonic1,overflowCountSonic2);
         	sonic_reset();
         	}
@@ -594,24 +590,15 @@ void isObstacle(uint32_t d1, uint32_t d2)
 	{
 		if(d1 < hranice | d2 < hranice)
 		{
-		led_R();
-		//Vypnuti motoru a nastaveni pro
 		motor_set_speed(0);
+		led_R();
+
 		steer_straight();
 		PRINTF("OBSTACLE DETECTED %d %d\r\n", d1,d2);
-		startMotorsButtonPressed = false;
-		isObstacleDetected = true;
-		driving = false;
 
-
-		jedePixy = false;
-		UART2_SendTextToHC05("OBS");
+		UART2_SendTextToHC05("OBST");
 		UART2_SendToHC05();
-
-		PIT_StopPixyZpracovavatVektory();
-		LPTMR_StopPosilejUART();
-		driving = false;
-
+		ZastavVsechno();
 		}
 	}
 

@@ -6,8 +6,10 @@ uint16_t pct = 0;
 
 bool pixyMainFeatures = true;
 
+
 int main(void)
 {
+	logujJenomVektory = true;
 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
@@ -33,8 +35,8 @@ int main(void)
     //PIT_StartPixyZpracovavatVektory();
     //irsensor_init();
 
-    LPTMR_StartPosilejUART();
-  // PixyStart();
+    //LPTMR_StartPosilejUART();
+    PixyStart();
     PIT_StartZpracujBarvuIRSensor();
 
     dutyCycle = SERVO_MIDDLE;

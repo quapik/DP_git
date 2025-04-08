@@ -9,7 +9,7 @@ volatile bool txOnGoing = false;
 uart_handle_t g_uartHandle;
 uart_config_t config;
 uart_transfer_t transfer;
-
+static char txBufferNewLine[3];
 static char txBuffer[20];
 static char txLONGBuffer[130]; //tohle neni idealni, ale jinak se nepodarilo to udelat aby to fungovalo
 
@@ -32,14 +32,14 @@ void UART2_SendToHC05(void)
 	while(!txOnGoing)
 	{
 		/*
-		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR,
-		primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex, importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
+		primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex, ondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 		*/
 
-		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
-		importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
+		secondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex,importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 
 		//Jen natoceni kol
 		//snprintf(txLONGBuffer, sizeof(txLONGBuffer), "LEFT %d RIGHT %d\r\n", pctServoL,pctServoR);
@@ -54,12 +54,6 @@ void UART2_SendToHC05(void)
 		txOnGoing = true;
 		UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
 	}
-	/*
-	else
-	{
-		PRINTF("NEPOSLALO SE ------------------------------------------------------------------------\r\n");
-	}
-	*/
 }
 
 void UART2_SendTextToHC05(const char *text)
@@ -81,6 +75,15 @@ void UART2_SendTextToHC05(const char *text)
         txOnGoing = true;
         UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
     }
+}
+
+
+void UART2_SendVectorsBuffer(const char *buffer, size_t size)
+{
+	  transfer.data = (uint8_t *)buffer;
+	    transfer.dataSize = size;
+	    txOnGoing = true;
+	    UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
 }
 
 //Funkce preruseni pro neblokujici posilani pres UART

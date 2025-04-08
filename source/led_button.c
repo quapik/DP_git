@@ -34,6 +34,7 @@ void SW1_pressed(void)
 
 	if(startMotorsButtonPressed==false)
 	{
+		/*
 		LPTMR_StartPosilejUART();
 		//UART2_SendTextToHC05("START");
 		HallResetValues();
@@ -47,9 +48,13 @@ void SW1_pressed(void)
 	    jedePixy = true;
 	    PIT_StartPixyZpracovavatVektory();
 	    PixyGetVectors();
+	    */
+	    SpustVsechno();
 	}
 	else if(startMotorsButtonPressed==true)
 		{
+		ZastavVsechno();
+		/*
 			LPTMR_StopPosilejUART();
 			startMotorsButtonPressed=false;
 		    led_R();
@@ -60,6 +65,7 @@ void SW1_pressed(void)
 		    PIT_StopPixyZpracovavatVektory();
 		    //UART2_SendTextToHC05("STOP ");
 
+		 */
 		}
 
 

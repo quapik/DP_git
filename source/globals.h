@@ -38,6 +38,11 @@ extern uint8_t primaryVector[4];
 extern uint8_t primaryVectorIndex;
 extern uint8_t importantVector[4];
 extern uint8_t importantVectorIndex;
+extern uint8_t secondaryVector[4];
+extern uint8_t secondaryVectorIndex;
+extern uint8_t pocetVektoruGlobal;
+
+extern bool logujJenomVektory;
 
 extern bool pixyMainFeatures;
 extern bool jedouMotory;
@@ -74,5 +79,9 @@ extern uint16_t otackyRight;
 extern bool dokoncenoKolo;
 
 #define MHZ48 48000000U
+
+void ZastavVsechno(void);
+void SpustVsechno(void);
+
 
 #endif /* GLOBALS_H_ */
