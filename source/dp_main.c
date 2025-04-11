@@ -4,12 +4,12 @@ volatile uint8_t getCharValue = 0U;
 uint16_t dc = 0;
 uint16_t pct = 0;
 
-bool pixyMainFeatures = true;
+bool pixyMainFeatures = false;
 
 
 int main(void)
 {
-	logujJenomVektory = true;
+	logujJenomVektory = false;
 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
@@ -27,19 +27,19 @@ int main(void)
     //COLOR SENSORY A  ULTRASONIC
     tmp0_init();
     UART2_Init();
+
     PIT_Timer_Init();
     LPTMR_Timer_Init();
-
     HallResetValues();
-
-    //PIT_StartPixyZpracovavatVektory();
-    //irsensor_init();
+    irsensor_init();
 
     //LPTMR_StartPosilejUART();
     PixyStart();
     PIT_StartZpracujBarvuIRSensor();
 
     dutyCycle = SERVO_MIDDLE;
+    PRINTF("Vsechny init funkce dokonceny\r\n");
+    led_R();
  	while (1){
 
 

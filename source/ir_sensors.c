@@ -59,16 +59,25 @@ void irsensor_init(void)
 }
 
 //Funkce, kdy pokud bylo dokončeno měření, je hodnota převedena na CM a je opět zavoláno měření
-void irsensor_check(void)
+void irSensorCheck(void)
 {
+
 	if(IR_mesure_done)
-		{	if(IR_sensor_raw > 2300) PRINTF ("STOOOOOOOOOOOOP\r\n");
+		{
+			//Hodnota odpovidajici cca pod 16cm
+			if(driving && IR_sensor_raw > 2300)
+			{
+				/*
+				PRINTF("ir sensor stop\r\n");
+				UART2_SendTextToHC05("IRV");
+				ZastavVsechno();
+				*/
+			}
+
 			irsensor_convert(IR_sensor_raw);
 			IR_mesure_done = false;
 			ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
-			PRINTF("ADC Value: %d and CM value %d\r\n", IR_sensor_raw,IR_sensor_cm);
-
-
+			//PRINTF("ADC Value: %d and CM value %d\r\n", IR_sensor_raw,IR_sensor_cm);
 		}
 
 }
@@ -76,30 +85,35 @@ void irsensor_check(void)
 
 void updateTrackerValues(uint8_t index)
 {
-	/*
+
 	index = index - 1;
 	if(ir_trackers[index] == false)
 	{
 		ir_trackers[index] = true;
-		//PRINTF("TRACKER %u TRUE \r\n", index+1);
-		getTrackersValuesCount();
-		if((index)==0||(index)==1)
+		PRINTF("TRACKER %u TRUE \r\n", index+1);
+		//getTrackersValuesCount();
+		if((index)==0||(index)==1) //index 2 je pokaženej takže vynechavame
 		{
-			steer_left(90);
+			UART2_SendTextToHC05("IRC");
+			steer_left(75);
+		}
+		if((index)==3||(index)==4 ||(index)==5)
+		{
+			UART2_SendTextToHC05("IRC");;
+			steer_right(75);
 		}
 	}
 	else
 	{
 		ir_trackers[index] = false;
 		//PRINTF("TRACKER %u FALSE \r\n", index);
-		getTrackersValuesCount();
+		//getTrackersValuesCount();
 	}
-	/*
-}
 
+}
+//funkce co zjistí kolik IR senzorů je v logické 1 (pro detekci cílové čáry, nakonec nevyužitp)
 void getTrackersValuesCount (void)
 {
-	/*
 	uint8_t cnt = 0;
 	for(uint8_t i = 0; i < 6; i++)
 	{
@@ -117,9 +131,6 @@ void getTrackersValuesCount (void)
 		startMotorsButtonPressed = false;
 		driving = false;
 	}
-	*/
-
-
 
 }
 

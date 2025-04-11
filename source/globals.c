@@ -53,6 +53,8 @@ bool dokoncenoKolo = false;
 
 void ZastavVsechno(void)
 {
+	led_R();
+	PRINTF("VSECHNO ZASTAVENO \r\n");
 	motor_set_speed(0);
 	steer_straight();
 	PIT_StopPixyZpracovavatVektory();
@@ -64,6 +66,8 @@ void ZastavVsechno(void)
 
 void SpustVsechno(void)
 {
+	led_G();
+	PRINTF("VSECHNO SPUSTENO \r\n");
 	HallResetValues();
 	steer_straight();
 	if(!logujJenomVektory)LPTMR_StartPosilejUART();

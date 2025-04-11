@@ -59,7 +59,6 @@ void motors_init(void)
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
 
-    //
     motor_set_check();
     //servo_check();
 }
@@ -91,7 +90,7 @@ void servo_check(void)
 	}
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	steer_straight();
-	SDK_DelayAtLeastUs(000U*1000,MHZ48);
+	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	for(uint8_t i = 1; i < 10; i++)
 	{
 		steer_left(i*10);
@@ -108,7 +107,10 @@ void servo_check(void)
 //Funkce pro nastaveni stredni hodnoty serva pro jizdvu vpred
 void steer_straight(void)
 {
+	PRINTF("STRAIGHT\r\n");
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, SERVO_MIDDLE);
+	pctServoR = 0;
+	pctServoL = 0;
 
 }
 
@@ -116,7 +118,7 @@ void steer_straight(void)
 void steer_left(uint8_t pct)
 {
 	//Ulozeni do globalnich promennych
-	//PRINTF("LEFT %d\r\n",pct);
+	PRINTF("LEFT %d\r\n",pct);
 	pctServoL = pct;
 	pctServoR = 0;
 	float set_steer;
@@ -128,7 +130,7 @@ void steer_left(uint8_t pct)
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
 void steer_right(uint8_t pct)
 {
-	//PRINTF("RIGHT %d\r\n",pct);
+	PRINTF("RIGHT %d\r\n",pct);
 	pctServoR = pct;
 	pctServoL = 0;
 	float set_steer;

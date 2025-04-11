@@ -32,13 +32,13 @@ void UART2_SendToHC05(void)
 	while(!txOnGoing)
 	{
 		/*
-		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
-		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR,
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;IR%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
+		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR,
 		primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex, ondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 		*/
 
-		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
-		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
+		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
 		secondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex,importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 
 		//Jen natoceni kol

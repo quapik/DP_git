@@ -147,19 +147,23 @@ void KontrolaVektoru(void)
 
 	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
 	{
-		if((y_0+y_1)/2 > 40)
+		if(1) // if((y_0+y_1)/2 > 40)
 		{
 			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
 						{
-						//PRINTF("HORIZONTAL CARA  BLIZKO  ");
-						motor_set_speed(0);
+						PRINTF("HORIZONTAL CARA  BLIZKO  ");
+						motor_set_speed(5);
 						finish_line_detected_blizka = true;
-						PIT_StopPixyZpracovavatVektory();
-						LPTMR_StopPosilejUART();
-						driving = false;
 						dokoncenoKolo = true;
 						UART2_SendTextToHC05("HOR!");
 						SaveImportantVektor();
+						/*
+						PIT_StopPixyZpracovavatVektory();
+						LPTMR_StopPosilejUART();
+						driving = false;
+						*/
+
+
 						}
 		}
 	}
