@@ -10,9 +10,9 @@
 
 void enableInterruptsOnPorts(void)
 {
-	NVIC_SetPriority(PORTA_IRQn, 2);
+	NVIC_SetPriority(PORTA_IRQn, 1);
 	NVIC_EnableIRQ(PORTA_IRQn);
-	NVIC_SetPriority(PORTB_PORTC_PORTD_PORTE_IRQn, 2);
+	NVIC_SetPriority(PORTB_PORTC_PORTD_PORTE_IRQn, 1);
 	NVIC_EnableIRQ(PORTB_PORTC_PORTD_PORTE_IRQn);
 }
 

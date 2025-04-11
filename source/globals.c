@@ -51,29 +51,31 @@ uint16_t otackyLeft = 0;
 
 bool dokoncenoKolo = false;
 
-void ZastavVsechno(void)
+void StopAll(void)
 {
 	led_R();
 	PRINTF("VSECHNO ZASTAVENO \r\n");
-	motor_set_speed(0);
-	steer_straight();
+	MotorSetSpeed(0);
+	SteerStraight();
 	PIT_StopPixyZpracovavatVektory();
 	if(!logujJenomVektory)LPTMR_StopPosilejUART();
+	PIT_StartZpracujBarvuIRSensor();
 	driving = false;
 	startMotorsButtonPressed=false;
 	jedePixy = false;
 }
 
-void SpustVsechno(void)
+void StartAll(void)
 {
 	led_G();
 	PRINTF("VSECHNO SPUSTENO \r\n");
 	HallResetValues();
-	steer_straight();
+	SteerStraight();
 	if(!logujJenomVektory)LPTMR_StartPosilejUART();
 	PIT_StartPixyZpracovavatVektory();
+	PIT_StopZpracujBarvuIRSensor();
 	PixyGetVectors();
-	motor_set_speed(20);
+	MotorSetSpeed(20);
 	driving = true;
 	startMotorsButtonPressed = true;
 	jedePixy = true;

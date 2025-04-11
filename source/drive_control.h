@@ -42,32 +42,22 @@ extern volatile uint8_t angle;
 extern float dutyCycle;
 
 
-
 extern tpm_config_t tpmInfo_servo;
 extern tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
-void motors_init(void);
-void motor_set_check(void);
-void servo_check(void);
-void motor_set_speed(int8_t speed_level);
+void MotorsInit(void);
+void MotorSetRange(void);
+void ServoCheckRange(void);
+void MotorSetSpeed(int8_t speed_level);
 
-void steer_right(uint8_t pct);
-void steer_left(uint8_t pct);
-void steer_straight(void);
-
-#define SERVO_R_MAX 4.5
-#define SERVO_R3 5.0
-#define SERVO_R2 6.0
-#define SERVO_R1 7.0
-#define SERVO_MIDDLE 7.9//
-#define SERVO_L1 9.0
-#define SERVO_L2 10.0
-#define SERVO_L3 11.0
-#define SERVO_L_MAX 11.7
+void SteerRight(uint8_t pct);
+void SteerLeft(uint8_t pct);
+void SteerStraight(void);
 
 
-#define SERVO_MAX 10.2 //11,7 bez osazeni na aute
-#define SERVO_MIN 5.6 //4,9
+#define SERVO_MIDDLE 7.9 //Prostredni hodnota serva po jizdu rovne
+#define SERVO_MAX 10.2
+#define SERVO_MIN 5.6
 
 #define MOTOR1_MAX 9.9 //10% ==  2ms 5% = 1ms
 #define MOTOR1_MIN  6.3//6.2 //5.0

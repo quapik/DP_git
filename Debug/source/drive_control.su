@@ -1,7 +1,7 @@
-../source/drive_control.c:67:6:motor_set_check	16	static
-../source/drive_control.c:31:6:motors_init	40	static
-../source/drive_control.c:81:6:servo_check	32	static
-../source/drive_control.c:108:6:steer_straight	8	static
-../source/drive_control.c:118:6:steer_left	8	static
-../source/drive_control.c:131:6:steer_right	8	static
-../source/drive_control.c:146:6:motor_set_speed	24	static
+../source/drive_control.c:31:6:MotorsInit	40	static
+../source/drive_control.c:68:6:MotorSetRange	16	static
+../source/drive_control.c:82:6:ServoCheckRange	32	static
+../source/drive_control.c:109:6:SteerStraight	8	static
+../source/drive_control.c:119:6:SteerLeft	8	static
+../source/drive_control.c:132:6:SteerRight	8	static
+../source/drive_control.c:147:6:MotorSetSpeed	24	static

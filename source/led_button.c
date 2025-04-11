@@ -49,11 +49,11 @@ void SW1_pressed(void)
 	    PIT_StartPixyZpracovavatVektory();
 	    PixyGetVectors();
 	    */
-	    SpustVsechno();
+	    StartAll();
 	}
 	else if(startMotorsButtonPressed==true)
 		{
-		ZastavVsechno();
+		StopAll();
 		/*
 			LPTMR_StopPosilejUART();
 			startMotorsButtonPressed=false;
@@ -73,6 +73,9 @@ void SW1_pressed(void)
 
 void SW3_pressed(void)
 {
+	MotorSetRange();
+	ServoCheckRange();
+	/*
 	if(!jedePixy)
 	{
 		led_M();
@@ -89,9 +92,8 @@ void SW3_pressed(void)
 		jedePixy = false;
 		PIT_StopPixyZpracovavatVektory();
 	}
-
+	*/
 	//motor_set_check();
 	//servo_check();
-
 }
 

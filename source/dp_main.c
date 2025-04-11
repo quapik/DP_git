@@ -9,7 +9,6 @@ bool pixyMainFeatures = false;
 
 int main(void)
 {
-	logujJenomVektory = false;
 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
@@ -18,28 +17,30 @@ int main(void)
     PRINTF("NXP CUP & VOJTECH SIMA MASTER DEGREE THESIS APP, WELCOME \r\n");
 
 
-    HallResetValues();
     enableInterruptsOnPorts();
-    motors_init();
+    MotorsInit();
 
 
 
-    //COLOR SENSORY A  ULTRASONIC
+    //Inicializace TMP0 (ultrazvukove a barevne senzory)
     tmp0_init();
+    //Inicializace prenosu dat pres uart
     UART2_Init();
-
+    //Inicializace timeru
     PIT_Timer_Init();
     LPTMR_Timer_Init();
-    HallResetValues();
-    irsensor_init();
 
-    //LPTMR_StartPosilejUART();
+    irSensorInit();
+
+    //Start pro Pixy kameru -  inicalizace,  rozsviti se svetla, nastavi do spravne polohy, nespusti se sledovani vektoru
     PixyStart();
-    PIT_StartZpracujBarvuIRSensor();
 
-    dutyCycle = SERVO_MIDDLE;
+
     PRINTF("Vsechny init funkce dokonceny\r\n");
     led_R();
+
+	//Urcuje, zda budou logovany pouze vektory nebo vse pri pohybu a prenosu pre uart
+	logujJenomVektory = false;
  	while (1){
 
 

@@ -56,7 +56,7 @@ void PIT_IRQ_HANDLER(void)
 	if((PIT_GetStatusFlags(PIT_BASEADDR, kPIT_Chnl_0)) == 1)
 	{
 		PIT_ClearStatusFlags(PIT_BASEADDR, kPIT_Chnl_0, kPIT_TimerFlag);
-		PixyZpracujVektory();
+		ProccessVectors();
 		//PIT_StopTimer(PIT_BASEADDR, kPIT_Chnl_0);
 	}
 
@@ -109,7 +109,7 @@ void PIT_Timer_Init(void)
 
 
 	//Jak casto se budou zpracovavat vektory
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(500000, PIT_SOURCE_CLOCK)); //33333 funguje
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(1000000, PIT_SOURCE_CLOCK)); //33333 funguje
 
 	//Jak casto se cte hodnota baervny senzoru + IR senzoru
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(10000, PIT_SOURCE_CLOCK));

@@ -28,7 +28,7 @@ tpm_config_t tpmInfo_servo;
 tpm_chnl_pwm_signal_param_t tpmParam_servo;
 
 //Inicializační funkce pro motory
-void motors_init(void)
+void MotorsInit(void)
 {
 	//SERVO  - defaultne nastaveno na middle hodnotu
 	tpmParam_servo.chnlNumber       = (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO;
@@ -58,19 +58,20 @@ void motors_init(void)
     TPM_SetupPwm(BOARD_TPM_BASEADDR_SERVO, &tpmParam_servo, 1U, kTPM_EdgeAlignedPwm, 50U, TPM_SOURCE_CLOCK);
     TPM_StartTimer(BOARD_TPM_BASEADDR_SERVO, kTPM_SystemClock);
 
-
-    motor_set_check();
+    //Funkce na projiti serva a inicializai motoru, pokud zde, provede se to vždy, spouštěno proto tlačítkem dle potřeby v led_button.c
+    //MotorSetRange();
     //servo_check();
+    MotorSetSpeed(0);
 }
 
 //Funkce, která nastaví ESC regulátoru motorům maximální a minimální hodnoty
-void motor_set_check(void)
+void MotorSetRange(void)
 {
     // INICIALIZACE MOTORU
 	led_C();
-   	motor_set_speed(100);
+   	MotorSetSpeed(100);
    	SDK_DelayAtLeastUs(2000U*1000,MHZ48);
-   	motor_set_speed(0);
+   	MotorSetSpeed(0);
    	SDK_DelayAtLeastUs(1000U*1000,MHZ48);
    	PRINTF("SET MOTOR DONE\r\n");
    	led_off();
@@ -78,26 +79,26 @@ void motor_set_check(void)
 }
 
 //Funkce co projde rozsah serva pro priad ze by se nekde neco zaseklo
-void servo_check(void)
+void ServoCheckRange(void)
 {
 	led_M();
-	steer_straight();
+	SteerStraight();
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	for(uint8_t i = 1; i < 10; i++)
 	{
-		steer_right(i*10);
+		SteerRight(i*10);
 		SDK_DelayAtLeastUs(200U*1000,MHZ48);
 	}
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
-	steer_straight();
+	SteerStraight();
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	for(uint8_t i = 1; i < 10; i++)
 	{
-		steer_left(i*10);
+		SteerLeft(i*10);
 		SDK_DelayAtLeastUs(200U*1000,MHZ48);
 	}
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
-	steer_straight();
+	SteerStraight();
 	SDK_DelayAtLeastUs(500U*1000,MHZ48);
 	PRINTF("SET SERVO DONE\r\n");
 	led_off();
@@ -105,7 +106,7 @@ void servo_check(void)
 }
 
 //Funkce pro nastaveni stredni hodnoty serva pro jizdvu vpred
-void steer_straight(void)
+void SteerStraight(void)
 {
 	PRINTF("STRAIGHT\r\n");
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, SERVO_MIDDLE);
@@ -115,7 +116,7 @@ void steer_straight(void)
 }
 
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vlevo)
-void steer_left(uint8_t pct)
+void SteerLeft(uint8_t pct)
 {
 	//Ulozeni do globalnich promennych
 	PRINTF("LEFT %d\r\n",pct);
@@ -128,7 +129,7 @@ void steer_left(uint8_t pct)
 	TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, set_steer);
 }
 //Funkce co nastavuje procenta z maximalniho uhlu (0 stred, 100 maximalni zatoceni vpravo))
-void steer_right(uint8_t pct)
+void SteerRight(uint8_t pct)
 {
 	PRINTF("RIGHT %d\r\n",pct);
 	pctServoR = pct;
@@ -143,7 +144,7 @@ void steer_right(uint8_t pct)
 
 //Funkce nastaví procentuální hodnotu na jednotlivé PWM channely pro kazdý motor zvlášť
 //Každý motor reaguje jinak, proto jsou různé hodnotykteré jsou nastaveny v hlavičkovém souboru
-void motor_set_speed(int8_t pct)
+void MotorSetSpeed(int8_t pct)
 {
 	//PRINTF("Zmena rychlosti motoru na %d\r\n",pct);
 	pctMotory = pct;

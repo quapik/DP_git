@@ -80,8 +80,8 @@ extern bool dokoncenoKolo;
 
 #define MHZ48 48000000U
 
-void ZastavVsechno(void);
-void SpustVsechno(void);
+void StopAll(void);
+void StartAll(void);
 
 
 #endif /* GLOBALS_H_ */

@@ -22,12 +22,12 @@ void IR_ADC_IRQ_HANDLER(void)
 }
 
 //Prevod ADC digital value na centimetry
-void irsensor_convert(uint32_t ir_orig)
+void irSensorConvert(uint32_t ir_orig)
 {
 	IR_sensor_cm = 6 + ((4095.0 - ir_orig)/4095.0) * 26;
 }
 
-void irsensor_init(void)
+void irSensorInit(void)
 {
 
 	EnableIRQ(IR_ADC_IRQ);
@@ -70,11 +70,12 @@ void irSensorCheck(void)
 				/*
 				PRINTF("ir sensor stop\r\n");
 				UART2_SendTextToHC05("IRV");
-				ZastavVsechno();
+				StopAll();
 				*/
+
 			}
 
-			irsensor_convert(IR_sensor_raw);
+			irSensorConvert(IR_sensor_raw);
 			IR_mesure_done = false;
 			ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
 			//PRINTF("ADC Value: %d and CM value %d\r\n", IR_sensor_raw,IR_sensor_cm);
@@ -82,26 +83,26 @@ void irSensorCheck(void)
 
 }
 
-
 void updateTrackerValues(uint8_t index)
 {
-
 	index = index - 1;
 	if(ir_trackers[index] == false)
 	{
+		/*
 		ir_trackers[index] = true;
 		PRINTF("TRACKER %u TRUE \r\n", index+1);
 		//getTrackersValuesCount();
 		if((index)==0||(index)==1) //index 2 je pokaženej takže vynechavame
 		{
 			UART2_SendTextToHC05("IRC");
-			steer_left(75);
+			SteerLeft(75);
 		}
 		if((index)==3||(index)==4 ||(index)==5)
 		{
 			UART2_SendTextToHC05("IRC");;
-			steer_right(75);
+			SteerRight(75);
 		}
+		*/
 	}
 	else
 	{
@@ -119,14 +120,12 @@ void getTrackersValuesCount (void)
 	{
 		if(ir_trackers[i] == true) cnt++;
 	}
-
-	PRINTF("TRUE COUNT %u \r\n", cnt);
-
+	//Zastavi pokud prejede 2 cary (aspon 2 true hodnty), problematicke v pripade kdy se jen vyjede z drahy (senzory musi byt osazeny rovne)
 	if(cnt > 2 && driving)
 	{
 		led_R();
-		motor_set_speed(0);
-		steer_straight();
+		MotorSetSpeed(0);
+		SteerStraight();
 		PRINTF("LINE DETECTED \r\n");
 		startMotorsButtonPressed = false;
 		driving = false;

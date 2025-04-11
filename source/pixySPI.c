@@ -5,20 +5,11 @@
  *      Author: xsimav01
  */
 
-
 #include "pixySPI.h"
-
-#define SPI_PIXY_DRIVER Driver_SPI0
-#define SPI_IRQN SPI0_IRQn
-
-#define TRANSFER_SIZE     16U     /* Transfer dataSize */
-#define TRANSFER_BAUDRATE 2000000U /* Transfer baudrate - 500k */
-
 char buffer[256];
 uint8_t offsetBuffer = 0;
 
-uint8_t base_value = 20;
-
+uint8_t base_speed_value = 20;
 
 uint8_t actual_tranfser_size = 0;
 uint8_t masterRxData[TRANSFER_SIZE] = {0};
@@ -27,7 +18,6 @@ uint8_t masterTxData[TRANSFER_SIZE] = {0};
 uint8_t masterRxDataVECTORS[64] = {0};
 uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 1U, 1U}; // ALL FEATURES
 //uint8_t masterTxDataVECTORS[6] = {174U, 193U, 48U, 2U, 0U, 1U}; // MAIN FEATURES
-bool pixyInitFinished = false;
 volatile bool SPI_Finished = false;
 volatile bool SPI_FinishedBlocking = false;
 
@@ -59,11 +49,13 @@ int16_t pomer = 0;
 uint8_t horizonta_counter = 0;
 bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
+
 uint8_t horizontal_line_counter = 0;
 
 bool zaznamenanaKorekce = false;
-bool aspon_jedna_kolma_dvojice = false;
 
+
+//struktura pro mozne ulozeni vektoru
 typedef struct {
     uint8_t index;
     uint8_t x_0, y_0;
@@ -74,8 +66,8 @@ typedef struct {
 
 #define MAX_VECTORS 20
 VectorStruct vektory[MAX_VECTORS];
-
-void UlozVektor(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1, int16_t pomer) {
+//Funkce pro ulozeni vektoru do struktury
+void SaveVectorToStruct(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1, int16_t pomer) {
     if (pocet_vektoru < MAX_VECTORS) {
         vektory[pocet_vektoru_i].index = index;
         vektory[pocet_vektoru_i].x_0 = x_0;
@@ -86,7 +78,8 @@ void UlozVektor(uint8_t index, uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_
         vektory[pocet_vektoru_i].i = pocet_vektoru_i;
     }
 }
-void SaveImportantVektor(void)
+//Ulozeni do pole vektor pro pozdejsi vypis, jedna se o vektor podle ktereho bylo neco vyhodnoceo
+void SaveImportantVector(void)
 {
 	importantVectorIndex = vector_index;
 	importantVector[0]=x_pocatecni;
@@ -94,7 +87,7 @@ void SaveImportantVektor(void)
 	importantVector[2]=x_koncove;
 	importantVector[3]=y_koncove;
 }
-void KontrolaVektoru(void)
+void CheckVector(void)
 {
 	delka = abs(y_0 -y_1); //vzdalenost v ose Y
 	smer = abs(x_0 - x_1); //vzdalenost v ose X
@@ -132,7 +125,7 @@ void KontrolaVektoru(void)
 		primaryVector[2]=x_koncove;
 		primaryVector[3]=y_koncove;
 		primaryVectorIndex = vector_index;
-		SaveImportantVektor();
+		SaveImportantVector();
 	}
 	//UlozVektor(vector_index,x_pocatecni,y_pocatecni,x_koncove,y_koncove,0);
 
@@ -147,24 +140,52 @@ void KontrolaVektoru(void)
 
 	if(pomer < 50 && delka < 10) //maly pomer (doky tomu ze je vetsi smer a mala az nulova delka (velikost v ose Y)
 	{
-		if(1) // if((y_0+y_1)/2 > 40)
+		if((y_0+y_1)/2 > 25)// if((y_0+y_1)/2 > 40)
 		{
 			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
-						{
-						PRINTF("HORIZONTAL CARA  BLIZKO  ");
-						motor_set_speed(5);
+			{
+					horizontal_line_counter++;
+					if(horizontal_line_counter == 2)
+					{
+						PRINTF("HORIZONTAL CARA  BLIZKO DRUHA  ");
+						led_B();
+						MotorSetSpeed(5);
 						finish_line_detected_blizka = true;
 						dokoncenoKolo = true;
-						UART2_SendTextToHC05("HOR!");
-						SaveImportantVektor();
+						UART2_SendTextToHC05("HOR-B!");
+						SaveImportantVector();
 						/*
 						PIT_StopPixyZpracovavatVektory();
 						LPTMR_StopPosilejUART();
 						driving = false;
 						*/
 
+					}
+			}
+		}
+		else
+		{
+			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
+			{
+					horizontal_line_counter++;
+					if(horizontal_line_counter == 2)
+					{
+						PRINTF("HORIZONTAL CARA  DALEKO DRUHA  ");
+						led_Y();
+						MotorSetSpeed(10);
+						finish_line_detected_blizka = true;
+						dokoncenoKolo = true;
+						UART2_SendTextToHC05("HOR-D!");
+						SaveImportantVector();
+						/*
+						PIT_StopPixyZpracovavatVektory();
+						LPTMR_StopPosilejUART();
+						driving = false;
+						*/
 
-						}
+					}
+			}
+
 		}
 	}
 	//MAME ROVINKU, JDE VIDET POUZE JEDNA CARA, JE DLOUHOA ALE ROVNA
@@ -266,24 +287,24 @@ void KontrolaVektoru(void)
 				}
 			}
 	}
-
-
-	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_0,y_0,x_1,y_1, delka, smer,  pomer, vector_index);
+	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_pocatecni,y_pocatecni,x_koncove,y_koncove, delka, smer,  pomer, vector_index);
 }
 
-void PixyZpracujVektory(void)
+void ProccessVectors(void)
 {
 	zaznamenanaKorekce = false;
-
-	pocet_vektoru = masterRxDataVECTORS[20]/6;
-
-	//Na 20te pozici zacinaji data s informaci o prvnim pixelu
 	offset = 20;
-	PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
+	//Na dvacate pozici se vyskytuje informacfe o poctu zaznamenanych vektoru a pak pokracuji data
+	pocet_vektoru = masterRxDataVECTORS[offset]/6;
 	pocet_vektoru_i = pocet_vektoru;
+	//PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
+
 	IsPrimaryVector = true;
 	bylaZmenenaHodnotaRychlosti = false;
+	horizontal_line_counter = 0;
 	offsetBuffer = 0;
+
+	//Postupne se procahzi vsechny vektory co byly poslany
 	while(pocet_vektoru_i>0)
 	{
 		//Ziskani hodnot z prijateho bufferu  (zacinaji na offsetu ktery se vzdy posune)
@@ -292,28 +313,26 @@ void PixyZpracujVektory(void)
 		x_1 = masterRxDataVECTORS[offset+3];
 		y_1 = masterRxDataVECTORS[offset+4];
 		vector_index = masterRxDataVECTORS[offset+5];
-		KontrolaVektoru();
+		CheckVector();
 		IsPrimaryVector = false;
-		//PRINTF("[x_0,y_0]-[%u,%u]      [x_1,y_1]-[%u,%u]      vector_index  %u \r\n",x_0,y_0,x_1,y_1,vector_index);
-		//if(smer < 0) PRINTF("ZAPORNO");
-		//PRINTF("DELKA  %i SMER %i \r\n", delka, smer);
 		pocet_vektoru_i--;
 		offset = offset + 6;
 	}
 
-	//VykstujiSeKolmeVektory();
-	//if(aspon_jedna_kolma_dvojice) PRINTF("KOLMOOOOOOOOOOOOOOOOOOOOOOOO\r\n");
-	//aspon_jedna_kolma_dvojice = false;
+	//Obcas pixy neposle zadne vektory, v tom pripade se nic endela
 	if(pocet_vektoru > 0)
 	{
-		//odeslani vsech zaznamenanych vektoru
+		//odeslani vsech zaznamenanych vektoru pokud se zaznamenavaji jenom ty
 		if(logujJenomVektory) UART2_SendVectorsBuffer(buffer,offsetBuffer);
+
 		if(aktualniHodnotaKZatoceni == 0)
 		{
-			steer_straight();
+			//pokud byla nebylo vyhodnoceno ze je traba zatacet, kola rovne
 			if(driving)
 			{
-			 if(!bylaZmenenaHodnotaRychlosti && !dokoncenoKolo) motor_set_speed(base_value);
+			 SteerStraight();
+			 //Pokud je treba zmeni rychlost a jeste nebylo dokonceno kolo (tam je rychlost konstatni)
+			 if(!bylaZmenenaHodnotaRychlosti && !dokoncenoKolo) MotorSetSpeed(base_speed_value);
 
 			}
 		}
@@ -322,12 +341,12 @@ void PixyZpracujVektory(void)
 			//ZATOC DOELVA
 			if(aktualniHodnotaKZatoceniLEFT)
 			{
-				steer_left(aktualniHodnotaKZatoceni);
+				SteerLeft(aktualniHodnotaKZatoceni);
 			}
 			//ZATOC DOPRAVA
 			else
 			{
-				steer_right(aktualniHodnotaKZatoceni);
+				SteerRight(aktualniHodnotaKZatoceni);
 			}
 			//Prvne kontrola zda jiz nebyla korekce rychlosti kvuli vyssi priorite (zpomalovani horizontal cara)
 			if(!bylaZmenenaHodnotaRychlosti)
@@ -336,9 +355,9 @@ void PixyZpracujVektory(void)
 				{
 					if(driving)
 					{
-						if(aktualniHodnotaKZatoceni >= 75) motor_set_speed(5);
-						else if(aktualniHodnotaKZatoceni >= 50) motor_set_speed(10);
-						else if(aktualniHodnotaKZatoceni >= 25) motor_set_speed(15);
+						if(aktualniHodnotaKZatoceni >= 75) MotorSetSpeed(5);
+						else if(aktualniHodnotaKZatoceni >= 50) MotorSetSpeed(10);
+						else if(aktualniHodnotaKZatoceni >= 25) MotorSetSpeed(15);
 					}
 				}
 			}
@@ -348,58 +367,7 @@ void PixyZpracujVektory(void)
 	PRINTF("------------------------------------\r\n");
 }
 
-int16_t JsouVektoryKolme(uint8_t x_0, uint8_t y_0, uint8_t x_1, uint8_t y_1,
-                      uint8_t x2, uint8_t y2, uint8_t x3, uint8_t y3)
-{
-    int16_t Ax = x_1 - x_0;
-    int16_t Ay = y_1 - y_0;
-    int16_t Bx = x3 - x2;
-    int16_t By = y3 - y2;
-
-    int16_t skalarni_soucin = (Ax * Bx + Ay * By);
-    // Výpočet délky vektorů
-	float delka_A = sqrt(Ax * Ax + Ay * Ay);
-	float delka_B = sqrt(Bx * Bx + By * By);
-
-	// Výpočet kosinu úhlu mezi vektory
-	float cos_theta = (float)skalarni_soucin / (delka_A * delka_B);
-	int16_t cos_theta_D = (float)skalarni_soucin / (delka_A * delka_B)*1000;
-
-
-	// Výpis hodnot pro kontrolu
-	PRINTF("AX %d AY %d BX %d BY %d\r\n", Ax, Ay, Bx, By);
-	PRINTF("Skalarni soucin: %d\r\n", skalarni_soucin);
-	PRINTF("Kosinus uhlu mezi vektory: %d\r\n", cos_theta_D);
-
-	//priblizne kolme vektory, je ptoreba nejak pracovat s tim prahem
-	if (cos_theta > -0.2 && cos_theta < 0.2) {
-		PRINTF("Vektory jsou cca kolme.\r\n");
-		aspon_jedna_kolma_dvojice = true;
-		return 1;  // Vektory jsou přibližně kolmé
-	} else {
-		PRINTF("Vektory nejsou kolme.\r\n");
-		return 0;  // Vektory nejsou kolmé
-	}
-}
-
-void VykstujiSeKolmeVektory(void)
-{
-	for(int i = 1; i < pocet_vektoru+1; i++)
-	{
-		//projdi vsechny vektory
-		for(int j = 1; j < pocet_vektoru+1; j++)
-		{
-			if(j != i)
-			{
-				int16_t kolmost = JsouVektoryKolme(vektory[i].x_0,vektory[i].y_0, vektory[i].x_1,
-						vektory[i].y_1, vektory[j].x_0,vektory[j].y_0, vektory[j].x_1,
-						vektory[j].y_1);
-				//PRINTF("Kolmost %d  ", kolmost);
-			}
-		}
-	}
-}
-
+//Funkce která nastartuje Pixy2 - provede se inicializace, nastavi servo a zapnou se ledky
 void PixyStart(void)
 {
     PixyInit();
@@ -410,16 +378,9 @@ void PixyStart(void)
     PixySetServos(0, 400); //360 //300
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
-    pixyInitFinished = true;
-
     PRINTF("Pixy2 Start Finished\r\n");
-    //PIT_timer0_start();
-
-    //TADY MAS PROBLEM, tohle kdyz zavolas tak se ti to zacykli
-    //je potreba to vyresit aby se to neseklo
-	//PixyGetVectors();
 }
-
+//Nastavi se SPI pro komunikaci s Pixy2
 void PixyInit(void)
 {
 	 SPI_PIXY_DRIVER.Initialize(SPI_IRQ_HANDLER);
@@ -427,7 +388,7 @@ void PixyInit(void)
 	 SPI_PIXY_DRIVER.PowerControl(ARM_POWER_FULL);
 	 SPI_PIXY_DRIVER.Control(ARM_SPI_MODE_MASTER | ARM_SPI_SS_MASTER_HW_OUTPUT | ARM_SPI_CPOL1_CPHA1, TRANSFER_BAUDRATE);
 }
-
+//Preruseni volnao kdyz je dokoncen pixy2 prenos
 void SPI_IRQ_HANDLER(uint32_t e)
 {
 	if (e & ARM_SPI_EVENT_TRANSFER_COMPLETE)
@@ -435,6 +396,8 @@ void SPI_IRQ_HANDLER(uint32_t e)
 	        SPI_Finished = true;
 	    }
 }
+
+//Odeslani registru pres pixy a prijmuti vektoru
 void PixyGetVectors(void)
 {
 	actual_tranfser_size = 10;
@@ -442,7 +405,7 @@ void PixyGetVectors(void)
 	SPI_PIXY_DRIVER.Transfer(masterTxDataVECTORS, masterRxDataVECTORS, 64);
 }
 
-
+//Funkce pro nastaveni pixy serva do polohy
 void PixySetServos(uint16_t s1, uint16_t s2)
 {
 	/*
@@ -470,13 +433,13 @@ void PixySetServos(uint16_t s1, uint16_t s2)
 	masterTxData[7] = (s2 >> 8) & 0xFF;
 
 	SPI_Finished = false;
-
-		SPI_PIXY_DRIVER.Transfer(masterTxData, masterRxData, actual_tranfser_size);
-		while (!SPI_Finished)
-			{}
+	//Blokujici protoze se provede jen jednou na zacatku
+	SPI_PIXY_DRIVER.Transfer(masterTxData, masterRxData, actual_tranfser_size);
+	while (!SPI_Finished)
+		{}
 
 }
-
+//Funkce pro nastaveni pixy ledek (RGB barvy)
 void PixySetLED(uint8_t r, uint8_t g ,uint8_t b)
 {
 	/*
@@ -506,7 +469,7 @@ void PixySetLED(uint8_t r, uint8_t g ,uint8_t b)
 		{}
 
 }
-
+//Funkce pro nastaveni pixy ledek (prisvetlovaci diody)
 void PixySetLamp(uint8_t upper, uint8_t lower)
 {
 	/*Byte	Description	Value(s) setLamp(upper, lower)

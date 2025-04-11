@@ -15,8 +15,8 @@
 
 void updateTrackerValues(uint8_t index);
 void getTrackersValuesCount (void);
-void irsensor_init(void);
-void irsensor_convert(uint32_t ir_orig);
+void irSensorInit(void);
+void irSensorConvert(uint32_t ir_orig);
 void irSensorCheck(void);
 
 

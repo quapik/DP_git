@@ -79,8 +79,6 @@ bool prumerovani = true;
 bool SONIC1_ocekavano = false;
 bool SONIC2_ocekavano = false;
 
-bool COLOR1_ocekavano = true;
-bool COLOR2_ocekavano = false;
 
 volatile uint32_t COLOR1_PW = 0;
 volatile uint32_t COLOR2_PW = 0;
@@ -104,9 +102,6 @@ void tmp0_reset(void)
 	   risigneEdgeCapturedColor2 = false;
 	   EnableIRQ(TPM0_INTERRUPT_NUMBER);
 	   TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
-	   //V inicializace se hned pusti uvodni dva pulzy (eliminuje se tim ze by pak pri prvnim mereni byly namereny nejake spatne hodnoty
-	   //TriggerPulse1();
-	   //TriggerPulse2();
 }
 //Funkce pro resetování pouze SRF senzorů a jejich měření, využití dle potřeby
 void sonic_reset(void)
@@ -154,7 +149,6 @@ void tmp0_init(void)
    TriggerPulse1();
    //TriggerPulse2();
 
-   COLOR1_ocekavano = true;
 }
 
 
@@ -542,8 +536,6 @@ void TMP0_INTERRUPT_HANDLER(void)
 
 			   pulseWidthColor1 = pulseWidthLength(risingEdgeTimeColor1,fallingEdgeTimeColor1,overflowCountColor1);
 			   checkColorSensorValue(pulseWidthToUs(pulseWidthColor1),1);
-			   COLOR1_ocekavano = false;
-			   COLOR2_ocekavano = true;
 		   }
 
            TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_1_CHANNEL_FLAG);
@@ -572,8 +564,6 @@ void TMP0_INTERRUPT_HANDLER(void)
 			   //Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
 			   pulseWidthColor2 = pulseWidthLength(risingEdgeTimeColor2,fallingEdgeTimeColor2,overflowCountColor2);
 			   checkColorSensorValue(pulseWidthToUs(pulseWidthColor2),2);
-			   COLOR1_ocekavano = true;
-			   COLOR2_ocekavano = false;
 		   }
 
           TPM_ClearStatusFlags(TPM0_BASEADDR, COLOR_2_CHANNEL_FLAG);
@@ -584,23 +574,22 @@ void TMP0_INTERRUPT_HANDLER(void)
 
 void isObstacle(uint32_t d1, uint32_t d2)
 {
+	//Hranice pred kterou se vypnout motory (pro soutez NXP je jiz zpomalena rychlost, proto staci jen zastavit a netreba zpomalovat)
 	hranice = 20;
 	//PRINTF("%d %d\r\n", d1,d2);
-
-
 	if(driving && dokoncenoKolo)
 	{
 		if(d1 < hranice | d2 < hranice)
 		{
-		motor_set_speed(0);
+		MotorSetSpeed(0);
 		led_R();
 
-		steer_straight();
+		SteerStraight();
 		PRINTF("OBSTACLE DETECTED %d %d\r\n", d1,d2);
 
 		UART2_SendTextToHC05("OBST");
 		UART2_SendToHC05();
-		ZastavVsechno();
+		StopAll();
 		}
 	}
 }
