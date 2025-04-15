@@ -23,6 +23,7 @@ void UART_Callback(UART_Type *base, uart_handle_t *handle, status_t status, void
 void UART2_SendToHC05(void);
 void UART2_SendTextToHC05(const char *text);
 void UART2_SendVectorsBuffer(const char *buffer, size_t size);
+void UART2_sendToHC05All(const char *bufferVector, size_t sizeVector);
 
 
 

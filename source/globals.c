@@ -59,9 +59,9 @@ void StopAll(void)
 	SteerStraight();
 	PIT_StopPixyZpracovavatVektory();
 	if(!logujJenomVektory)LPTMR_StopPosilejUART();
-	PIT_StartZpracujBarvuIRSensor();
+	PIT_StopZpracujBarvuIRSensor();
 	driving = false;
-	startMotorsButtonPressed=false;
+	startMotorsButtonPressed = false;
 	jedePixy = false;
 }
 
@@ -73,12 +73,13 @@ void StartAll(void)
 	SteerStraight();
 	if(!logujJenomVektory)LPTMR_StartPosilejUART();
 	PIT_StartPixyZpracovavatVektory();
-	PIT_StopZpracujBarvuIRSensor();
+	PIT_StartZpracujBarvuIRSensor();
 	PixyGetVectors();
-	MotorSetSpeed(20);
+	MotorSetSpeed(25);
 	driving = true;
 	startMotorsButtonPressed = true;
 	jedePixy = true;
+	dokoncenoKolo = false;
 
 }
 

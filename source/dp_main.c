@@ -16,19 +16,17 @@ int main(void)
 
     PRINTF("NXP CUP & VOJTECH SIMA MASTER DEGREE THESIS APP, WELCOME \r\n");
 
-
     enableInterruptsOnPorts();
     MotorsInit();
 
-
-
     //Inicializace TMP0 (ultrazvukove a barevne senzory)
-    tmp0_init();
+    TMP0Init();
     //Inicializace prenosu dat pres uart
     UART2_Init();
     //Inicializace timeru
     PIT_Timer_Init();
     LPTMR_Timer_Init();
+    PIT_StartZpracujBarvuIRSensor();
 
     irSensorInit();
 
@@ -40,14 +38,8 @@ int main(void)
     led_R();
 
 	//Urcuje, zda budou logovany pouze vektory nebo vse pri pohybu a prenosu pre uart
-	logujJenomVektory = false;
+	logujJenomVektory = true;
  	while (1){
-
-
-
-		//irsensor_mesure();
-
-
 
 		/*
 		//IR SENSOR

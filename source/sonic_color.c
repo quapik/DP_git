@@ -67,13 +67,13 @@ volatile bool color_event_flag = false;
 volatile uint32_t last_color_pw = 0;
 volatile uint8_t last_color_index = 0;
 
-#define POCET_MERENI 10
+#define POCET_MERENI 5
 uint8_t pocet_mereni1 = 1;
 uint8_t pocet_mereni2 = 1;
 uint32_t counter = 0;
 tpm_config_t tmp0info;
 
-bool prumerovani = true;
+bool prumerovani = false;
 
 
 bool SONIC1_ocekavano = false;
@@ -86,7 +86,7 @@ volatile uint32_t COLOR2_PW = 0;
 
 
 //Funkce pro znovuzapnutí TMP, nevyužito, zanecháno pro případ potřeby
-void tmp0_reset(void)
+void TMP0Reset(void)
 {
 	   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
 	   TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
@@ -104,7 +104,7 @@ void tmp0_reset(void)
 	   TPM_StartTimer(TPM0_BASEADDR, kTPM_SystemClock);
 }
 //Funkce pro resetování pouze SRF senzorů a jejich měření, využití dle potřeby
-void sonic_reset(void)
+void SonicReset(void)
 {
 	overflowCountSonic1 = 0;
 	overflowCountSonic2 = 0;
@@ -117,7 +117,7 @@ void sonic_reset(void)
 }
 
 //Funkce na inicializace TMP0 - obsluhuje senzory na ruznych channelech
-void tmp0_init(void)
+void TMP0Init(void)
 {
    CLOCK_SetTpmClock(1U);
    //SRF TRIGGER pin na 0 pro jistotu
@@ -241,133 +241,24 @@ void processColorSensorValue()
 	//20%  S0 S1 H L | NIC - cca 280, BILA 13, CERNA PASKA 60-100, FIXA cca 90
 	// S2 H
 	// S3 L  for clear (no filter)
+
 	//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
-	/*
+
 	if(driving && !dokoncenoKolo)
 	{
 		if(COLOR1_value_global > 100 && COLOR1_value_global < 500)
 		{
-			steer_left(75);
+			SteerLeft(75);
 		}
 
-		if(COLOR2_value_global > 40 && COLOR2_value_global < 500)
+		if(COLOR2_value_global > 100 && COLOR2_value_global < 500)
 		{
-			steer_right(75);
+			SteerRight(75);
 		}
 
 		COLOR1_value_global = 0;
 		COLOR2_value_global = 0;
 	}
-	*/
-
-
-
-
-
-
-	/*
-	if(1) //driving
-	{
-
-		COLOR1_value_global  = COLOR1_PW;
-		COLOR2_value_global  = COLOR2_PW;
-		// BILA
-		uint16_t color_treshold1_WHITE = 150;
-		uint16_t color_treshold1_BLACK = 1000;
-		uint16_t color_treshold2_WHITE = 600;
-		uint16_t color_treshold2_BLACK = 5000;
-
-		if(probihaZmena == false)
-		{
-			PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_PW,COLOR2_PW);
-			if(COLOR1_value_global < color_treshold1_BLACK)
-			{
-				if(COLOR1_value_global > color_treshold1_WHITE)
-					{
-						//PRINTF("COLOR 1 ZATACENI\r\n");
-						probihaZmena = true;
-						steer_left(25);
-						LPTMR_timer_start();
-						led_B();
-					}
-			}
-			if(COLOR2_value_global < color_treshold2_BLACK)
-				{
-					if(COLOR2_value_global > color_treshold2_WHITE)
-					{
-						//PRINTF("COLOR 2 ZATACENI\r\n");
-						probihaZmena = true;
-						steer_right(25);
-						LPTMR_timer_start();
-						led_B();
-
-					}
-				}
-		}
-
-	}
-	*/
-		/*
-		if(color_event_flag)
-			{
-				color_event_flag = false;
-				// BILA
-				uint16_t color_treshold1_WHITE = 500;
-				uint16_t color_treshold1_BLACK = 1000;
-				uint16_t color_treshold2_WHITE = 1500;
-				uint16_t color_treshold2_BLACK = 5000;
-
-
-				//karton
-				//uint16_t color_treshold1_WHITE = 550;
-				//uint16_t color_treshold1_BLACK = 1000;
-				//uint16_t color_treshold2_WHITE = 2000;
-				//uint16_t color_treshold2_BLACK = 5000;
-
-				if(last_color_index == 1)
-				{
-					COLOR1_value_global = last_color_pw;
-					//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
-					PRINTF("COLOR1 value = %u \r\n", last_color_pw);
-					if(probihaZmena == false)
-					{
-						if(COLOR1_value_global < color_treshold1_BLACK)
-						{
-							if(COLOR1_value_global > color_treshold1_WHITE)
-								{
-
-									probihaZmena = true;
-									steer_left(50);
-									LPTMR_timer_start();
-									led_B();
-								}
-						}
-					}
-				}
-				else
-				{
-					COLOR2_value_global = last_color_pw;
-					//PRINTF("C2 %u  (c1 %u) \r\n", COLOR2_value_global,COLOR1_value_global);
-					PRINTF("COLOR2 value = %u \r\n", last_color_pw);
-					if(probihaZmena == false)
-					{
-						if(COLOR2_value_global < color_treshold2_BLACK)
-						{
-							if(COLOR2_value_global > color_treshold2_WHITE)
-							{
-
-								probihaZmena = true;
-								steer_right(50);
-								LPTMR_timer_start();
-								led_B();
-
-							}
-						}
-					}
-				}
-			}
-	}
-	*/
 	EnableIRQ(TPM0_INTERRUPT_NUMBER);
 }
 
@@ -391,7 +282,7 @@ void TMP0_INTERRUPT_HANDLER(void)
         	{
 
         	//PRINTF("OF %u OF2 %u\r\n", overflowCountSonic1,overflowCountSonic2);
-        	sonic_reset();
+        	SonicReset();
         	}
 
         TPM_ClearStatusFlags(TPM0_BASEADDR, kTPM_TimeOverflowFlag);
@@ -424,31 +315,36 @@ void TMP0_INTERRUPT_HANDLER(void)
 				//Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
 				pulseWidthSonic1 = pulseWidthLength(risingEdgeTimeSonic1,fallingEdgeTimeSonic1,overflowCountSonic1);
 				distance1 = distanceCountF(pulseWidthSonic1);
+				if(distance1 > 5)
+						{
+					//Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
+									if(prumerovani)
+									{
+										if(pocet_mereni1 <  POCET_MERENI)
+										{
+											distance1_sum += distance1;
+											pocet_mereni1++;
+										}
+										else
+										{
+											distance1_sum += distance1;
+											SRF_distance1_global = distance1_sum / POCET_MERENI;
+											//PRINTF("AVG Distance1 = %u cm\r\n",SRF_distance1_global);
+											pocet_mereni1 = 1;
+											distance1_sum = 0;
+											isObstacle(SRF_distance1_global,SRF_distance2_global);
+										}
+									}
+									else
+									{
+										SRF_distance1_global = distance1;
+										//PRINTF("Distance1 = %u cm \r\n",distance1);
+										isObstacle(SRF_distance1_global,SRF_distance2_global);
+									}
 
-				//Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
-				if(prumerovani)
-				{
-					if(pocet_mereni1 <  POCET_MERENI)
-					{
-						distance1_sum += distance1;
-						pocet_mereni1++;
-					}
-					else
-					{
-						distance1_sum += distance1;
-						SRF_distance1_global = distance1_sum / POCET_MERENI;
-						//PRINTF("AVG Distance1 = %u cm\r\n",SRF_distance1_global);
-						pocet_mereni1 = 1;
-						distance1_sum = 0;
-						isObstacle(SRF_distance1_global,SRF_distance2_global);
-					}
-				}
-				else
-				{
-					SRF_distance1_global = distance1;
-					PRINTF("Distance1 = %u cm \r\n",distance1);
-					isObstacle(SRF_distance1_global,SRF_distance2_global);
-				}
+						}
+
+
 				TriggerPulse2(); //Vyvolani triggeru a merenim na druhem senzoru, stridani kvuli zajisteni funkcnosti
 			}
     	}
@@ -481,32 +377,39 @@ void TMP0_INTERRUPT_HANDLER(void)
 					//Na zaklade hodnot ze zaznemanaych casovych hodnoty a za zaklade poctu preteceni se vypocita delka pulzu
 					pulseWidthSonic2 = pulseWidthLength(risingEdgeTimeSonic2,fallingEdgeTimeSonic2,overflowCountSonic2);
 					distance2 = distanceCountF(pulseWidthSonic2);
+					if(distance2 > 5)
+					{
 
-					//Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
-					if(prumerovani)
-					{
-						if(pocet_mereni2 <  POCET_MERENI)
-						{
-							distance2_sum += distance2;
-							pocet_mereni2++;
-						}
-						else
-						{
-							distance2_sum += distance2;
-							SRF_distance2_global = distance2_sum / POCET_MERENI;
-							//PRINTF("		AVG Distance2 = %u cm\r\n",SRF_distance2_global);
-							pocet_mereni2 = 1;
-							distance2_sum = 0;
-							isObstacle(SRF_distance1_global,SRF_distance2_global);
-						}
+						//Vypis a pocitani v zavistlosti na tom zda se prumeruje nebo ne (kvuli eliminace duplicit
+											if(prumerovani)
+											{
+												if(pocet_mereni2 <  POCET_MERENI)
+												{
+													distance2_sum += distance2;
+													pocet_mereni2++;
+												}
+												else
+												{
+													distance2_sum += distance2;
+													SRF_distance2_global = distance2_sum / POCET_MERENI;
+													//PRINTF("		AVG Distance2 = %u cm\r\n",SRF_distance2_global);
+													pocet_mereni2 = 1;
+													distance2_sum = 0;
+													isObstacle(SRF_distance1_global,SRF_distance2_global);
+												}
+											}
+											//Pokud neni zapnuto prumerovani, kontroluje se kazda zmerena  hodnota
+											else
+											{
+												SRF_distance2_global = distance2;
+												//PRINTF("			Distance2 = %u cm \r\n",distance2);
+												isObstacle(SRF_distance1_global,SRF_distance2_global);
+											}
+
+
 					}
-					//Pokud neni zapnuto prumerovani, kontroluje se kazda zmerena  hodnota
-					else
-					{
-						SRF_distance2_global = distance2;
-						//PRINTF("			Distance2 = %u cm \r\n",distance2);
-						isObstacle(SRF_distance1_global,SRF_distance2_global);
-					}
+
+
 					TriggerPulse1(); //Vyvolani triggeru a merenim na druhem senzoru, stridani kvuli zajisteni funkcnosti
 				}
         	}
@@ -575,14 +478,14 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {
 	//Hranice pred kterou se vypnout motory (pro soutez NXP je jiz zpomalena rychlost, proto staci jen zastavit a netreba zpomalovat)
-	hranice = 20;
+	hranice = 35;
 	//PRINTF("%d %d\r\n", d1,d2);
 	if(driving && dokoncenoKolo)
 	{
 		if(d1 < hranice | d2 < hranice)
 		{
 		MotorSetSpeed(0);
-		led_R();
+
 
 		SteerStraight();
 		PRINTF("OBSTACLE DETECTED %d %d\r\n", d1,d2);
@@ -590,6 +493,7 @@ void isObstacle(uint32_t d1, uint32_t d2)
 		UART2_SendTextToHC05("OBST");
 		UART2_SendToHC05();
 		StopAll();
+		led_M();
 		}
 	}
 }

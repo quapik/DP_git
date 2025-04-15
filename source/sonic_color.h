@@ -44,7 +44,7 @@
 #define TPM0_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_McgIrc48MClk)
 
 
-void tmp0_init(void);
+void TMP0Init(void);
 void TriggerPulse1(void);
 void TriggerPulse2(void);
 uint32_t checkMaxDistance(uint32_t d);
@@ -55,8 +55,8 @@ uint32_t pulseWidthLength(uint32_t rising, uint32_t falling, uint32_t overflow);
 uint32_t pulseWidthToUs(uint32_t PW);
 void checkColorSensorValue(uint32_t PW_US, uint8_t i);
 void processColorSensorValue();
-void tmp0_reset(void);
-void sonic_reset(void);
+void TMP0Reset(void);
+void SonicReset(void);
 
 extern volatile bool color_event_flag;
 extern volatile uint32_t last_color_pw;

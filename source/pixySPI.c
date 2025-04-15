@@ -9,7 +9,8 @@
 char buffer[256];
 uint8_t offsetBuffer = 0;
 
-uint8_t base_speed_value = 20;
+uint8_t base_speed_value = 25;
+uint8_t finished_lap = 13;
 
 uint8_t actual_tranfser_size = 0;
 uint8_t masterRxData[TRANSFER_SIZE] = {0};
@@ -35,6 +36,7 @@ uint8_t y_podstatny;
 uint8_t aktualniHodnotaKZatoceni;
 bool aktualniHodnotaKZatoceniLEFT = false;
 bool IsPrimaryVector = true;
+bool IsSecondaryVector = false;
 bool bylaZmenenaHodnotaRychlosti = false;
 
 uint8_t x_pocatecni;
@@ -47,6 +49,8 @@ int16_t offset;
 
 int16_t pomer = 0;
 uint8_t horizonta_counter = 0;
+
+
 bool finish_line_detected_vzdalena = false;
 bool finish_line_detected_blizka = false;
 
@@ -87,8 +91,19 @@ void SaveImportantVector(void)
 	importantVector[2]=x_koncove;
 	importantVector[3]=y_koncove;
 }
+
+void SaveSecondaryVector(void)
+{
+	secondaryVectorIndex = vector_index;
+	secondaryVector[0]=x_pocatecni;
+	secondaryVector[1]=y_pocatecni;
+	secondaryVector[2]=x_koncove;
+	secondaryVector[3]=y_koncove;
+}
 void CheckVector(void)
 {
+	if(driving)
+	{
 	delka = abs(y_0 -y_1); //vzdalenost v ose Y
 	smer = abs(x_0 - x_1); //vzdalenost v ose X
 
@@ -106,7 +121,7 @@ void CheckVector(void)
 		if(pocet_vektoru_i == 1)
 			{
 				offsetBuffer += snprintf(&buffer[offsetBuffer], sizeof(buffer) - offsetBuffer,
-						                       "%d,%d,%d,%d;%d\r\n", x_pocatecni, y_pocatecni, x_koncove, y_koncove, vector_index);
+						                       "%d,%d,%d,%d,%d;\r\n", x_pocatecni, y_pocatecni, x_koncove, y_koncove, vector_index);
 			}
 			else
 			{
@@ -126,6 +141,13 @@ void CheckVector(void)
 		primaryVector[3]=y_koncove;
 		primaryVectorIndex = vector_index;
 		SaveImportantVector();
+		SaveSecondaryVector();
+		IsSecondaryVector = true;
+	}
+	else if (IsSecondaryVector)
+	{
+		SaveSecondaryVector();
+		IsSecondaryVector = false;
 	}
 	//UlozVektor(vector_index,x_pocatecni,y_pocatecni,x_koncove,y_koncove,0);
 
@@ -142,24 +164,20 @@ void CheckVector(void)
 	{
 		if((y_0+y_1)/2 > 25)// if((y_0+y_1)/2 > 40)
 		{
-			if(x_0 > 10 && x_1 > 10 && x_0 && x_0 < 60 && x_1 < 60)
+			if(x_0 > 3 && x_1 > 3 && x_0 && x_0 < 77 && x_1 < 77)
 			{
 					horizontal_line_counter++;
 					if(horizontal_line_counter == 2)
 					{
-						PRINTF("HORIZONTAL CARA  BLIZKO DRUHA  ");
+						//PRINTF("HORIZONTAL CARA  BLIZKO DRUHA  ");
 						led_B();
-						MotorSetSpeed(5);
-						finish_line_detected_blizka = true;
-						dokoncenoKolo = true;
-						UART2_SendTextToHC05("HOR-B!");
+						MotorSetSpeed(finished_lap);
+						if(dokoncenoKolo == false)
+						{
+							//UART2_SendTextToHC05("HOR!");
+							dokoncenoKolo = true;
+						}
 						SaveImportantVector();
-						/*
-						PIT_StopPixyZpracovavatVektory();
-						LPTMR_StopPosilejUART();
-						driving = false;
-						*/
-
 					}
 			}
 		}
@@ -170,19 +188,11 @@ void CheckVector(void)
 					horizontal_line_counter++;
 					if(horizontal_line_counter == 2)
 					{
-						PRINTF("HORIZONTAL CARA  DALEKO DRUHA  ");
+						finish_line_detected_vzdalena = true;
+						//PRINTF("HORIZONTAL CARA  DALEKO DRUHA  ");
 						led_Y();
-						MotorSetSpeed(10);
-						finish_line_detected_blizka = true;
-						dokoncenoKolo = true;
-						UART2_SendTextToHC05("HOR-D!");
+						MotorSetSpeed(12);
 						SaveImportantVector();
-						/*
-						PIT_StopPixyZpracovavatVektory();
-						LPTMR_StopPosilejUART();
-						driving = false;
-						*/
-
 					}
 			}
 
@@ -197,13 +207,13 @@ void CheckVector(void)
 			{
 				if(x_pocatecni < 60)
 				{
-					PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
+					//PRINTF("PRAVA, HODNE ROVNA, 75 LEFT ");
 					aktualniHodnotaKZatoceni = 65;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
 				else
 				{
-					PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
+					//PRINTF("PRAVA, HODNE ROVNA, 50 LEFT ");
 					aktualniHodnotaKZatoceni = 40;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
@@ -212,13 +222,13 @@ void CheckVector(void)
 			{
 				if(x_pocatecni > 18)
 				{
-					PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");
+					//PRINTF("LEVA, HODNE ROVNA, 75 RIGHT ");
 					aktualniHodnotaKZatoceni = 65;
 					aktualniHodnotaKZatoceniLEFT = false;
 				}
 				else
 				{
-					PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");
+					//PRINTF("LEVA, HODNE ROVNA, 50 RIGHT ");
 					aktualniHodnotaKZatoceni = 40;
 					aktualniHodnotaKZatoceniLEFT = false;
 				}
@@ -235,12 +245,12 @@ void CheckVector(void)
 			{
 				if(smer > 40)
 				{
-					PRINTF("PRAVA, HODNE SIKMA, 75 LEFT");
+					//PRINTF("PRAVA, HODNE SIKMA, 75 LEFT");
 					aktualniHodnotaKZatoceni = 75;
 				}
 				else
 				{
-					PRINTF("PRAVA, SIKMA, 50 LEFT");
+					//PRINTF("PRAVA, SIKMA, 50 LEFT");
 					aktualniHodnotaKZatoceni = 40;
 				}
 				aktualniHodnotaKZatoceniLEFT = true;
@@ -253,12 +263,12 @@ void CheckVector(void)
 			{
 				if(smer > 40)
 				{
-					PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
+					//PRINTF("LEVA, HODNE SIKMA, 75 RIGHT");
 					aktualniHodnotaKZatoceni = 75;
 			}
 			else
 			{
-					PRINTF("LEVA,  SIKMA, 50 RIGHT");
+					//PRINTF("LEVA,  SIKMA, 50 RIGHT");
 					aktualniHodnotaKZatoceni = 40;
 
 				}
@@ -275,19 +285,21 @@ void CheckVector(void)
 				//PRINTF("x_pocatecni %u x_koncove %u\r\n", x_pocatecni, x_koncove);
 				if(x_pocatecni > x_koncove)
 				{
-					PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
-					aktualniHodnotaKZatoceni = 60;
+					//PRINTF("VRCHOL ZATACKY DOLEVA, 75\r\n");
+					aktualniHodnotaKZatoceni = 85;
 					aktualniHodnotaKZatoceniLEFT = true;
 				}
 				else
 				{
-					PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
+					//PRINTF("VRCHOL ZATACKY DOPRAVa, 75\r\n");
 					aktualniHodnotaKZatoceniLEFT = false;
-					aktualniHodnotaKZatoceni = 60;
+					aktualniHodnotaKZatoceni = 85;
 				}
 			}
 	}
-	PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_pocatecni,y_pocatecni,x_koncove,y_koncove, delka, smer,  pomer, vector_index);
+	//PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_pocatecni,y_pocatecni,x_koncove,y_koncove, delka, smer,  pomer, vector_index);
+
+}
 }
 
 void ProccessVectors(void)
@@ -298,7 +310,7 @@ void ProccessVectors(void)
 	pocet_vektoru = masterRxDataVECTORS[offset]/6;
 	pocet_vektoru_i = pocet_vektoru;
 	//PRINTF("POCET VEKTORU %u  \r\n", pocet_vektoru);
-
+	IsSecondaryVector = false;
 	IsPrimaryVector = true;
 	bylaZmenenaHodnotaRychlosti = false;
 	horizontal_line_counter = 0;
@@ -323,7 +335,7 @@ void ProccessVectors(void)
 	if(pocet_vektoru > 0)
 	{
 		//odeslani vsech zaznamenanych vektoru pokud se zaznamenavaji jenom ty
-		if(logujJenomVektory) UART2_SendVectorsBuffer(buffer,offsetBuffer);
+		if(logujJenomVektory) UART2_sendToHC05All(buffer,offsetBuffer);
 
 		if(aktualniHodnotaKZatoceni == 0)
 		{
@@ -355,9 +367,9 @@ void ProccessVectors(void)
 				{
 					if(driving)
 					{
-						if(aktualniHodnotaKZatoceni >= 75) MotorSetSpeed(5);
-						else if(aktualniHodnotaKZatoceni >= 50) MotorSetSpeed(10);
-						else if(aktualniHodnotaKZatoceni >= 25) MotorSetSpeed(15);
+						if(aktualniHodnotaKZatoceni >= 75) MotorSetSpeed(16);
+						else if(aktualniHodnotaKZatoceni >= 50) MotorSetSpeed(18);
+						else if(aktualniHodnotaKZatoceni >= 25) MotorSetSpeed(22);
 					}
 				}
 			}
@@ -375,7 +387,7 @@ void PixyStart(void)
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     //PixySetLamp(0,0);
     PixySetLamp(1,1);
-    PixySetServos(0, 400); //360 //300
+    PixySetServos(0, 260); //360 //300
     PixySetLED(0,255,255);
     SDK_DelayAtLeastUs(100*1000, MHZ48);
     PRINTF("Pixy2 Start Finished\r\n");

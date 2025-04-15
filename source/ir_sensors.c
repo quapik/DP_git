@@ -8,6 +8,9 @@
 #include <ir_sensors.h>
 
 
+uint8_t pocitadlo = 0;
+uint16_t IR_sensor_sum;
+uint16_t IR_sensor_avg;
 
 adc16_config_t IR_ADC_config_struct;
 adc16_channel_config_t IR_ADC_channel_config_struct;
@@ -38,16 +41,8 @@ void irSensorInit(void)
 	    ADC16_Init(IR_ADC_BASE, &IR_ADC_config_struct);
 	    ADC16_EnableHardwareTrigger(IR_ADC_BASE, false);
 	#if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
-	    /*
-	    if (kStatus_Success == ADC16_DoAutoCalibration(IR_ADC_BASE))
-	    {
-	        PRINTF("ADC16_DoAutoCalibration() Done.\r\n");
-	    }
-	    else
-	    {
-	        PRINTF("ADC16_DoAutoCalibration() Failed.\r\n");
-	    }
-	    */
+
+
 	#endif
 
 	    IR_ADC_channel_config_struct.channelNumber                        = IR_ADC_CHANNEL;
@@ -64,20 +59,38 @@ void irSensorCheck(void)
 
 	if(IR_mesure_done)
 		{
-			//Hodnota odpovidajici cca pod 16cm
-			if(driving && IR_sensor_raw > 2300)
+		if(driving && dokoncenoKolo)
 			{
+			if(pocitadlo < 5)
+			{
+
+				pocitadlo++;
+				IR_sensor_sum = IR_sensor_sum + IR_sensor_raw;
+
+			}
+			else
+			{
+				IR_sensor_avg = IR_sensor_sum / pocitadlo;
 				/*
-				PRINTF("ir sensor stop\r\n");
-				UART2_SendTextToHC05("IRV");
-				StopAll();
+				if(IR_sensor_avg >2300)
+				{
+					PRINTF("ir sensor stop %d\r\n",IR_sensor_avg);
+					UART2_SendTextToHC05("IRV");
+					StopAll();
+					led_C();
+				}
 				*/
+				pocitadlo = 0;
+				IR_sensor_sum = 0;
+			}
 
 			}
 
 			irSensorConvert(IR_sensor_raw);
 			IR_mesure_done = false;
 			ADC16_SetChannelConfig(IR_ADC_BASE, IR_ADC_CHANNEL_GROUP, &IR_ADC_channel_config_struct);
+
+
 			//PRINTF("ADC Value: %d and CM value %d\r\n", IR_sensor_raw,IR_sensor_cm);
 		}
 
@@ -88,21 +101,27 @@ void updateTrackerValues(uint8_t index)
 	index = index - 1;
 	if(ir_trackers[index] == false)
 	{
-		/*
+
 		ir_trackers[index] = true;
-		PRINTF("TRACKER %u TRUE \r\n", index+1);
+		//PRINTF("TRACKER %u TRUE \r\n", index+1);
 		//getTrackersValuesCount();
-		if((index)==0||(index)==1) //index 2 je pokaženej takže vynechavame
+		//Pokud jedeme a jeste jsme nedokoncili prvni kolo (pak uz pouze na kameru)
+		if(driving && !dokoncenoKolo)
 		{
-			UART2_SendTextToHC05("IRC");
-			SteerLeft(75);
+			if((index)==0||(index)==1) //index 2 je pokaženej takže vynechavame
+			{
+				//UART2_SendTextToHC05("IRC");
+				SteerLeft(75);
+			}
+			if((index)==3||(index)==4 ||(index)==5)
+			{
+				//UART2_SendTextToHC05("IRC");;
+				SteerRight(75);
+			}
+
 		}
-		if((index)==3||(index)==4 ||(index)==5)
-		{
-			UART2_SendTextToHC05("IRC");;
-			SteerRight(75);
-		}
-		*/
+
+
 	}
 	else
 	{

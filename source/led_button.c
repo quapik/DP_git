@@ -6,6 +6,7 @@
  */
 #include "led_button.h"
 
+//Nastaví příslušené piny na 0/1 kvůli ovládání barvy ledky
 void led_set(uint8_t R,uint8_t G,uint8_t B)
 {
 	if(R == 1) R = 0;
@@ -18,6 +19,7 @@ void led_set(uint8_t R,uint8_t G,uint8_t B)
 	GPIO_PinWrite(BOARD_INITPINS_LED_RED_GPIO, BOARD_INITPINS_LED_RED_PIN, R);
 	GPIO_PinWrite(BOARD_INITPINS_LED_BLUE_GPIO, BOARD_INITPINS_LED_BLUE_PIN, B);
 }
+//Nastaví na příslušnou barvu
 void led_off(void){led_set(0,0,0);}
 void led_on(void){led_set(1,1,1);}
 void led_G(void){led_set(0,1,0);}
@@ -28,72 +30,27 @@ void led_C(void){led_set(0,1,1);}
 void led_Y(void){led_set(1,1,0);}
 
 
+
+//Vyvoválno když je stisknuto tlačítko SW1 na desce
 void SW1_pressed(void)
 {
 	//PRINTF("SW1 stisknuto!\r\n");
 
 	if(startMotorsButtonPressed==false)
 	{
-		/*
-		LPTMR_StartPosilejUART();
-		//UART2_SendTextToHC05("START");
-		HallResetValues();
-		startMotorsButtonPressed=true;
-	    led_G();
-	    motor_set_speed(20);
-	    driving = true;
-	    dokoncenoKolo = false;
-
-
-	    jedePixy = true;
-	    PIT_StartPixyZpracovavatVektory();
-	    PixyGetVectors();
-	    */
 	    StartAll();
 	}
 	else if(startMotorsButtonPressed==true)
 		{
 		StopAll();
-		/*
-			LPTMR_StopPosilejUART();
-			startMotorsButtonPressed=false;
-		    led_R();
-		    motor_set_speed(0);
-		    driving = false;
-
-		    jedePixy = false;
-		    PIT_StopPixyZpracovavatVektory();
-		    //UART2_SendTextToHC05("STOP ");
-
-		 */
 		}
 
 
 }
-
+//Vyvoválno když je stisknuto tlačítko SW3 na desce
 void SW3_pressed(void)
 {
 	MotorSetRange();
 	ServoCheckRange();
-	/*
-	if(!jedePixy)
-	{
-		led_M();
-		PRINTF("Pixy2 detekce spustena\r\n");
-		jedePixy = true;
-		PIT_StartPixyZpracovavatVektory();
-		PixyGetVectors();
-
-	}
-	else
-	{
-		led_R();
-		PRINTF("Pixy2 detekce vypnuta\r\n");
-		jedePixy = false;
-		PIT_StopPixyZpracovavatVektory();
-	}
-	*/
-	//motor_set_check();
-	//servo_check();
 }
 

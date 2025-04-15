@@ -25,8 +25,10 @@ void HallResetValues(void)
 
 void ZmenaHranyHallRight(void)
 {
-	ctvrtkyRight++;
+	//ctvrtkyRight++;
+	otackyRight++;
 	//vzdalenostRight = vzdalenostRight + VZDALENOST_CTVRTKA_OTOCKY;
+	/*
 	if(ctvrtkyRight == 4)
 	{
 		ctvrtkyRight = 0;
@@ -34,11 +36,14 @@ void ZmenaHranyHallRight(void)
 		//PRINTF("OTOCENI PRAVEHO KOLA %u\r\n", otackyRight);
 		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
 	}
+	*/
 }
 void ZmenaHranyHallLeft(void)
 {
-	ctvrtkyLeft++;
+	//ctvrtkyLeft++;
+	otackyLeft++;
 	//vzdalenostLeft = vzdalenostLeft + VZDALENOST_CTVRTKA_OTOCKY;
+	/*
 	if(ctvrtkyLeft == 4)
 	{
 		ctvrtkyLeft = 0;
@@ -46,5 +51,6 @@ void ZmenaHranyHallLeft(void)
 		//PRINTF("OTOCENI LEFT %u\r\n", otackyLeft);
 		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostLeft*100);
 	}
+	*/
 }
 

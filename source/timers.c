@@ -24,7 +24,7 @@ void LPTMR_Timer_Init(void)
 	lptmr_config_t lptmrConfig;
     LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR_BASE, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(200000U, LPTMR_SOURCE_CLOCK));
+    LPTMR_SetTimerPeriod(LPTMR_BASE, USEC_TO_COUNT(100000U, LPTMR_SOURCE_CLOCK));
     LPTMR_EnableInterrupts(LPTMR_BASE, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR_IRQn);
 }
@@ -109,7 +109,7 @@ void PIT_Timer_Init(void)
 
 
 	//Jak casto se budou zpracovavat vektory
-	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(1000000, PIT_SOURCE_CLOCK)); //33333 funguje
+	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_0, USEC_TO_COUNT(50000, PIT_SOURCE_CLOCK)); //33333 funguje
 
 	//Jak casto se cte hodnota baervny senzoru + IR senzoru
 	PIT_SetTimerPeriod(PIT_BASEADDR, kPIT_Chnl_1, USEC_TO_COUNT(10000, PIT_SOURCE_CLOCK));

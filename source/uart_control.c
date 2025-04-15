@@ -10,7 +10,7 @@ uart_handle_t g_uartHandle;
 uart_config_t config;
 uart_transfer_t transfer;
 static char txBufferNewLine[3];
-static char txBuffer[20];
+static char txBuffer[50];
 static char txLONGBuffer[130]; //tohle neni idealni, ale jinak se nepodarilo to udelat aby to fungovalo
 
 //Funkce na inicializaci UARTu pro komunikaci
@@ -23,23 +23,57 @@ void UART2_Init(void)
 	UART_Init(UART, &config, UART_CLK_FREQ);
 	UART_TransferCreateHandle(UART, &g_uartHandle, UART_Callback, NULL);
 
+
+}
+
+void UART2_sendToHC05All(const char *bufferVector, size_t sizeVector)
+{
+	if(!txOnGoing)
+	{
+		//PRINTF("velikost %d \r\n", sizeVector);
+	snprintf(txBuffer, sizeof(txBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;",
+			otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR);
+
+	 char finalBuffer[256]; // pozor na velikost!
+	    memcpy(finalBuffer, txBuffer, 50);
+	    memcpy(finalBuffer + 50, bufferVector, sizeVector);
+
+	    size_t totalSize = 50 + sizeVector;
+
+		transfer.data = (uint8_t *)finalBuffer;
+		transfer.dataSize = totalSize;
+		//PRINTF("delka %d\r\n",strlen(txLONGBuffer));
+		txOnGoing = true;
+		UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
+	}
 }
 
 //Funkce pro odesliani pres UART na HC05
 void UART2_SendToHC05(void)
 {
 	//Kontrola aby se pripadne neposilalo pokud jeste nebyl dokoncen predchhozi prenos (radsi se vynecha)
-	while(!txOnGoing)
+	if(!txOnGoing)
 	{
 		/*
+		//VSE DLOUHY FORMAT
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "HR%d;HL%d;CR%d;CL%d;IR%d;S1%d;S2%d;M%d;LEFT%d;RIGHT%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR,
 		primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex, ondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 		*/
 
+		//VSE BEZ VEKTORU
+		/*
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
+			otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR);
+		PRINTF("TEST %d\r\n",sizeof(txLONGBuffer));
+		*/
+
+		//VSE jen data
+
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
-		otackyRight,otackyLeft,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,SRF_distance1_global, SRF_distance2_global,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
+		otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
 		secondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex,importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
+
 
 		//Jen natoceni kol
 		//snprintf(txLONGBuffer, sizeof(txLONGBuffer), "LEFT %d RIGHT %d\r\n", pctServoL,pctServoR);
@@ -47,6 +81,11 @@ void UART2_SendToHC05(void)
 		/*
 		//Jen otacky
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;\r\n", otackyRight,otackyLeft);
+		*/
+
+		/*
+		//Jen SRF
+		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;\r\n", SRF_distance1_global,SRF_distance2_global);
 		*/
 		transfer.data = (uint8_t *)txLONGBuffer;
 		transfer.dataSize = strlen(txLONGBuffer);
@@ -80,10 +119,13 @@ void UART2_SendTextToHC05(const char *text)
 
 void UART2_SendVectorsBuffer(const char *buffer, size_t size)
 {
+	while(!txOnGoing)
+	{
 	  transfer.data = (uint8_t *)buffer;
 	    transfer.dataSize = size;
 	    txOnGoing = true;
 	    UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
+	}
 }
 
 //Funkce preruseni pro neblokujici posilani pres UART
