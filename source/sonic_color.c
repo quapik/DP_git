@@ -1,11 +1,13 @@
 /*
- * 	sonic.c
+ * 	sonic:color.c
  *
  * 	Kod starajici se obsluhu utlrasonickych senzoru vzdalenosti + color sensoru
  * 	Zachytavani delky hran pro kazdy senzor, vyuzito TMP pinu a timeru
  *
  *  Created on: 14. 2. 2025
- *  Author: xsimav01
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 
 #include <sonic_color.h>
@@ -73,7 +75,7 @@ uint8_t pocet_mereni2 = 1;
 uint32_t counter = 0;
 tpm_config_t tmp0info;
 
-bool prumerovani = false;
+bool prumerovani = true;
 
 
 bool SONIC1_ocekavano = false;
@@ -246,7 +248,7 @@ void processColorSensorValue()
 
 	if(driving && !dokoncenoKolo)
 	{
-		if(COLOR1_value_global > 100 && COLOR1_value_global < 500)
+		if(COLOR1_value_global > 70 && COLOR1_value_global < 500)
 		{
 			SteerLeft(75);
 		}
@@ -478,22 +480,19 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {
 	//Hranice pred kterou se vypnout motory (pro soutez NXP je jiz zpomalena rychlost, proto staci jen zastavit a netreba zpomalovat)
-	hranice = 35;
-	//PRINTF("%d %d\r\n", d1,d2);
+	hranice = 32;
 	if(driving && dokoncenoKolo)
 	{
-		if(d1 < hranice | d2 < hranice)
+		if(d1 < hranice || d2 < hranice)
 		{
 		MotorSetSpeed(0);
-
-
 		SteerStraight();
 		PRINTF("OBSTACLE DETECTED %d %d\r\n", d1,d2);
-
 		UART2_SendTextToHC05("OBST");
 		UART2_SendToHC05();
 		StopAll();
 		led_M();
 		}
 	}
+
 }

@@ -5,7 +5,9 @@
  *
  *
  *  Created on: 14. 1. 2025
- *  Author: xsimav01
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 
 #include "drive_control.h"

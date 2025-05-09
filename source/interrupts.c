@@ -1,8 +1,12 @@
 /*
- * interrupts.c
+ * 	interrupts.c
  *
- *  Created on: 20. 2. 2025
- *      Author: xsimav01
+ * Soubor starající se o přerušení
+ *
+ *  Created on: 28. 1. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 
 #include "interrupts.h"

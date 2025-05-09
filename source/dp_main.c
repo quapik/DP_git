@@ -9,7 +9,7 @@ bool pixyMainFeatures = false;
 
 int main(void)
 {
-	BOARD_InitPins();
+ 	BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();

@@ -1,9 +1,15 @@
 /*
- * uart_control.c
+ * 	uart_control.c
  *
- *  Created on: 17. 3. 2025
- *      Author: xsimav01
- */
+ * Soubor starající se o zasílání logovacích dat přes UAR
+ *
+ *
+ *  Created on: 10. 3. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
+ *
+ *  */
 #include "uart_control.h"
 volatile bool txOnGoing = false;
 uart_handle_t g_uartHandle;
@@ -30,11 +36,11 @@ void UART2_sendToHC05All(const char *bufferVector, size_t sizeVector)
 {
 	if(!txOnGoing)
 	{
-		//PRINTF("velikost %d \r\n", sizeVector);
-	snprintf(txBuffer, sizeof(txBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;",
+
+		snprintf(txBuffer, sizeof(txBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;",
 			otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR);
 
-	 char finalBuffer[256]; // pozor na velikost!
+		char finalBuffer[256]; // pozor na velikost!
 	    memcpy(finalBuffer, txBuffer, 50);
 	    memcpy(finalBuffer + 50, bufferVector, sizeVector);
 
@@ -42,7 +48,6 @@ void UART2_sendToHC05All(const char *bufferVector, size_t sizeVector)
 
 		transfer.data = (uint8_t *)finalBuffer;
 		transfer.dataSize = totalSize;
-		//PRINTF("delka %d\r\n",strlen(txLONGBuffer));
 		txOnGoing = true;
 		UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
 	}

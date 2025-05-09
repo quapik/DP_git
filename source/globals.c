@@ -1,8 +1,13 @@
 /*
- * globals.c
+ * 	globals.c
  *
- *  Created on: 20. 2. 2025
- *      Author: xsimav01
+ * Soubor s globálními proměnnými a startovací funkcí
+ *
+ *
+ *  Created on: 14. 1. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 #include "globals.h"
 
@@ -54,6 +59,7 @@ bool dokoncenoKolo = false;
 void StopAll(void)
 {
 	led_R();
+	startMotorsButtonPressed = false;
 	PRINTF("VSECHNO ZASTAVENO \r\n");
 	MotorSetSpeed(0);
 	SteerStraight();
@@ -61,13 +67,13 @@ void StopAll(void)
 	if(!logujJenomVektory)LPTMR_StopPosilejUART();
 	PIT_StopZpracujBarvuIRSensor();
 	driving = false;
-	startMotorsButtonPressed = false;
 	jedePixy = false;
 }
 
 void StartAll(void)
 {
 	led_G();
+	startMotorsButtonPressed = true;
 	PRINTF("VSECHNO SPUSTENO \r\n");
 	HallResetValues();
 	SteerStraight();
@@ -77,10 +83,9 @@ void StartAll(void)
 	PixyGetVectors();
 	MotorSetSpeed(25);
 	driving = true;
-	startMotorsButtonPressed = true;
+
 	jedePixy = true;
 	dokoncenoKolo = false;
-
 }
 
 

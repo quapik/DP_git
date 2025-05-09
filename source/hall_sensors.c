@@ -1,8 +1,12 @@
 /*
- * hall_sensors.c
+ * 	hall_sensors.c
  *
- *  Created on: 17. 3. 2025
- *      Author: xsimav01
+ * Soubor starající se o hallovy senzory
+ *
+ *  Created on: 14. 3. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 #include "hall_sensors.h"
 

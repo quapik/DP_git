@@ -1,8 +1,13 @@
 /*
- * pixySPI.c
+ * 	pixySPI.c
  *
- *  Created on: 17. 1. 2025
- *      Author: xsimav01
+ * Soubor starající se o práci s kamerou Pixy 2
+ *
+ *
+ *  Created on: 9. 2. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 
 #include "pixySPI.h"
@@ -172,7 +177,7 @@ void CheckVector(void)
 						//PRINTF("HORIZONTAL CARA  BLIZKO DRUHA  ");
 						led_B();
 						MotorSetSpeed(finished_lap);
-						if(dokoncenoKolo == false)
+						if(dokoncenoKolo == false && otackyLeft > 20)
 						{
 							//UART2_SendTextToHC05("HOR!");
 							dokoncenoKolo = true;

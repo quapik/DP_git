@@ -1,3 +1,16 @@
+/*
+ * 	timers.c
+ *
+ * Soubor starající se o práci s časovači
+ *
+ *
+ *  Created on: 9. 2. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
+ */
+
+
 #include <timers.h>
 
 #define PIT_BASEADDR PIT

@@ -1,8 +1,12 @@
 /*
- * led_button.c
+ * 	led_button.c
  *
- *  Created on: 19. 2. 2025
- *      Author: xsimav01
+ * Soubor starající se o obsluhu přerušení a nastavování led
+ *
+ *  Created on: 14. 1. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 #include "led_button.h"
 

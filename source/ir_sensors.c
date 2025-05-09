@@ -1,8 +1,12 @@
 /*
- * ir_tracker.c
+ * 	ir_sensors.c
  *
- *  Created on: 21. 2. 2025
- *      Author: xsimav01
+ * Soubor starající se o obsluhu IR senzor (vzdálenosti a trackeru)
+ *
+ *  Created on: 14. 1. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
  */
 
 #include <ir_sensors.h>
