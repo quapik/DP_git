@@ -157,15 +157,10 @@ void TMP0Init(void)
 //Funkce, která vyšle na GPIO pinu 10s dlouhý signál, kdy SRF05 senzor vysílá ultrazuvkový signál
 void TriggerPulse1(void)
 {	isTriggerTriggering = true;
-
-	//risigneEdgeCapturedSonic1 = false;
-	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_1_channel, kTPM_RisingEdge);
-
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 1);
 	SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger1_GPIO, BOARD_INITPINS_SRF05_trigger1_PIN, 0);
-	//actualTrigger = 1;
-	//LPTMR_timer_start();
+
 
    	SONIC1_ocekavano = true;
 	SONIC2_ocekavano = false;
@@ -174,15 +169,10 @@ void TriggerPulse1(void)
 void TriggerPulse2(void)
 {
 	isTriggerTriggering = true;
-	//risigneEdgeCapturedSonic2 = false;
-	//TPM_SetupInputCapture(TPM0_BASEADDR, SRF05_2_channel, kTPM_RisingEdge);
 
 	GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 1);
 	SDK_DelayAtLeastUs(10U, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     GPIO_PinWrite(BOARD_INITPINS_SRF05_trigger2_GPIO, BOARD_INITPINS_SRF05_trigger2_PIN, 0);
-	//actualTrigger = 2;
-	//LPTMR_timer_start();
-
    	SONIC1_ocekavano = false;
 	SONIC2_ocekavano = true;
 }
@@ -244,8 +234,6 @@ void processColorSensorValue()
 	// S2 H
 	// S3 L  for clear (no filter)
 
-	//PRINTF("C1 %u  (c2 %u) \r\n", COLOR1_value_global,COLOR2_value_global);
-
 	if(driving && !dokoncenoKolo)
 	{
 		if(COLOR1_value_global > 70 && COLOR1_value_global < 500)
@@ -257,7 +245,6 @@ void processColorSensorValue()
 		{
 			SteerRight(75);
 		}
-
 		COLOR1_value_global = 0;
 		COLOR2_value_global = 0;
 	}
@@ -267,9 +254,7 @@ void processColorSensorValue()
 //Funkce která ja automaticky volána když je přerušení vyvoláno (nástupné a sesupn0 hranz senzoru]
 void TMP0_INTERRUPT_HANDLER(void)
 {
-
     tmp0_interrupt_status = TPM_GetStatusFlags(TPM0_BASEADDR);
-    //PRINTF("status %u\r\n",tmp0_interrupt_status);
 
     //Overflow kdyz pretece counter, je potreba pocitat abyc se pak zaznemanl spravne delka mezi prerusenimi
     if (tmp0_interrupt_status & kTPM_TimeOverflowFlag)
@@ -282,8 +267,6 @@ void TMP0_INTERRUPT_HANDLER(void)
         //Občas se měřeni nějak zadrhne a začně přetykat, takže je třeba restartovat
         if( overflowCountSonic1==4 || overflowCountSonic2==4)
         	{
-
-        	//PRINTF("OF %u OF2 %u\r\n", overflowCountSonic1,overflowCountSonic2);
         	SonicReset();
         	}
 
@@ -343,10 +326,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 										//PRINTF("Distance1 = %u cm \r\n",distance1);
 										isObstacle(SRF_distance1_global,SRF_distance2_global);
 									}
-
 						}
-
-
 				TriggerPulse2(); //Vyvolani triggeru a merenim na druhem senzoru, stridani kvuli zajisteni funkcnosti
 			}
     	}
@@ -407,11 +387,7 @@ void TMP0_INTERRUPT_HANDLER(void)
 												//PRINTF("			Distance2 = %u cm \r\n",distance2);
 												isObstacle(SRF_distance1_global,SRF_distance2_global);
 											}
-
-
 					}
-
-
 					TriggerPulse1(); //Vyvolani triggeru a merenim na druhem senzoru, stridani kvuli zajisteni funkcnosti
 				}
         	}
@@ -480,8 +456,9 @@ void TMP0_INTERRUPT_HANDLER(void)
 void isObstacle(uint32_t d1, uint32_t d2)
 {
 	//Hranice pred kterou se vypnout motory (pro soutez NXP je jiz zpomalena rychlost, proto staci jen zastavit a netreba zpomalovat)
-	hranice = 32;
+	hranice = 20;
 	if(driving && dokoncenoKolo)
+	//if(driving)
 	{
 		if(d1 < hranice || d2 < hranice)
 		{

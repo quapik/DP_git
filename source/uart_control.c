@@ -67,19 +67,18 @@ void UART2_SendToHC05(void)
 		*/
 
 		//VSE BEZ VEKTORU
-		/*
+
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 			otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR);
-		PRINTF("TEST %d\r\n",sizeof(txLONGBuffer));
-		*/
+
 
 		//VSE jen data
-
+		/*
 		snprintf(txLONGBuffer, sizeof(txLONGBuffer), "%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;%d;\r\n",
 		otackyRight,otackyLeft,SRF_distance1_global, SRF_distance2_global,COLOR1_value_global,COLOR2_value_global,IR_sensor_cm,pctMotory,pctServoL,pctServoR, primaryVector[0],primaryVector[1],primaryVector[2],primaryVector[3],primaryVectorIndex,
 		secondaryVector[0],secondaryVector[1],secondaryVector[2],secondaryVector[3],secondaryVectorIndex,importantVector[0],importantVector[1],importantVector[2],importantVector[3],importantVectorIndex);
 
-
+		 	*/
 		//Jen natoceni kol
 		//snprintf(txLONGBuffer, sizeof(txLONGBuffer), "LEFT %d RIGHT %d\r\n", pctServoL,pctServoR);
 

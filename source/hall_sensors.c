@@ -29,23 +29,33 @@ void HallResetValues(void)
 
 void ZmenaHranyHallRight(void)
 {
+	if(g_systickCounter > 10000) StopAll();
 	//ctvrtkyRight++;
-	otackyRight++;
-	//vzdalenostRight = vzdalenostRight + VZDALENOST_CTVRTKA_OTOCKY;
-	/*
-	if(ctvrtkyRight == 4)
+	if(g_systickCounter - otackyRightTicks > 25)
 	{
-		ctvrtkyRight = 0;
 		otackyRight++;
-		//PRINTF("OTOCENI PRAVEHO KOLA %u\r\n", otackyRight);
-		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
+		PRINTF("OTOCENI RIGHT %u ticky %u\r\n", otackyRight, g_systickCounter - otackyRightTicks);
+		//vzdalenostRight = vzdalenostRight + VZDALENOST_CTVRTKA_OTOCKY;
+		/*
+		if(ctvrtkyRight == 4)
+		{
+			ctvrtkyRight = 0;
+			otackyRight++;
+			//PRINTF("OTOCENI PRAVEHO KOLA %u\r\n", otackyRight);
+			//PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
+		}
+		*/
+		otackyRightTicks = g_systickCounter;
 	}
-	*/
+
 }
 void ZmenaHranyHallLeft(void)
-{
+{	if(g_systickCounter > 10000) StopAll();
+	if(g_systickCounter - otackyLeftTicks > 25)
+	{
 	//ctvrtkyLeft++;
 	otackyLeft++;
+	PRINTF("OTOCENI LEFT %u ticky %u\r\n", otackyLeft,g_systickCounter - otackyLeftTicks);
 	//vzdalenostLeft = vzdalenostLeft + VZDALENOST_CTVRTKA_OTOCKY;
 	/*
 	if(ctvrtkyLeft == 4)
@@ -56,5 +66,7 @@ void ZmenaHranyHallLeft(void)
 		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostLeft*100);
 	}
 	*/
+	otackyLeftTicks = g_systickCounter;
+	}
 }
 

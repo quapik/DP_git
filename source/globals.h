@@ -22,6 +22,7 @@
 #include "fsl_clock.h"
 #include "fsl_lptmr.h"
 #include "fsl_uart.h"
+#include <stdint.h>
 
 
 #include "drive_control.h"
@@ -42,7 +43,7 @@ extern uint8_t secondaryVector[4];
 extern uint8_t secondaryVectorIndex;
 extern uint8_t pocetVektoruGlobal;
 
-extern bool logujJenomVektory;
+extern bool logujPeriodicky;
 
 extern bool pixyMainFeatures;
 extern bool jedouMotory;
@@ -74,11 +75,17 @@ extern bool isTriggerTriggering;
 extern bool jedePixy;
 
 extern uint16_t otackyLeft;
+extern uint32_t otackyLeftTicks;
 extern uint16_t otackyRight;
+extern uint32_t otackyRightTicks;
+extern volatile uint32_t g_systickCounter;
 
 extern bool dokoncenoKolo;
 
 #define MHZ48 48000000U
+
+void SysTick_Init(void);
+void SysTick_Handler(void);
 
 void StopAll(void);
 void StartAll(void);

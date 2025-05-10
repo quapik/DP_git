@@ -96,9 +96,9 @@ BOARD_InitPins:
   - {pin_num: '43', peripheral: ADC0, signal: 'SE, 14', pin_signal: ADC0_SE14/PTC0/EXTRG_IN/USB_SOF_OUT/CMP0_OUT, identifier: IR_sensor}
   - {pin_num: '8', peripheral: UART2, signal: TX, pin_signal: ADC0_DP1/ADC0_SE1/PTE16/SPI0_PCS0/UART2_TX/TPM_CLKIN0/FXIO0_D0}
   - {pin_num: '64', peripheral: GPIOD, signal: 'GPIO, 7', pin_signal: PTD7/SPI1_MISO/LPUART0_TX/I2C1_SCL/SPI1_MOSI/FXIO0_D7, identifier: HALL1, direction: INPUT,
-    gpio_interrupt: kPORT_InterruptRisingEdge}
+    gpio_interrupt: kPORT_InterruptFallingEdge}
   - {pin_num: '63', peripheral: GPIOD, signal: 'GPIO, 6', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6, identifier: HALL2,
-    direction: INPUT, gpio_interrupt: kPORT_InterruptRisingEdge}
+    direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge}
   - {pin_num: '63', peripheral: LLWU, signal: 'P, 15', pin_signal: ADC0_SE7b/PTD6/LLWU_P15/SPI1_MOSI/LPUART0_RX/I2C1_SDA/SPI1_MISO/FXIO0_D6}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
@@ -327,14 +327,14 @@ void BOARD_InitPins(void)
     /* PORTD6 (pin 63) is configured as PTD6, LLWU_P15 */
     PORT_SetPinMux(BOARD_INITPINS_HALL2_PORT, BOARD_INITPINS_HALL2_PIN, kPORT_MuxAsGpio);
 
-    /* Interrupt configuration on PORTD6 (pin 63): Interrupt on rising edge */
-    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL2_PORT, BOARD_INITPINS_HALL2_PIN, kPORT_InterruptRisingEdge);
+    /* Interrupt configuration on PORTD6 (pin 63): Interrupt on falling edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL2_PORT, BOARD_INITPINS_HALL2_PIN, kPORT_InterruptFallingEdge);
 
     /* PORTD7 (pin 64) is configured as PTD7 */
     PORT_SetPinMux(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_MuxAsGpio);
 
-    /* Interrupt configuration on PORTD7 (pin 64): Interrupt on rising edge */
-    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_InterruptRisingEdge);
+    /* Interrupt configuration on PORTD7 (pin 64): Interrupt on falling edge */
+    PORT_SetPinInterruptConfig(BOARD_INITPINS_HALL1_PORT, BOARD_INITPINS_HALL1_PIN, kPORT_InterruptFallingEdge);
 
     /* PORTE0 (pin 1) is configured as LPUART1_TX */
     PORT_SetPinMux(PORTE, 0U, kPORT_MuxAlt3);

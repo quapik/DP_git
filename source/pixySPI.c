@@ -121,7 +121,7 @@ void CheckVector(void)
 
 	//Pokud se maji logovat jenom vektory, ukladej je a pozdeji budou naraz posleny
 	//Promenna se nastavuje v dp_main.c
-	if(logujJenomVektory)
+	if(!logujPeriodicky)
 	{
 		if(pocet_vektoru_i == 1)
 			{
@@ -174,7 +174,8 @@ void CheckVector(void)
 					horizontal_line_counter++;
 					if(horizontal_line_counter == 2)
 					{
-						//PRINTF("HORIZONTAL CARA  BLIZKO DRUHA  ");
+
+						//Pokud zaznemanana cilova cara blizko, nastaveni knstatni rychlosti a dokonceno kolo
 						led_B();
 						MotorSetSpeed(finished_lap);
 						if(dokoncenoKolo == false && otackyLeft > 20)
@@ -302,8 +303,6 @@ void CheckVector(void)
 				}
 			}
 	}
-	//PRINTF("[%u,%u] [%u,%u] delka %d smer %d pomer %d index  %u \r\n",x_pocatecni,y_pocatecni,x_koncove,y_koncove, delka, smer,  pomer, vector_index);
-
 }
 }
 
@@ -340,7 +339,7 @@ void ProccessVectors(void)
 	if(pocet_vektoru > 0)
 	{
 		//odeslani vsech zaznamenanych vektoru pokud se zaznamenavaji jenom ty
-		if(logujJenomVektory) UART2_sendToHC05All(buffer,offsetBuffer);
+		if(!logujPeriodicky) UART2_sendToHC05All(buffer,offsetBuffer);
 
 		if(aktualniHodnotaKZatoceni == 0)
 		{

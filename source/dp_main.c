@@ -1,3 +1,15 @@
+/*
+ * 	dp_main.c
+ *
+ * Soubor starající se o základní inicializační funkce a běh programu
+ *
+ *
+ *  Created on: 14. 1. 2025
+ *  Author: Vojtěch Šíma
+ *  Diplomová práce  Samořiditelný model autíčka pro NXP Cup
+ *  2024/2025
+ */
+
 #include "globals.h"
 volatile uint8_t getCharValue = 0U;
 
@@ -18,6 +30,7 @@ int main(void)
 
     enableInterruptsOnPorts();
     MotorsInit();
+    SysTick_Init();
 
     //Inicializace TMP0 (ultrazvukove a barevne senzory)
     TMP0Init();
@@ -38,61 +51,9 @@ int main(void)
     led_R();
 
 	//Urcuje, zda budou logovany pouze vektory nebo vse pri pohybu a prenosu pre uart
-	logujJenomVektory = true;
- 	while (1){
-
-		/*
-		//IR SENSOR
-		adc_value  = irsensor_mesure();
-		if (adc_value > 1000)
-		{
-		PRINTF("STOP\r\n");
-		motor_set_speed(0);
-		}
-		else motor_set_speed(15);
-
-		cm_value = irsensor_convert(adc_value);
-		SysTick_DelayTicks(20U);
-		*/
-
-
-
- 		/*
-		getCharValue = GETCHAR()  - 0x30U;
-		if (getCharValue == 3) dutyCycle = SERVO_MIDDLE;
-		if (getCharValue == 1) dutyCycle = dutyCycle - 0.10;
-		if (getCharValue == 2) dutyCycle = dutyCycle + 0.10;
-		TPM_UpdatePwmDutycycle(BOARD_TPM_BASEADDR_SERVO, (tpm_chnl_t)BOARD_TPM_CHANNEL_SERVO, kTPM_EdgeAlignedPwm, dutyCycle);
-		if (dutyCycle > SERVO_MAX) dutyCycle  = SERVO_MAX;
-		if (dutyCycle < SERVO_MIN) dutyCycle  = SERVO_MIN;
-
-		if (getCharValue == 6 ) pct = 0;
-		if (getCharValue == 9 ) pct = 100;
-		if (getCharValue == 4)  pct = pct -1;
-		if (getCharValue == 5) pct = pct +1;
-		if(getCharValue == 6 || getCharValue == 5 || getCharValue == 4 || getCharValue == 9)
-		{
-			PRINTF("MOTOR %d \r\n", (int)(pct));
-			motor_set_speed(pct);
-		}
-		else
-		{
-			PRINTF("SERVO %d \r\n", (int)(dutyCycle*100));
-		}
-		*/
- 		/*
-    	// LEVY TADBU 6.5 a 12.9 max
-    	while(1)
-    	{
-    		getCharValue = GETCHAR() - 0x30U;
-    		if (getCharValue == 0) {pct = 0; LPTMR_timer_stop(); HallResetValues();}
-    		if (getCharValue == 9) {LPTMR_timer_start(); pct = 100;}
-    		if (getCharValue == 1) pct = pct -1;
-    		if (getCharValue == 2) pct = pct +1;
-    		PRINTF("%d \r\n", (int)(pct));
-    		motor_set_speed(pct);
-    	}
-    	*/
+    logujPeriodicky = false;
+ 	while (1)
+ 	{
 
     }
 }
