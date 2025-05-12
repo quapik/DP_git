@@ -16,7 +16,7 @@ float vzdalenostRight;
 uint8_t ctvrtkyLeft;
 float vzdalenostLeft;
 
-
+//Funkce co pocita ctvrtotacky praveho kola
 void HallResetValues(void)
 {
 	ctvrtkyRight = 0;
@@ -29,43 +29,21 @@ void HallResetValues(void)
 
 void ZmenaHranyHallRight(void)
 {
-	if(g_systickCounter > 10000) StopAll();
-	//ctvrtkyRight++;
+	//Prevence kvůli opakované detekci jednoho magnetu
 	if(g_systickCounter - otackyRightTicks > 25)
 	{
 		otackyRight++;
-		PRINTF("OTOCENI RIGHT %u ticky %u\r\n", otackyRight, g_systickCounter - otackyRightTicks);
-		//vzdalenostRight = vzdalenostRight + VZDALENOST_CTVRTKA_OTOCKY;
-		/*
-		if(ctvrtkyRight == 4)
-		{
-			ctvrtkyRight = 0;
-			otackyRight++;
-			//PRINTF("OTOCENI PRAVEHO KOLA %u\r\n", otackyRight);
-			//PRINTF("vzdalenost %u\r\n", (int)vzdalenostRight*100);
-		}
-		*/
 		otackyRightTicks = g_systickCounter;
 	}
 
 }
+//Funkce co pocita ctvrtotacky leveho kola
 void ZmenaHranyHallLeft(void)
-{	if(g_systickCounter > 10000) StopAll();
+{
+	//Prevence kvůli opakované detekci jednoho magnetu
 	if(g_systickCounter - otackyLeftTicks > 25)
 	{
-	//ctvrtkyLeft++;
 	otackyLeft++;
-	PRINTF("OTOCENI LEFT %u ticky %u\r\n", otackyLeft,g_systickCounter - otackyLeftTicks);
-	//vzdalenostLeft = vzdalenostLeft + VZDALENOST_CTVRTKA_OTOCKY;
-	/*
-	if(ctvrtkyLeft == 4)
-	{
-		ctvrtkyLeft = 0;
-		otackyLeft++;
-		//PRINTF("OTOCENI LEFT %u\r\n", otackyLeft);
-		//PRINTF("vzdalenost %u\r\n", (int)vzdalenostLeft*100);
-	}
-	*/
 	otackyLeftTicks = g_systickCounter;
 	}
 }

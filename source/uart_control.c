@@ -31,7 +31,7 @@ void UART2_Init(void)
 
 
 }
-
+//Funkce co se pouziva pro poslani vsechn dat a za nima aktualni vektory, vola se pri zpracovani vektoru v z kamery kazdych 50 ms
 void UART2_sendToHC05All(const char *bufferVector, size_t sizeVector)
 {
 	if(!txOnGoing)
@@ -98,7 +98,7 @@ void UART2_SendToHC05(void)
 		UART_TransferSendNonBlocking(UART, &g_uartHandle, &transfer);
 	}
 }
-
+//funkce co pošele přes uart kratky text
 void UART2_SendTextToHC05(const char *text)
 {
 	//Radsi cekame, muzeme si to dovolit ale potrebuje aby se tato hodnota zapsala
@@ -120,7 +120,7 @@ void UART2_SendTextToHC05(const char *text)
     }
 }
 
-
+//Funkce co posila pouze vektory co dostala na vstupu
 void UART2_SendVectorsBuffer(const char *buffer, size_t size)
 {
 	while(!txOnGoing)

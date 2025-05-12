@@ -115,12 +115,12 @@ void updateTrackerValues(uint8_t index)
 			if((index)==0||(index)==1) //index 2 je pokaženej takže vynechavame
 			{
 				//UART2_SendTextToHC05("IRC");
-				SteerLeft(75);
+				//SteerLeft(75);
 			}
 			if((index)==3||(index)==4 ||(index)==5)
 			{
 				//UART2_SendTextToHC05("IRC");;
-				SteerRight(75);
+				//SteerRight(75);
 			}
 
 		}
@@ -149,7 +149,6 @@ void getTrackersValuesCount (void)
 		led_R();
 		MotorSetSpeed(0);
 		SteerStraight();
-		PRINTF("LINE DETECTED \r\n");
 		startMotorsButtonPressed = false;
 		driving = false;
 	}
